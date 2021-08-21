@@ -1,15 +1,22 @@
-export const ARENA_WIDTH = 50;
-export const ARENA_HEIGHT = 25;
+export const ARENA_WIDTH = 60;
+export const ARENA_HEIGHT = 30;
 
 
 
-export const DISPLAY_OPTIONS = {
+export const GAME_DISPLAY_OPTIONS = {
     // Configure the display
     bg: "black", // background
     fg: "dimGrey", // foreground
-    // fontFamily: "Fix15MonoBold", // font (use a monospace for esthetics)
+    // fontFamily: "Liberation Mono", // font (use a monospace for esthetics)
+    fontFamily: "monospace", // font (use a monospace for esthetics)
     width: ARENA_WIDTH,
     height: ARENA_HEIGHT, // canvas height and width
-    fontSize: 32, // canvas fontsize
+    fontSize: 24, // canvas fontsize
     //forceSquareRatio: true // make the canvas squared ratio
+};
+
+export const LOG_DISPLAY_OPTIONS = {
+    width: ARENA_WIDTH,
+    height: 12, // canvas height and width
+    fontSize: 24, // canvas fontsize6
 };

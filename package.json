@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "collections": "^5.1.12",
     "rot-js": "^2.2.0",
     "tsify": "^5.0.4",
     "typescript": "^4.3.5"
