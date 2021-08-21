@@ -18,15 +18,17 @@ export default class Layer<T> {
     }
 
     hasPosition(position: number) {
-        return this.positionToElement.has(position)
+        return this.positionToElement.has(position);
     }
 
-    getElementViaPosition(position: number) {
-        return this.positionToElement.get(position);
+    getElementViaPosition(position: number): T {
+        assert(this.positionToElement.has(position));
+        return this.positionToElement.get(position)!;
     }
 
-    getPositionViaElement(element: T) {
-        return this.elementToPosition.get(element);
+    getPositionViaElement(element: T): number {
+        assert(this.elementToPosition.has(element));
+        return this.elementToPosition.get(element)!;
     }
 
     removeViaElement(element: T) {

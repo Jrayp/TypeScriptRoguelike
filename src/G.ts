@@ -1,9 +1,9 @@
 import Player from "./actors/Player";
-import ArenaMap from "./ArenaMap";
-import LogDisplay from "./LogDisplay";
+import Board from "./Board";
+import LogDisplay from "./displays/LogDisplay";
 
 
-export var CurrentArena: ArenaMap;
+export var CurrentArena: Board;
 export var PlayerRef: Player;
 export var GameLog: LogDisplay;
 
@@ -15,7 +15,7 @@ export function SetPlayer(player: Player) {
     PlayerRef = player;
 }
 
-export function SetArena(arena: ArenaMap) {
+export function SetArena(arena: Board) {
     CurrentArena = arena;
 }
 

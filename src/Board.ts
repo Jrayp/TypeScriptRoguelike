@@ -1,26 +1,29 @@
 import { Map, RNG } from 'rot-js';
-import { ArenaTile } from './ArenaTile';
+import Actor from './actors/_Actor';
+import { FloorTile } from './boardTiles/FloorTile';
+import { WallTile } from './boardTiles/WallTile';
+import { PuddleTile } from './boardTiles/PuddleTile';
+import { _BoardTile } from './boardTiles/_BoardTile';
 import * as C from './C'
-import GameDisplay from './GameDisplay';
-import ActorLayer from './layers/ActorLayer';
-import TileLayer from './layers/TileLayer';
+import BoardDisplay from './displays/BoardDisplay';
+import Layer from './Layer';
 
-export default class ArenaMap {
-    tileLayer: TileLayer = new TileLayer();
-    actorLayer: ActorLayer = new ActorLayer();
+export default class Board {
+    tileLayer: Layer<_BoardTile> = new Layer<_BoardTile>();
+    actorLayer: Layer<Actor> = new Layer<Actor>();
 
     constructor() {
         this.generate();
     }
 
-    draw(gameDisplay: GameDisplay) {
+    draw(gameDisplay: BoardDisplay) {
         for (let kvp of this.tileLayer.iterator()) {
             let tile = kvp[0];
             let pos = kvp[1];
-            let coord = ArenaMap.convert1Dto2D(pos);
+            let coord = Board.convert1Dto2D(pos);
             if (this.actorLayer.hasPosition(pos)) {
                 let actor = this.actorLayer.getElementViaPosition(pos);
-                gameDisplay.draw(coord[0], coord[1], actor!.glyph, actor!.fg, null);
+                gameDisplay.draw(coord[0], coord[1], actor!.glyph, actor!.fgColor, null);
             } else {
                 gameDisplay.draw(coord[0], coord[1], tile.glyph, tile.fgColor, tile.bgColor);
             }
@@ -32,8 +35,17 @@ export default class ArenaMap {
         let map = new Map.Rogue(C.ARENA_WIDTH, C.ARENA_HEIGHT, { cellHeight: RNG.getUniform() * 2 + 1, cellWidth: RNG.getUniform() * 2 + 1 });
 
         let userCallback = (x: number, y: number, value: number) => {
-            let pos = ArenaMap.convert2Dto1D(x, y);
-            let newTile = value == 1 ? ArenaTile.newWall() : ArenaTile.newFloor();
+            let pos = Board.convert2Dto1D(x, y);
+
+            let newTile: _BoardTile;
+            if (value == 0)
+                if (RNG.getUniform() * 10 < 1)
+                    newTile = new PuddleTile();
+                else
+                    newTile = new FloorTile()
+            else
+                newTile = new WallTile();
+
             this.tileLayer.set(pos, newTile);
         }
         map.create(userCallback);

@@ -1,10 +1,11 @@
-import LogDisplay from "./../LogDisplay";
-import Actor from "./Actor";
+import LogDisplay from "../displays/LogDisplay";
+import Actor from "./_Actor";
 
 export default class Player extends Actor {
 
     glyph = '@';
-    fg = 'yellow'
+    fgColor = 'yellow'
+    bgColor = null;
 
     move(newPos: number) {
         if (super.move(newPos))
