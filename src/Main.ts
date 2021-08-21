@@ -6,6 +6,7 @@ import Board from './Board';
 
 import Player from './actors/Player';
 import LogDisplay from './displays/LogDisplay';
+import Log from './Log';
 
 
 
@@ -40,8 +41,6 @@ function handleKeyDown(event: KeyboardEvent) {
 
 // TODO: use enums
 function runAction(action: [string, number, number]) {
-  LogDisplay.log("");
-
   switch (action[0]) {
     case 'move':
       let currentPos = G.PlayerRef.getCoords();
@@ -68,11 +67,16 @@ function handlePlayerKeys(key: string): [string, number, number] | undefined {
   }
 }
 
+let logDisplay = new LogDisplay();
+document.body.append(logDisplay.getContainer()!);
+
 let gameDisplay = new BoardDisplay();
 document.body.append(gameDisplay.getContainer()!);
 
-let logDisplay = new LogDisplay();
-document.body.append(logDisplay.getContainer()!);
+
+var log = new Log(logDisplay);
+Log.Write("sdsdsdsdsd");
+
 
 // G.SetLog(logDisplay);
 
@@ -91,7 +95,7 @@ G.SetPlayer(p);
 
 setupInputHandlers(gameDisplay);
 
-LogDisplay.log("Welcome to TypeScript Roguelike!");
+Log.Write("Welcome to TypeScript Roguelike!");
 
 draw();
 

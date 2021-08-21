@@ -1,6 +1,10 @@
 export const ARENA_WIDTH = 60;
 export const ARENA_HEIGHT = 30;
 
+export const MAX_LOG_LENGTH = 50;
+
+export const LOG_DISPLAY_WIDTH = ARENA_WIDTH;
+export const LOG_DISPLAY_HEIGHT = 5;
 
 
 export const GAME_DISPLAY_OPTIONS = {
@@ -16,7 +20,7 @@ export const GAME_DISPLAY_OPTIONS = {
 };
 
 export const LOG_DISPLAY_OPTIONS = {
-    width: ARENA_WIDTH,
-    height: 12, // canvas height and width
+    width: LOG_DISPLAY_WIDTH,
+    height: LOG_DISPLAY_HEIGHT, // canvas height and width
     fontSize: 24, // canvas fontsize6
 };

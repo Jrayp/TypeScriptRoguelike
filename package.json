@@ -10,6 +10,7 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
+    "@types/collections": "^5.1.2",
     "@types/node": "^16.6.2"
   },
   "scripts": {

@@ -4,7 +4,7 @@
         "module": "CommonJS",
         "noImplicitReturns": true,
         "noImplicitThis": true,
-        "noUnusedLocals": true,
+        // "noUnusedLocals": true,
         "preserveConstEnums": true,
         "removeComments": true,
         "sourceMap": true,

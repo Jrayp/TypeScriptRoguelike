@@ -1,9 +1,9 @@
-import LogDisplay from "../displays/LogDisplay";
+import Log from "./../Log";
 import Actor from "./_Actor";
 
 export default class Player extends Actor {
 
-    glyph = '@';
+    glyph = '\u263B';
     fgColor = 'yellow'
     bgColor = null;
 
@@ -11,7 +11,7 @@ export default class Player extends Actor {
         if (super.move(newPos))
             return true;
         else {
-            LogDisplay.log("Ouch! You ran into a wall!")
+            Log.Write("Ouch! You ran into a wall!")
             return false
         }
     }
