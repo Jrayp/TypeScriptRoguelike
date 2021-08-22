@@ -1,7 +1,6 @@
-import { Display } from 'rot-js'
+import { Display } from 'rot-js';
+import C from '../C';
 import Board from './../Board';
-import C from '../C'
-import Actor from 'src/actors/_Actor';
 
 
 export default class BoardDisplay extends Display {

@@ -4,7 +4,7 @@ import Board from '../Board';
 import G from '../G'
 
 
-export default abstract class Actor implements BoardDrawable {
+export default abstract class _Actor implements BoardDrawable {
 
     glyph: string;
     fgColor: string | null;
@@ -19,9 +19,9 @@ export default abstract class Actor implements BoardDrawable {
         return Board.convert1Dto2D(pos!);
     }
 
-    draw(gameDisplay: BoardDisplay): void {
+    draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        gameDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, null);
+        boardDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, null);
     }
 
     move(newPos: number) {

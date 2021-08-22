@@ -87,7 +87,7 @@ G.Board = new Board();
 
 let playerPos = -1;
 for (let kvp of G.Board.tileLayer.iterator()) {
-  if (kvp[1].passable) {
+  if (kvp[1].name === "Floor") {
     playerPos = kvp[0];
     break;
   }
@@ -101,15 +101,3 @@ setupInputHandlers(G.BoardDisplay);
 G.Log.write("Welcome to TypeScript Roguelike!");
 
 draw();
-
-
-
-
-// print("Hello and welcome, adventurer, to yet another dungeon!", 'welcome');
-// const inventoryOverlayUse = createInventoryOverlay('use');
-// const inventoryOverlayDrop = createInventoryOverlay('drop');
-// const targetingOverlay = createTargetingOverlay();
-// const upgradeOverlay = createUpgradeOverlay();
-// const characterOverlay = createCharacterOverlay();
-// setupInputHandlers(display);
-// draw();

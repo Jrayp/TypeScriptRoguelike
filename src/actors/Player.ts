@@ -1,8 +1,8 @@
 import G from "./../G";
 import Log from "./../Log";
-import Actor from "./_Actor";
+import _Actor from "./_Actor";
 
-export default class Player extends Actor {
+export default class Player extends _Actor {
 
     glyph = '\u263B';
     fgColor = 'yellow'

@@ -9,6 +9,6 @@ export default interface BoardDrawable {
     getPosition(): number | undefined;
     getCoords(): [number, number] | undefined;
 
-    draw(gameDisplay: BoardDisplay): void;
+    draw(boardDisplay: BoardDisplay): void;
 
 }

@@ -3,7 +3,7 @@ import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G'
 import Board from '../Board';
 import Named from 'src/interfaces/named';
-import Actor from 'src/actors/_Actor';
+import _Actor from 'src/actors/_Actor';
 
 export abstract class _BoardTile implements Named, BoardDrawable {
 
@@ -28,12 +28,12 @@ export abstract class _BoardTile implements Named, BoardDrawable {
         return Board.convert1Dto2D(pos);
     }
 
-    draw(gameDisplay: BoardDisplay): void {
+    draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        gameDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, this.bgColor);
+        boardDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, this.bgColor);
     }
 
-    onEnter(actor: Actor) {
+    onEnter(actor: _Actor) {
         return true;
     }
 }

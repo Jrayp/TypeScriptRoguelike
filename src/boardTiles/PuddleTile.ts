@@ -1,5 +1,5 @@
 import { Color } from "rot-js";
-import Actor from "src/actors/_Actor";
+import _Actor from "src/actors/_Actor";
 import Log from "./../Log";
 import LogDisplay from "../displays/LogDisplay";
 import { _BoardTile } from "./_BoardTile";
@@ -12,7 +12,7 @@ export class PuddleTile extends _BoardTile {
     bgColor = null;
     passable = true;
 
-    onEnter(actor: Actor) {
+    onEnter(actor: _Actor) {
         G.Log.write("Splash! You step in a puddle...");
         return true;
     }

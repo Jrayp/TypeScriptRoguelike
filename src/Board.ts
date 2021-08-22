@@ -1,5 +1,5 @@
 import { Map, RNG } from 'rot-js';
-import Actor from './actors/_Actor';
+import _Actor from './actors/_Actor';
 import { FloorTile } from './boardTiles/FloorTile';
 import { WallTile } from './boardTiles/WallTile';
 import { PuddleTile } from './boardTiles/PuddleTile';
@@ -8,10 +8,12 @@ import C from './C'
 import BoardDisplay from './displays/BoardDisplay';
 import BoardLayer from './BoardLayer';
 import G from './G';
+import Uniform from 'rot-js/lib/map/uniform';
+import Digger from 'rot-js/lib/map/digger';
 
 export default class Board {
     tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
-    actorLayer: BoardLayer<Actor> = new BoardLayer<Actor>();
+    actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
 
     constructor() {
         this.generate();
@@ -23,23 +25,53 @@ export default class Board {
 
 
     generate() {
-        let map = new Map.Rogue(C.ARENA_WIDTH, C.ARENA_HEIGHT, { cellHeight: RNG.getUniform() * 2 + 1, cellWidth: RNG.getUniform() * 2 + 1 });
-
-        let userCallback = (x: number, y: number, value: number) => {
+        let cavernUserCallback = (x: number, y: number, value: number) => {
             let pos = Board.convert2Dto1D(x, y);
 
             let newTile: _BoardTile;
-            if (value == 0)
-                if (RNG.getUniform() * 10 < 1)
-                    newTile = new PuddleTile();
-                else
-                    newTile = new FloorTile()
+            if (value == 1)
+                newTile = new PuddleTile();
             else
                 newTile = new WallTile();
 
             this.tileLayer.set(pos, newTile);
         }
-        map.create(userCallback);
+
+
+        let cavernMap = new Map.Cellular(C.ARENA_WIDTH, C.ARENA_HEIGHT);
+        cavernMap.randomize(.4);
+        for (var i = 0; i < 3; i++) {
+            cavernMap.create();
+        }
+
+        cavernMap.create(cavernUserCallback);
+
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        let structuredUserCallback = (x: number, y: number, value: number) => {
+            let pos = Board.convert2Dto1D(x, y);
+
+            let newTile: _BoardTile;
+            if (value == 0) {
+                newTile = new FloorTile()
+                this.tileLayer.set(pos, newTile);
+
+            }
+
+        }
+
+        let structuredMap: Digger | Uniform;
+
+        if (RNG.getUniform() < .5)
+            structuredMap = new Map.Uniform(C.ARENA_WIDTH, C.ARENA_HEIGHT, { roomWidth: [3, 7], roomHeight: [3, 7], roomDugPercentage: .1 });
+        else
+            structuredMap = new Map.Digger(C.ARENA_WIDTH, C.ARENA_HEIGHT, { roomWidth: [3, 7], roomHeight: [3, 7], corridorLength: [1, 12] });
+
+        structuredMap.create(structuredUserCallback);
+
+
     }
 
 
