@@ -1,6 +1,6 @@
 import BoardDisplay from './displays/BoardDisplay';
 
-import * as G from './G'
+import G from './G'
 
 import Board from './Board';
 
@@ -25,7 +25,7 @@ function setupInputHandlers(gameDisplay: BoardDisplay) {
 
 
 function draw() {
-  G.CurrentArena.draw(gameDisplay);
+  G.Board.draw(G.BoardDisplay);
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -43,11 +43,15 @@ function handleKeyDown(event: KeyboardEvent) {
 function runAction(action: [string, number, number]) {
   switch (action[0]) {
     case 'move':
-      let currentPos = G.PlayerRef.getCoords();
+      let currentPos = G.Player.getCoords();
       let xx = currentPos[0] + action[1];
       let yy = currentPos[1] + action[2];
       let newPos = Board.convert2Dto1D(xx, yy);
-      G.PlayerRef.move(newPos);
+      G.Player.move(newPos);
+      break;
+    case 'write':
+      G.Log.write("Hello this is a very long piece of text, it should fill up the log lol hahahaha piece of shit");
+      break;
   }
 
   draw();
@@ -63,39 +67,39 @@ function handlePlayerKeys(key: string): [string, number, number] | undefined {
     case 'Numpad1': return ['move', -1, +1];
     case 'Numpad4': return ['move', -1, 0];
     case 'Numpad7': return ['move', -1, -1];
+    case 'KeyA': return ['write', -1, -1];
     default: return undefined;
   }
 }
 
-let logDisplay = new LogDisplay();
-document.body.append(logDisplay.getContainer()!);
+// let logDisplay = new LogDisplay();
+document.body.append(G.LogDisplay.getContainer()!);
 
-let gameDisplay = new BoardDisplay();
-document.body.append(gameDisplay.getContainer()!);
+// let gameDisplay = new BoardDisplay();
+document.body.append(G.BoardDisplay.getContainer()!);
 
 
-var log = new Log(logDisplay);
-Log.Write("sdsdsdsdsd");
+G.Log = new Log();
 
 
 // G.SetLog(logDisplay);
 
-G.SetArena(new Board());
+G.Board = new Board();
 
 let playerPos = -1;
-for (let kvp of G.CurrentArena.tileLayer.iterator()) {
+for (let kvp of G.Board.tileLayer.iterator()) {
   if (kvp[0].passable) {
     playerPos = kvp[1];
     break;
   }
 }
-var p = new Player();
-G.CurrentArena.actorLayer.set(playerPos, p);
-G.SetPlayer(p);
 
-setupInputHandlers(gameDisplay);
+G.Player = new Player();
+G.Board.actorLayer.set(playerPos, G.Player);
 
-Log.Write("Welcome to TypeScript Roguelike!");
+setupInputHandlers(G.BoardDisplay);
+
+G.Log.write("Welcome to TypeScript Roguelike!");
 
 draw();
 

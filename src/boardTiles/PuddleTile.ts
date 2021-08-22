@@ -3,6 +3,7 @@ import Actor from "src/actors/_Actor";
 import Log from "./../Log";
 import LogDisplay from "../displays/LogDisplay";
 import { _BoardTile } from "./_BoardTile";
+import G from "./../G";
 
 export class PuddleTile extends _BoardTile {
     name = 'Water';
@@ -12,7 +13,7 @@ export class PuddleTile extends _BoardTile {
     passable = true;
 
     onEnter(actor: Actor) {
-        Log.Write("Splash! You step in a puddle...");
+        G.Log.write("Splash! You step in a puddle...");
         return true;
     }
 }

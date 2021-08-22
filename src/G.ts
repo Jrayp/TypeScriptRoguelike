@@ -1,22 +1,16 @@
 import Player from "./actors/Player";
 import Board from "./Board";
+import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
+import Log from "./Log";
 
 
-export var CurrentArena: Board;
-export var PlayerRef: Player;
-export var GameLog: LogDisplay;
+export default class G {
 
-export function SetLog(log: LogDisplay) {
-    GameLog = log;
+    static readonly BoardDisplay: BoardDisplay = new BoardDisplay();
+    static readonly LogDisplay: LogDisplay = new LogDisplay();
+
+    static Board: Board;
+    static Log: Log;
+    static Player: Player;
 }
-
-export function SetPlayer(player: Player) {
-    PlayerRef = player;
-}
-
-export function SetArena(arena: Board) {
-    CurrentArena = arena;
-}
-
-

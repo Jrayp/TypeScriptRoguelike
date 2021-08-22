@@ -1,35 +1,35 @@
+import { assert } from "console";
+import { write } from "fs";
+import { Color } from "rot-js";
+import C from "./C";
 import LogDisplay from "./displays/LogDisplay";
+import G from "./G";
 
 
 export default class Log {
-    private static _singleton: Log;
-
-    private logDisplay: LogDisplay;
-
-    // Consider moving backwards to mimic a queue?
     private logList: string[] = [];
     private repeatList: number[] = [];
 
-    static get instance() {
-        return Log._singleton;
+    constructor() {
+        // Hack to prevent 'undefined' showing up in the log display at start of game
+        for (let i = 0; i < C.LOG_DISPLAY_HEIGHT; i++) {
+            this.logList.push("");
+            this.repeatList.push(0);
+        }
     }
 
-    constructor(logDisplay: LogDisplay) {
-        Log._singleton = this;
-        this.logDisplay = logDisplay;
-    }
-
-    static Write(text: string) {
-        let logList = Log.instance.logList;
-        let repeatList = Log.instance.repeatList;
+    write(text: string) {
+        assert(text.length > 0);
+        const logList = this.logList;
+        const repeatList = this.repeatList;
         if (text === logList[logList.length - 1]) {
             repeatList[repeatList.length - 1]++;
         } else {
             logList.push(text);
-            repeatList.push(0);
+            repeatList.push(1);
         }
 
-        LogDisplay.update(logList, repeatList);
+        G.LogDisplay.update(logList, repeatList);
     }
 
 }

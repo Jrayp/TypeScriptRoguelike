@@ -1,6 +1,6 @@
 import BoardDrawable from '../interfaces/BoardDrawable';
 import BoardDisplay from '../displays/BoardDisplay';
-import * as G from '../G'
+import G from '../G'
 import Board from '../Board';
 import Named from 'src/interfaces/named';
 import Actor from 'src/actors/_Actor';
@@ -20,7 +20,7 @@ export abstract class _BoardTile implements Named, BoardDrawable {
 
 
     getPosition() {
-        return G.CurrentArena.tileLayer.getPositionViaElement(this);
+        return G.Board.tileLayer.getPositionViaElement(this);
     }
 
     getCoords(): [number, number] {

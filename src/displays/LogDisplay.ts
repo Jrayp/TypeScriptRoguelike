@@ -1,32 +1,37 @@
 import { Color, Display } from 'rot-js'
 import Log from './../Log';
-import * as C from '../C'
+import C from '../C'
 
 
 export default class LogDisplay extends Display {
 
-    private static _singleton: LogDisplay;
+    private readonly _startColor: [number, number, number] = [255, 255, 255];
+    private readonly _endColor: [number, number, number] = [60, 60, 60];
 
-    static get instance() {
-        return LogDisplay._singleton;
-    }
+    private readonly _colorCache: string[] = [];
 
     constructor() {
         super(C.LOG_DISPLAY_OPTIONS);
-        LogDisplay._singleton = this;
+        this.initColorCache();
     }
 
-    // TODO: Clean up
-    static update(logList: string[], repeatList: number[]) {
-        this.instance.clear();
-        let colors: string;
+    initColorCache() {
+        let interpolatedColor: [number, number, number];
+        let colorString: string;
+        for (let i = 0; i <= C.LOG_DISPLAY_HEIGHT; i++) {
+            interpolatedColor = Color.interpolate(this._startColor, this._endColor, i / C.LOG_DISPLAY_HEIGHT);
+            colorString = "%c{" + Color.toRGB(interpolatedColor) + "}";
+            this._colorCache.push(colorString);
+        }
+    }
+
+    update(logList: string[], repeatList: number[]) {
+        this.clear();
         let repeat: number | string;
         for (let i = 0; i <= C.LOG_DISPLAY_HEIGHT; i++) {
-            let c = Color.interpolate(Color.fromString(Color.toRGB([255, 255, 255])), Color.fromString(Color.toRGB([60, 60, 60])), i / 5);
-            colors = "%c{" + Color.toRGB(c) + "}";
             repeat = repeatList[repeatList.length - i];
-            repeat = repeat > 0 ? ` (${repeat}x)` : "";
-            this.instance.drawText(0, C.LOG_DISPLAY_HEIGHT - i, colors + logList[logList.length - i] + repeat || "");
+            repeat = repeat > 1 ? ` (${repeat}x)` : "";
+            this.drawText(0, C.LOG_DISPLAY_HEIGHT - i, this._colorCache[i] + logList[logList.length - i] + repeat);
         }
     }
 }

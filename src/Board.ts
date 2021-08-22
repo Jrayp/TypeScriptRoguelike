@@ -4,7 +4,7 @@ import { FloorTile } from './boardTiles/FloorTile';
 import { WallTile } from './boardTiles/WallTile';
 import { PuddleTile } from './boardTiles/PuddleTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
-import * as C from './C'
+import C from './C'
 import BoardDisplay from './displays/BoardDisplay';
 import Layer from './Layer';
 

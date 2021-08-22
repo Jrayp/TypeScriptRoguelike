@@ -1,3 +1,4 @@
+import G from "./../G";
 import Log from "./../Log";
 import Actor from "./_Actor";
 
@@ -11,7 +12,7 @@ export default class Player extends Actor {
         if (super.move(newPos))
             return true;
         else {
-            Log.Write("Ouch! You ran into a wall!")
+            G.Log.write("Ouch! You run into a wall!")
             return false
         }
     }
