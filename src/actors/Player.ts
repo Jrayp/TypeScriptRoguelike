@@ -1,3 +1,4 @@
+import Coords from "./../util/Coords";
 import G from "./../G";
 import Log from "./../Log";
 import _Actor from "./_Actor";
@@ -8,7 +9,7 @@ export default class Player extends _Actor {
     fgColor = 'yellow'
     bgColor = null;
 
-    move(newCoords: [number, number, string]) {
+    move(newCoords: Coords) {
         if (super.move(newCoords))
             return true;
         else {

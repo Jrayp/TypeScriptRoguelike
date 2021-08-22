@@ -4,6 +4,7 @@ import G from '../G'
 import Board from '../Board';
 import Named from 'src/interfaces/named';
 import _Actor from 'src/actors/_Actor';
+import Coords from './../util/Coords';
 
 export abstract class _BoardTile implements Named, BoardDrawable {
 
@@ -18,13 +19,13 @@ export abstract class _BoardTile implements Named, BoardDrawable {
     constructor() {
     }
 
-    getCoords(): [number, number, string] {
-        return G.Board.tileLayer.getCoordViaElement(this);
+    getCoords(): Coords {
+        return G.Board.tileLayer.getCoordsViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        boardDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, this.bgColor);
+        boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
 
     onEnter(actor: _Actor) {
