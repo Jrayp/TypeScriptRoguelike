@@ -20,8 +20,8 @@ export default class Board {
         this.generate();
     }
 
-    draw(gameDisplay: BoardDisplay) {
-        G.BoardDisplay.update(this);
+    draw(seenCells : Set<string>) {
+        G.BoardDisplay.update(this, seenCells);
     }
 
 

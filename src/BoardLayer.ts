@@ -27,7 +27,7 @@ export default class BoardLayer<T> {
     }
 
     getElementViaCoords(coords: Coords): T {
-        assert(this.coordsToElement.has(coords.key));
+        assert(this.coordsToElement.has(coords.key), `No element at ${coords.key}`);
         return this.coordsToElement.get(coords.key)!;
     }
 

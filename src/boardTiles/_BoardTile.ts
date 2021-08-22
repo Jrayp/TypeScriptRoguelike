@@ -15,6 +15,7 @@ export abstract class _BoardTile implements Named, BoardDrawable {
     abstract name: string;
 
     abstract passable: boolean;
+    abstract transparent: boolean;
 
     constructor() {
     }

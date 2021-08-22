@@ -1,3 +1,4 @@
+import { FOV } from 'rot-js';
 import Player from './actors/Player';
 import Board from './Board';
 import BoardDisplay from './displays/BoardDisplay';
@@ -24,8 +25,8 @@ function setupInputHandlers(gameDisplay: BoardDisplay) {
 }
 
 
-function draw() {
-  G.Board.draw(G.BoardDisplay);
+function draw(seenCoords: Set<string>) {
+  G.Board.draw(seenCoords);
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -48,11 +49,11 @@ function runAction(action: [string, number, number]) {
       G.Player.move(destPos);
       break;
     case 'write':
-      G.Log.write("Hello this is a very long piece of text, it should fill up the log lol hahahaha piece of shit");
+      G.Log.write("You pressed A.. amazing!");
       break;
   }
 
-  draw();
+  draw(handleFov());
 }
 
 function handlePlayerKeys(key: string): [string, number, number] | undefined {
@@ -99,4 +100,29 @@ setupInputHandlers(G.BoardDisplay);
 
 G.Log.write("Welcome to TypeScript Roguelike!");
 
-draw();
+var fov = new FOV.PreciseShadowcasting(lightPasses);
+
+draw(handleFov());
+
+// TODO: Seen layer??
+function handleFov() {
+  const playerCoords = G.Player.getCoords();
+
+  let seenCells: Set<string> = new Set();
+  fov.compute(playerCoords.x, playerCoords.y, 10, function (x: number, y: number, r: number, visibility: number) {
+    seenCells.add(new Coords(x, y).key);
+  });
+
+  return seenCells;
+}
+
+
+/* input callback */
+function lightPasses(x: number, y: number) {
+  let coords = new Coords(x, y);
+  if (!coords.withinBounds()) return false;
+  let tile = G.Board.tileLayer.getElementViaCoords(coords);
+  return tile.transparent;
+}
+
+

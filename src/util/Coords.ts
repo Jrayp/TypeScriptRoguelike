@@ -17,6 +17,10 @@ export default class Coords {
         return this.x == 0 || this.x == C.ARENA_WIDTH - 1 || this.y == 0 || this.y == C.ARENA_HEIGHT - 1;
     }
 
+    withinBounds() {
+        return this.x >= 0 && this.x < C.ARENA_WIDTH && this.y >= 0 && this.y < C.ARENA_HEIGHT;
+    }
+
     ///////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////
@@ -27,6 +31,10 @@ export default class Coords {
 
     static addCoordsToNumbers(coords: Coords, x: number, y: number) {
         return new Coords(coords.x + x, coords.y + y);
+    }
+
+    static createKey(x: number, y: number) {
+        return x + ',' + y;
     }
 
 }

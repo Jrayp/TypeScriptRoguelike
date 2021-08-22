@@ -7,4 +7,6 @@ export class FloorTile extends _BoardTile {
     fgColor = Color.toRGB([100, 100, 100]);
     bgColor = null;
     passable = true;
+    transparent = true;
+    
 }
