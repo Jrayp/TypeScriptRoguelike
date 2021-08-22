@@ -2,6 +2,7 @@ import BoardDrawable from 'src/interfaces/BoardDrawable';
 import BoardDisplay from 'src/displays/BoardDisplay';
 import Board from '../Board';
 import G from '../G'
+import Coords from './../util/Coords';
 
 
 export default abstract class _Actor implements BoardDrawable {
@@ -10,25 +11,20 @@ export default abstract class _Actor implements BoardDrawable {
     fgColor: string | null;
     bgColor: string | null;
 
-    getPosition() {
-        return G.Board.actorLayer.getPositionViaElement(this);
-    }
-
-    getCoords(): [number, number] {
-        let pos = this.getPosition();
-        return Board.convert1Dto2D(pos!);
+    getCoords(): Coords {
+        return G.Board.actorLayer.getCoordsViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        boardDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, null);
+        boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
-    move(newPos: number) {
-        let destinationTile = G.Board.tileLayer.getElementViaPosition(newPos);
+    move(newCoords: Coords) {
+        let destinationTile = G.Board.tileLayer.getElementViaCoords(newCoords);
 
-        if (G.Board.tileLayer.getElementViaPosition(newPos)?.passable) {
-            G.Board.actorLayer.moveViaElement(this, newPos);
+        if (G.Board.tileLayer.getElementViaCoords(newCoords)?.passable) {
+            G.Board.actorLayer.moveViaElement(this, newCoords);
             destinationTile.onEnter(this)
             return true;
         }

@@ -1,3 +1,4 @@
+import Coords from "./../util/Coords";
 import BoardDisplay from "../displays/BoardDisplay";
 
 export default interface BoardDrawable {
@@ -6,8 +7,7 @@ export default interface BoardDrawable {
     fgColor: string | null;
     bgColor: string | null;
 
-    getPosition(): number | undefined;
-    getCoords(): [number, number] | undefined;
+    getCoords(): Coords | undefined;
 
     draw(boardDisplay: BoardDisplay): void;
 

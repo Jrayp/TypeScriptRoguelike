@@ -10,6 +10,7 @@ import BoardLayer from './BoardLayer';
 import G from './G';
 import Uniform from 'rot-js/lib/map/uniform';
 import Digger from 'rot-js/lib/map/digger';
+import Coords from './util/Coords';
 
 export default class Board {
     tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
@@ -26,15 +27,13 @@ export default class Board {
 
     generate() {
         let cavernUserCallback = (x: number, y: number, value: number) => {
-            let pos = Board.convert2Dto1D(x, y);
-
             let newTile: _BoardTile;
             if (value == 1)
                 newTile = new PuddleTile();
             else
                 newTile = new WallTile();
 
-            this.tileLayer.set(pos, newTile);
+            this.tileLayer.set(new Coords(x, y), newTile);
         }
 
 
@@ -51,16 +50,15 @@ export default class Board {
         ////////////////////////////////////////////////////////////////////////
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
-            let pos = Board.convert2Dto1D(x, y);
-
             let newTile: _BoardTile;
             if (value == 0) {
                 newTile = new FloorTile()
-                this.tileLayer.set(pos, newTile);
-
+                this.tileLayer.replace(new Coords(x, y), newTile);
             }
 
         }
+
+
 
         let structuredMap: Digger | Uniform;
 
@@ -79,19 +77,17 @@ export default class Board {
     // Static
     ///////////////////////////////////////////////////////
 
-    static convert1Dto2D(p: number): [number, number] {
+    // static convert1Dto2D(p: number): [number, number] {
 
-        let x = p % C.ARENA_WIDTH;
-        let y = Math.trunc(p / C.ARENA_WIDTH);
-        return [x, y];
-    }
+    //     let x = p % C.ARENA_WIDTH;
+    //     let y = Math.trunc(p / C.ARENA_WIDTH);
+    //     return [x, y];
+    // }
 
-    static convert2Dto1D(x: number, y: number) {
-        return x + C.ARENA_WIDTH * y;
+    // static convert2Dto1D(x: number, y: number) {
+    //     return x + C.ARENA_WIDTH * y;
 
-    }
+    // }
 
-    static isEdge(x: number, y: number) {
-        return x == 0 || x == C.ARENA_WIDTH - 1 || y == 0 || y == C.ARENA_HEIGHT - 1;
-    }
+
 }

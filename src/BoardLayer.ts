@@ -1,69 +1,70 @@
 import { assert } from "console";
+import Coords from "./util/Coords";
 
 export default class BoardLayer<T> {
 
-    elementToPosition: Map<T, number> = new Map();
-    positionToElement: Map<number, T> = new Map();
+    elementToCoords: Map<T, Coords> = new Map();
+    coordsToElement: Map<string, T> = new Map();
 
-    set(position: number, element: T) {
-        assert(this.positionToElement.has(position) === false);
-        assert(this.elementToPosition.has(element) === false);
+    set(coords: Coords, element: T) {
+        assert(this.coordsToElement.has(coords.key) === false);
+        assert(this.elementToCoords.has(element) === false);
+        this.coordsToElement.set(coords.key, element);
+        this.elementToCoords.set(element, coords);
+    }
 
-        this.positionToElement.set(position, element);
-        this.elementToPosition.set(element, position);
+    replace(coords: Coords, element: T) {
+        this.removeViaCoords(coords);
+        this.set(coords, element);
     }
 
     hasElement(element: T) {
-        return this.elementToPosition.has(element);
+        return this.elementToCoords.has(element);
     }
 
-    hasPosition(position: number) {
-        return this.positionToElement.has(position);
+    hasCoords(coords: Coords) {
+        return this.coordsToElement.has(coords.key);
     }
 
-    getElementViaPosition(position: number): T {
-        assert(this.positionToElement.has(position));
-        return this.positionToElement.get(position)!;
+    getElementViaCoords(coords: Coords): T {
+        assert(this.coordsToElement.has(coords.key));
+        return this.coordsToElement.get(coords.key)!;
     }
 
-    getPositionViaElement(element: T): number {
-        assert(this.elementToPosition.has(element));
-        return this.elementToPosition.get(element)!;
+    getCoordsViaElement(element: T) {
+        assert(this.elementToCoords.has(element));
+        return this.elementToCoords.get(element)!;
     }
 
     removeViaElement(element: T) {
-        assert(this.elementToPosition.has(element));
-
-        let position = this.elementToPosition.get(element);
-        this.elementToPosition.delete(element);
-        this.positionToElement.delete(position!);
+        const coords = this.elementToCoords.get(element)!;
+        this.elementToCoords.delete(element);
+        this.coordsToElement.delete(coords.key);
     }
 
-    removeViaPosition(position: number) {
-        assert(this.positionToElement.has(position));
-
-        let element = this.positionToElement.get(position);
-        this.positionToElement.delete(position);
-        this.elementToPosition.delete(element!);
+    removeViaCoords(coords: Coords) {
+        let element = this.coordsToElement.get(coords.key)!;
+        this.coordsToElement.delete(coords.key);
+        this.elementToCoords.delete(element);
     }
 
-    moveViaPosition(currentPosition: number, newPosition: number) {
-        assert(this.positionToElement.has(currentPosition));
-        assert(this.positionToElement.has(newPosition) === false);
-        let element = this.getElementViaPosition(newPosition);
-        this.removeViaPosition(currentPosition);
-        this.set(newPosition, element!);
+    moveViaElement(element: T, destCoord: Coords) {
+        assert(this.elementToCoords.has(element));
+        assert(this.coordsToElement.has(destCoord.key) === false);
+        this.removeViaElement(element)!;
+        this.set(destCoord, element);
     }
 
-    moveViaElement(element: T, newPosition: number) {
-        assert(this.elementToPosition.has(element));
-        assert(this.positionToElement.has(newPosition) === false);
-        this.removeViaElement(element);
-        this.set(newPosition, element!);
+    moveViaCoords(currentCoord: Coords, destCoord: Coords) {
+        assert(this.coordsToElement.has(currentCoord.key));
+        assert(this.coordsToElement.has(destCoord.key) === false);
+        let element = this.coordsToElement.get(currentCoord.key)!;
+        this.removeViaCoords(currentCoord);
+        this.set(destCoord, element);
     }
 
     iterator() {
-        return [...this.positionToElement];
+        return [...this.elementToCoords];
     }
 }
 

@@ -3,6 +3,7 @@ import Board from './Board';
 import BoardDisplay from './displays/BoardDisplay';
 import G from './G';
 import Log from './Log';
+import Coords from './util/Coords';
 
 
 
@@ -43,10 +44,8 @@ function runAction(action: [string, number, number]) {
   switch (action[0]) {
     case 'move':
       let currentPos = G.Player.getCoords();
-      let xx = currentPos[0] + action[1];
-      let yy = currentPos[1] + action[2];
-      let newPos = Board.convert2Dto1D(xx, yy);
-      G.Player.move(newPos);
+      let destPos = Coords.addCoordsToNumbers(currentPos, action[1], action[2]);
+      G.Player.move(destPos);
       break;
     case 'write':
       G.Log.write("Hello this is a very long piece of text, it should fill up the log lol hahahaha piece of shit");
@@ -85,10 +84,10 @@ G.Log = new Log();
 
 G.Board = new Board();
 
-let playerPos = -1;
+let playerPos: Coords = new Coords(-1, -1);
 for (let kvp of G.Board.tileLayer.iterator()) {
-  if (kvp[1].name === "Floor") {
-    playerPos = kvp[0];
+  if (kvp[0].name === "Floor") {
+    playerPos = kvp[1];
     break;
   }
 }
