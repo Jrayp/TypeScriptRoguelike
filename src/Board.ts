@@ -21,7 +21,7 @@ export default class Board {
     }
 
     draw(seenCells : Set<string>) {
-        G.BoardDisplay.update(this, seenCells);
+        G.boardDisplay.update(this, seenCells);
     }
 
 
@@ -76,18 +76,14 @@ export default class Board {
     ///////////////////////////////////////////////////////
     // Static
     ///////////////////////////////////////////////////////
+    
+    coordsOnEdge(coords: Coords) {
+        return coords.x == 0 || coords.x == C.ARENA_WIDTH - 1 || coords.y == 0 || coords.y == C.ARENA_HEIGHT - 1;
+    }
 
-    // static convert1Dto2D(p: number): [number, number] {
-
-    //     let x = p % C.ARENA_WIDTH;
-    //     let y = Math.trunc(p / C.ARENA_WIDTH);
-    //     return [x, y];
-    // }
-
-    // static convert2Dto1D(x: number, y: number) {
-    //     return x + C.ARENA_WIDTH * y;
-
-    // }
+    coordsWithinBounds(coords: Coords) {
+        return coords.x >= 0 && coords.x < C.ARENA_WIDTH && coords.y >= 0 && coords.y < C.ARENA_HEIGHT;
+    }
 
 
 }

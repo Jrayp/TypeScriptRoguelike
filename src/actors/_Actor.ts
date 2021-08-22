@@ -5,6 +5,7 @@ import G from '../G'
 import Coords from './../util/Coords';
 
 
+
 export default abstract class _Actor implements BoardDrawable {
 
     glyph: string;
@@ -12,7 +13,7 @@ export default abstract class _Actor implements BoardDrawable {
     bgColor: string | null;
 
     getCoords(): Coords {
-        return G.Board.actorLayer.getCoordsViaElement(this);
+        return G.board.actorLayer.getCoordsViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
@@ -21,10 +22,10 @@ export default abstract class _Actor implements BoardDrawable {
     }
 
     move(newCoords: Coords) {
-        let destinationTile = G.Board.tileLayer.getElementViaCoords(newCoords);
+        let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 
-        if (G.Board.tileLayer.getElementViaCoords(newCoords)?.passable) {
-            G.Board.actorLayer.moveViaElement(this, newCoords);
+        if (G.board.tileLayer.getElementViaCoords(newCoords)?.passable) {
+            G.board.actorLayer.moveViaElement(this, newCoords);
             destinationTile.onEnter(this)
             return true;
         }
@@ -32,6 +33,7 @@ export default abstract class _Actor implements BoardDrawable {
             return false;
         }
     }
+
 
 
 

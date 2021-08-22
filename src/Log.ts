@@ -26,7 +26,7 @@ export default class Log {
             repeatList.push(1);
         }
 
-        G.LogDisplay.update(logList, repeatList);
+        G.logDisplay.update(logList, repeatList);
     }
 
 }

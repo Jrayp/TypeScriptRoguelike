@@ -21,7 +21,7 @@ export abstract class _BoardTile implements Named, BoardDrawable {
     }
 
     getCoords(): Coords {
-        return G.Board.tileLayer.getCoordsViaElement(this);
+        return G.board.tileLayer.getCoordsViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
