@@ -25,42 +25,43 @@ export default class Board {
 
 
     generate() {
-        let cavernUserCallback = (x: number, y: number, value: number) => {
-            let pos = Board.convert2Dto1D(x, y);
+        // let cavernUserCallback = (x: number, y: number, value: number) => {
+        //     let coord = Board.makeCoord(x, y);
+        //     let newTile: _BoardTile;
+        //     if (value == 1)
+        //         newTile = new PuddleTile();
+        //     else
+        //         newTile = new WallTile();
 
-            let newTile: _BoardTile;
-            if (value == 1)
-                newTile = new PuddleTile();
-            else
-                newTile = new WallTile();
-
-            this.tileLayer.set(pos, newTile);
-        }
+        //     this.tileLayer.set(coord, newTile);
+        // }
 
 
-        let cavernMap = new Map.Cellular(C.ARENA_WIDTH, C.ARENA_HEIGHT);
-        cavernMap.randomize(.4);
-        for (var i = 0; i < 3; i++) {
-            cavernMap.create();
-        }
+        // let cavernMap = new Map.Cellular(C.ARENA_WIDTH, C.ARENA_HEIGHT);
+        // cavernMap.randomize(.4);
+        // for (var i = 0; i < 3; i++) {
+        //     cavernMap.create();
+        // }
 
-        cavernMap.create(cavernUserCallback);
+        // cavernMap.create(cavernUserCallback);
 
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
-            let pos = Board.convert2Dto1D(x, y);
-
+            let coord = Board.makeCoord(x, y);
             let newTile: _BoardTile;
             if (value == 0) {
                 newTile = new FloorTile()
-                this.tileLayer.set(pos, newTile);
-
             }
-
+            else
+                newTile = new WallTile();
+            // TODO: Causes assertion errors if we overwrite cavern tiles
+            this.tileLayer.set(coord, newTile);
         }
+
+
 
         let structuredMap: Digger | Uniform;
 
@@ -89,6 +90,10 @@ export default class Board {
     static convert2Dto1D(x: number, y: number) {
         return x + C.ARENA_WIDTH * y;
 
+    }
+
+    static makeCoord(x: number, y: number): [number, number, string] {
+        return [x, y, x + ',' + y];
     }
 
     static isEdge(x: number, y: number) {

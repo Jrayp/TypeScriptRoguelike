@@ -6,8 +6,7 @@ export default interface BoardDrawable {
     fgColor: string | null;
     bgColor: string | null;
 
-    getPosition(): number | undefined;
-    getCoords(): [number, number] | undefined;
+    getCoords(): [number, number, string] | undefined;
 
     draw(boardDisplay: BoardDisplay): void;
 

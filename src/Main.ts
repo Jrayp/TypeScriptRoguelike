@@ -45,7 +45,7 @@ function runAction(action: [string, number, number]) {
       let currentPos = G.Player.getCoords();
       let xx = currentPos[0] + action[1];
       let yy = currentPos[1] + action[2];
-      let newPos = Board.convert2Dto1D(xx, yy);
+      let newPos = Board.makeCoord(xx, yy);
       G.Player.move(newPos);
       break;
     case 'write':
@@ -85,10 +85,10 @@ G.Log = new Log();
 
 G.Board = new Board();
 
-let playerPos = -1;
+let playerPos: [number, number, string] = [-1, -1, ""];
 for (let kvp of G.Board.tileLayer.iterator()) {
-  if (kvp[1].name === "Floor") {
-    playerPos = kvp[0];
+  if (kvp[0].name === "Floor") {
+    playerPos = kvp[1];
     break;
   }
 }

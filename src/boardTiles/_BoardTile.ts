@@ -18,14 +18,8 @@ export abstract class _BoardTile implements Named, BoardDrawable {
     constructor() {
     }
 
-
-    getPosition() {
-        return G.Board.tileLayer.getPositionViaElement(this);
-    }
-
-    getCoords(): [number, number] {
-        let pos = this.getPosition();
-        return Board.convert1Dto2D(pos);
+    getCoords(): [number, number, string] {
+        return G.Board.tileLayer.getCoordViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {

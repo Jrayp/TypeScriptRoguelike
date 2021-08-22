@@ -13,13 +13,13 @@ export default class BoardDisplay extends Display {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
 
-        for (let posAndTile of tileLayer.iterator()) {
-            let pos = posAndTile[0];
-            if (actorLayer.hasPosition(pos)) {
-                let actor = actorLayer.getElementViaPosition(pos);
+        for (let tileAndCoords of tileLayer.iterator()) {
+            let coords = tileAndCoords[1];
+            if (actorLayer.hasPosition(coords)) {
+                let actor = actorLayer.getElementViaCoord(coords);
                 actor.draw(this);
             } else {
-                let tile = posAndTile[1];
+                let tile = tileAndCoords[0];
                 tile.draw(this);
             }
         }

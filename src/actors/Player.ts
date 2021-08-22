@@ -8,8 +8,8 @@ export default class Player extends _Actor {
     fgColor = 'yellow'
     bgColor = null;
 
-    move(newPos: number) {
-        if (super.move(newPos))
+    move(newCoords: [number, number, string]) {
+        if (super.move(newCoords))
             return true;
         else {
             G.Log.write("Ouch! You run into a wall!")

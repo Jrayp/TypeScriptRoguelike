@@ -10,13 +10,8 @@ export default abstract class _Actor implements BoardDrawable {
     fgColor: string | null;
     bgColor: string | null;
 
-    getPosition() {
-        return G.Board.actorLayer.getPositionViaElement(this);
-    }
-
-    getCoords(): [number, number] {
-        let pos = this.getPosition();
-        return Board.convert1Dto2D(pos!);
+    getCoords(): [number, number, string] {
+        return G.Board.actorLayer.getCoordViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
@@ -24,11 +19,11 @@ export default abstract class _Actor implements BoardDrawable {
         boardDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, null);
     }
 
-    move(newPos: number) {
-        let destinationTile = G.Board.tileLayer.getElementViaPosition(newPos);
+    move(newCoords: [number, number, string]) {
+        let destinationTile = G.Board.tileLayer.getElementViaCoord(newCoords);
 
-        if (G.Board.tileLayer.getElementViaPosition(newPos)?.passable) {
-            G.Board.actorLayer.moveViaElement(this, newPos);
+        if (G.Board.tileLayer.getElementViaCoord(newCoords)?.passable) {
+            G.Board.actorLayer.moveViaElement(this, newCoords);
             destinationTile.onEnter(this)
             return true;
         }
