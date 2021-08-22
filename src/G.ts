@@ -33,6 +33,9 @@ export default class G {
 
         this.initInputHandlers();
 
+        let playerSeenCoords = G.player.computeFov();
+        G.board.draw(playerSeenCoords);
+
         G.log.write("Welcome to TypeScript Roguelike!");
     }
 
@@ -83,7 +86,7 @@ export default class G {
                 break;
         }
 
-        // let seenCells = handleFov();
-        // draw(handleFov());
+        let playerSeenCoords = G.player.computeFov();
+        G.board.draw(playerSeenCoords);
     }
 }

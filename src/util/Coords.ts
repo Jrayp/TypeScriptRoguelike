@@ -10,16 +10,10 @@ export default class Coords {
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.key = x + ',' + y;
+        this.key = Coords.createKey(x, y);
+
     }
 
-    isEdge() {
-        return this.x == 0 || this.x == C.ARENA_WIDTH - 1 || this.y == 0 || this.y == C.ARENA_HEIGHT - 1;
-    }
-
-    withinBounds() {
-        return this.x >= 0 && this.x < C.ARENA_WIDTH && this.y >= 0 && this.y < C.ARENA_HEIGHT;
-    }
 
     ///////////////////////////////////////////////////////
     // STATIC

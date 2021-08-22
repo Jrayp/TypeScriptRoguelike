@@ -5,6 +5,7 @@ import G from '../G'
 import Coords from './../util/Coords';
 
 
+
 export default abstract class _Actor implements BoardDrawable {
 
     glyph: string;
@@ -32,6 +33,7 @@ export default abstract class _Actor implements BoardDrawable {
             return false;
         }
     }
+
 
 
 
