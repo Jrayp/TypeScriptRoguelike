@@ -9,7 +9,7 @@ export default class C {
     static readonly LOG_DISPLAY_HEIGHT = 5;
 
 
-    static readonly GAME_DISPLAY_OPTIONS = {
+    static readonly BOARD_DISPLAY_OPTIONS = {
         // Configure the display
         bg: "black", // background
         fg: "dimGrey", // foreground

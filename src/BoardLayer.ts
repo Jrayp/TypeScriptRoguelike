@@ -1,6 +1,6 @@
 import { assert } from "console";
 
-export default class Layer<T> {
+export default class BoardLayer<T> {
 
     elementToPosition: Map<T, number> = new Map();
     positionToElement: Map<number, T> = new Map();
@@ -63,7 +63,7 @@ export default class Layer<T> {
     }
 
     iterator() {
-        return [...this.elementToPosition];
+        return [...this.positionToElement];
     }
 }
 

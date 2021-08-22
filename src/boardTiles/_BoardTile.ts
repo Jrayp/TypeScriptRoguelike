@@ -25,12 +25,12 @@ export abstract class _BoardTile implements Named, BoardDrawable {
 
     getCoords(): [number, number] {
         let pos = this.getPosition();
-        return Board.convert1Dto2D(pos!);
+        return Board.convert1Dto2D(pos);
     }
 
     draw(gameDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        gameDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, null);
+        gameDisplay.draw(coords[0], coords[1], this.glyph, this.fgColor, this.bgColor);
     }
 
     onEnter(actor: Actor) {

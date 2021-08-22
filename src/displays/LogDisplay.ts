@@ -28,10 +28,12 @@ export default class LogDisplay extends Display {
     update(logList: string[], repeatList: number[]) {
         this.clear();
         let repeat: number | string;
+        let rowText: string;
         for (let i = 0; i <= C.LOG_DISPLAY_HEIGHT; i++) {
             repeat = repeatList[repeatList.length - i];
             repeat = repeat > 1 ? ` (${repeat}x)` : "";
-            this.drawText(0, C.LOG_DISPLAY_HEIGHT - i, this._colorCache[i] + logList[logList.length - i] + repeat);
+            rowText = this._colorCache[i] + logList[logList.length - i] + repeat;
+            this.drawText(0, C.LOG_DISPLAY_HEIGHT - i, rowText);
         }
     }
 }

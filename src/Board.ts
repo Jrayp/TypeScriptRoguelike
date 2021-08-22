@@ -6,28 +6,19 @@ import { PuddleTile } from './boardTiles/PuddleTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C'
 import BoardDisplay from './displays/BoardDisplay';
-import Layer from './Layer';
+import BoardLayer from './BoardLayer';
+import G from './G';
 
 export default class Board {
-    tileLayer: Layer<_BoardTile> = new Layer<_BoardTile>();
-    actorLayer: Layer<Actor> = new Layer<Actor>();
+    tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
+    actorLayer: BoardLayer<Actor> = new BoardLayer<Actor>();
 
     constructor() {
         this.generate();
     }
 
     draw(gameDisplay: BoardDisplay) {
-        for (let kvp of this.tileLayer.iterator()) {
-            let tile = kvp[0];
-            let pos = kvp[1];
-            let coord = Board.convert1Dto2D(pos);
-            if (this.actorLayer.hasPosition(pos)) {
-                let actor = this.actorLayer.getElementViaPosition(pos);
-                gameDisplay.draw(coord[0], coord[1], actor!.glyph, actor!.fgColor, null);
-            } else {
-                gameDisplay.draw(coord[0], coord[1], tile.glyph, tile.fgColor, tile.bgColor);
-            }
-        }
+        G.BoardDisplay.update(this);
     }
 
 

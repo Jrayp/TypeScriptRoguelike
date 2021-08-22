@@ -1,12 +1,11 @@
-import BoardDisplay from './displays/BoardDisplay';
-
-import G from './G'
-
-import Board from './Board';
-
 import Player from './actors/Player';
-import LogDisplay from './displays/LogDisplay';
+import Board from './Board';
+import BoardDisplay from './displays/BoardDisplay';
+import G from './G';
 import Log from './Log';
+
+
+
 
 
 
@@ -16,7 +15,7 @@ function setupInputHandlers(gameDisplay: BoardDisplay) {
   const instructions = document.getElementById('focus-instructions');
   canvas!.setAttribute('tabindex', "1");
   canvas!.addEventListener('keydown', handleKeyDown);
-  // canvas!.addEventListener('mousemove', handleMousemove);33
+  // canvas!.addEventListener('mousemove',f handleMousemove);
   // canvas!.addEventListener('mouseout', handleMouseout);
   canvas!.addEventListener('blur', () => { instructions!.classList.add('visible'); });
   canvas!.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
@@ -88,8 +87,8 @@ G.Board = new Board();
 
 let playerPos = -1;
 for (let kvp of G.Board.tileLayer.iterator()) {
-  if (kvp[0].passable) {
-    playerPos = kvp[1];
+  if (kvp[1].passable) {
+    playerPos = kvp[0];
     break;
   }
 }
