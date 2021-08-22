@@ -13,7 +13,7 @@ export default class Player extends _Actor {
         if (super.move(newCoords))
             return true;
         else {
-            G.Log.write("Ouch! You run into a wall!")
+            G.log.write("Ouch! You run into a wall!")
             return false
         }
     }

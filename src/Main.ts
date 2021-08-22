@@ -9,96 +9,97 @@ import Coords from './util/Coords';
 
 
 
+G.init();
 
 
-
-function setupInputHandlers(gameDisplay: BoardDisplay) {
-  const canvas = gameDisplay.getContainer();
-  const instructions = document.getElementById('focus-instructions');
-  canvas!.setAttribute('tabindex', "1");
-  canvas!.addEventListener('keydown', handleKeyDown);
-  // canvas!.addEventListener('mousemove',f handleMousemove);
-  // canvas!.addEventListener('mouseout', handleMouseout);
-  canvas!.addEventListener('blur', () => { instructions!.classList.add('visible'); });
-  canvas!.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
-  canvas!.focus();
-}
+// function setupInputHandlers(gameDisplay: BoardDisplay) {
+//   const canvas = gameDisplay.getContainer();
+//   const instructions = document.getElementById('focus-instructions');
+//   canvas!.setAttribute('tabindex', "1");
+//   canvas!.addEventListener('keydown', handleKeyDown);
+//   // canvas!.addEventListener('mousemove',f handleMousemove);
+//   // canvas!.addEventListener('mouseout', handleMouseout);
+//   canvas!.addEventListener('blur', () => { instructions!.classList.add('visible'); });
+//   canvas!.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
+//   canvas!.focus();
+// }
 
 
 function draw(seenCoords: Set<string>) {
-  G.Board.draw(seenCoords);
+  G.board.draw(seenCoords);
 }
 
-function handleKeyDown(event: KeyboardEvent) {
-  if (event.altKey || event.ctrlKey || event.metaKey) return;
-  // let action = currentKeyHandler()(event.key);
-  let action = handlePlayerKeys(event.code);
-  if (action != undefined) {
-    event.preventDefault();
-    runAction(action);
-  }
-}
+// function handleKeyDown(event: KeyboardEvent) {
+//   if (event.altKey || event.ctrlKey || event.metaKey) return;
+//   // let action = currentKeyHandler()(event.key);
+//   let action = handlePlayerKeys(event.code);
+
+//   if (action != undefined) {
+//     event.preventDefault();
+//     runAction(action);
+//   }
+// }
 
 
-// TODO: use enums
-function runAction(action: [string, number, number]) {
-  switch (action[0]) {
-    case 'move':
-      let currentPos = G.Player.getCoords();
-      let destPos = Coords.addCoordsToNumbers(currentPos, action[1], action[2]);
-      G.Player.move(destPos);
-      break;
-    case 'write':
-      G.Log.write("You pressed A.. amazing!");
-      break;
-  }
+// // TODO: use enums
+// function runAction(action: [string, number, number]) {
+//   switch (action[0]) {
+//     case 'move':
+//       let currentPos = G.player.getCoords();
+//       let destPos = Coords.addCoordsToNumbers(currentPos, action[1], action[2]);
+//       G.player.move(destPos);
+//       break;
+//     case 'write':
+//       G.log.write("You pressed A.. amazing!");
+//       break;
+//   }
 
-  draw(handleFov());
-}
+//   draw(handleFov());
+// }
 
-function handlePlayerKeys(key: string): [string, number, number] | undefined {
-  switch (key) {
-    case 'Numpad8': return ['move', 0, -1];
-    case 'Numpad9': return ['move', +1, -1];
-    case 'Numpad6': return ['move', +1, 0];
-    case 'Numpad3': return ['move', +1, +1];
-    case 'Numpad2': return ['move', 0, +1];
-    case 'Numpad1': return ['move', -1, +1];
-    case 'Numpad4': return ['move', -1, 0];
-    case 'Numpad7': return ['move', -1, -1];
-    case 'KeyA': return ['write', -1, -1];
-    default: return undefined;
-  }
-}
+// function handlePlayerKeys(key: string): [string, number, number] | undefined {
+//   switch (key) {
+//     case 'Numpad8': return ['move', 0, -1];
+//     case 'Numpad9': return ['move', +1, -1];
+//     case 'Numpad6': return ['move', +1, 0];
+//     case 'Numpad3': return ['move', +1, +1];
+//     case 'Numpad2': return ['move', 0, +1];
+//     case 'Numpad1': return ['move', -1, +1];
+//     case 'Numpad4': return ['move', -1, 0];
+//     case 'Numpad7': return ['move', -1, -1];
+//     case 'KeyA': return ['write', -1, -1];
+//     default: return undefined;
+//   }
+// }
 
-// let logDisplay = new LogDisplay();
-document.body.append(G.LogDisplay.getContainer()!);
+// // let logDisplay = new LogDisplay();
+// document.body.append(G.LogDisplay.getContainer()!);
 
-// let gameDisplay = new BoardDisplay();
-document.body.append(G.BoardDisplay.getContainer()!);
+// // let gameDisplay = new BoardDisplay();
+// document.body.append(G.boardDisplay.getContainer()!);
 
 
-G.Log = new Log();
+// G.log = new Log();
 
 
 // G.SetLog(logDisplay);
 
-G.Board = new Board();
+// G.board = new Board();
 
-let playerPos: Coords = new Coords(-1, -1);
-for (let kvp of G.Board.tileLayer.iterator()) {
-  if (kvp[0].name === "Floor") {
-    playerPos = kvp[1];
-    break;
-  }
-}
+// let playerPos: Coords = new Coords(-1, -1);
+// for (let kvp of G.board.tileLayer.iterator()) {
+//   if (kvp[0].name === "Floor") {
+//     playerPos = kvp[1];
+//     break;
+//   }
+// }
 
-G.Player = new Player();
-G.Board.actorLayer.set(playerPos, G.Player);
+// G.player = new Player();
+// G.board.actorLayer.set(playerPos, G.player);
 
-setupInputHandlers(G.BoardDisplay);
+// setupInputHandlers(G.boardDisplay);
 
-G.Log.write("Welcome to TypeScript Roguelike!");
+// G.log.write("Welcome to TypeScript Roguelike!");
 
 var fov = new FOV.PreciseShadowcasting(lightPasses);
 
@@ -106,7 +107,7 @@ draw(handleFov());
 
 // TODO: Seen layer??
 function handleFov() {
-  const playerCoords = G.Player.getCoords();
+  const playerCoords = G.player.getCoords();
 
   let seenCells: Set<string> = new Set();
   fov.compute(playerCoords.x, playerCoords.y, 10, function (x: number, y: number, r: number, visibility: number) {
@@ -121,7 +122,7 @@ function handleFov() {
 function lightPasses(x: number, y: number) {
   let coords = new Coords(x, y);
   if (!coords.withinBounds()) return false;
-  let tile = G.Board.tileLayer.getElementViaCoords(coords);
+  let tile = G.board.tileLayer.getElementViaCoords(coords);
   return tile.transparent;
 }
 

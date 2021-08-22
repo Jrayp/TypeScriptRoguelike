@@ -21,7 +21,7 @@ export default class Board {
     }
 
     draw(seenCells : Set<string>) {
-        G.BoardDisplay.update(this, seenCells);
+        G.boardDisplay.update(this, seenCells);
     }
 
 

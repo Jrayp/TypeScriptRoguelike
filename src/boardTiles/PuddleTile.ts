@@ -15,9 +15,9 @@ export class PuddleTile extends _BoardTile {
 
     onEnter(actor: _Actor) {
         if (RNG.getUniform() < .98)
-            G.Log.write("Splash! You wade through some water...");
+            G.log.write("Splash! You wade through some water...");
         else
-            G.Log.write("SOMETHING GRABS YOUR LEG!! And lets go.. for now.");
+            G.log.write("SOMETHING GRABS YOUR LEG!! And lets go.. for now.");
         return true;
     }
 }
