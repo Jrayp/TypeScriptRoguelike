@@ -7,4 +7,5 @@ export class WallTile extends _BoardTile {
     fgColor = null;
     bgColor = Color.toRGB([25, 50, 75]);
     passable = false;
+    transparent = false;
 }

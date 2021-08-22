@@ -1,4 +1,4 @@
-import { Color } from "rot-js";
+import { Color, RNG } from "rot-js";
 import _Actor from "src/actors/_Actor";
 import Log from "./../Log";
 import LogDisplay from "../displays/LogDisplay";
@@ -8,12 +8,16 @@ import G from "./../G";
 export class PuddleTile extends _BoardTile {
     name = 'Water';
     glyph = '~';
-    fgColor = Color.toRGB([25, 100, 225]);
+    fgColor = Color.toRGB([20, 75, 210]);
     bgColor = null;
     passable = true;
+    transparent = true;
 
     onEnter(actor: _Actor) {
-        G.Log.write("Splash! You step in a puddle...");
+        if (RNG.getUniform() < .98)
+            G.Log.write("Splash! You wade through some water...");
+        else
+            G.Log.write("SOMETHING GRABS YOUR LEG!! And lets go.. for now.");
         return true;
     }
 }
