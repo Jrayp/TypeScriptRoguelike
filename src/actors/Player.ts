@@ -26,7 +26,7 @@ export default class Player extends _Actor {
         const seenCells: Set<string> = new Set();
 
         function fovCallback(x: number, y: number, r: number, visibility: number) {
-            seenCells.add(Coords.createKey(x, y));
+            seenCells.add(Coords.makeKey(x, y));
         }
 
         this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, fovCallback);
@@ -35,11 +35,11 @@ export default class Player extends _Actor {
     }
 
     private lightPasses(x: number, y: number) {
-        const coords = new Coords(x, y);
-        if (!G.board.coordsWithinBounds(coords))
+        const key = Coords.makeKey(x, y);
+        if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaCoords(coords).transparent;
+            return G.board.tileLayer.getElementViaKey(key).transparent;
     }
 
 

@@ -1,9 +1,8 @@
-import BoardDrawable from '../interfaces/BoardDrawable';
-import BoardDisplay from '../displays/BoardDisplay';
-import G from '../G'
-import Board from '../Board';
-import Named from 'src/interfaces/named';
 import _Actor from 'src/actors/_Actor';
+import Named from 'src/interfaces/named';
+import BoardDisplay from '../displays/BoardDisplay';
+import G from '../G';
+import BoardDrawable from '../interfaces/BoardDrawable';
 import Coords from './../util/Coords';
 
 export abstract class _BoardTile implements Named, BoardDrawable {
@@ -15,7 +14,8 @@ export abstract class _BoardTile implements Named, BoardDrawable {
     abstract name: string;
 
     abstract passable: boolean;
-    abstract transparent: boolean;
+    abstract transparent: boolean;  // Consider making this applicable to actors 
+    //as well (or anything really... really need to use ECS)
 
     constructor() {
     }

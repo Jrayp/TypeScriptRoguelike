@@ -1,5 +1,4 @@
 import { Color, Display } from 'rot-js';
-import Coords from './../util/Coords';
 import C from '../C';
 import Board from './../Board';
 
