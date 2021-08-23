@@ -3,6 +3,7 @@ import BoardDisplay from "../displays/BoardDisplay";
 
 export default interface BoardDrawable {
 
+    // TODO: Consider using the tuple for colors
     glyph: string;
     fgColor: string | null;
     bgColor: string | null;

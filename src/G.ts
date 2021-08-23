@@ -1,7 +1,9 @@
+import { RNG } from "rot-js";
 import Player from "./actors/Player";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
+import Light from "./light";
 import Log from "./Log";
 import Coords from "./util/Coords";
 
@@ -31,7 +33,21 @@ export default class G {
             }
         }
 
+        let playerCoords = this.player.getCoords();
+        G.playerLight = new Light(playerCoords.x, playerCoords.y);
+        G.playerLight.update();
+
+        for (let tileAndCoords of G.board.tileLayer.iterator()) {
+            if (tileAndCoords[0].name === "Floor" && RNG.getUniform() < .03) {
+                let light = new Light(tileAndCoords[1].x, tileAndCoords[1].y);
+                light.update();
+                G.lights.push(light);
+            }
+        }
+
         this.initInputHandlers();
+
+
 
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords);
@@ -44,8 +60,8 @@ export default class G {
         const instructions = document.getElementById('focus-instructions');
         canvas.setAttribute('tabindex', "1");
         canvas.addEventListener('keydown', G.handleKeyDown);
-        canvas.addEventListener('blur', () => { instructions!.classList.add('visible'); });
-        canvas.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
+        // canvas.addEventListener('blur', () => { instructions!.classList.add('visible'); });
+        // canvas.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
         canvas.focus();
     }
 
@@ -70,9 +86,13 @@ export default class G {
             case 'Numpad4': return ['move', -1, 0];
             case 'Numpad7': return ['move', -1, -1];
             case 'KeyA': return ['write', 0, 0];
+            case 'KeyL': return ['light', 0, 0];
             default: return undefined;
         }
     }
+
+    static lights: Light[] = [];
+    static playerLight: Light | null;
 
     private static performPlayerAction(action: [string, number, number]) {
         switch (action[0]) {
@@ -84,6 +104,28 @@ export default class G {
             case 'write':
                 G.log.write("You pressed A.. amazing!");
                 break;
+            case 'light':
+                if (this.playerLight == null) {
+                    G.log.write("You cast a light spell!");
+                    let playerCoords = this.player.getCoords();
+                    G.playerLight = new Light(playerCoords.x, playerCoords.y);
+                }
+                else {
+                    G.log.write("You wave your hand over your light source...");
+                    this.playerLight = null;
+                }
+                break;
+        }
+
+        G.board.lightLayer.clear();
+        for (let light of G.lights) {
+            light.update();
+        }
+
+        if (this.playerLight != null) {
+            let playerCoords = this.player.getCoords();
+            G.playerLight!.move(playerCoords.x, playerCoords.y);
+            G.playerLight!.update();
         }
 
         let playerSeenCoords = G.player.computeFov();

@@ -10,7 +10,7 @@ export default class Coords {
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.key = Coords.createKey(x, y);
+        this.key = Coords.makeKey(x, y);
 
     }
 
@@ -27,7 +27,7 @@ export default class Coords {
         return new Coords(coords.x + x, coords.y + y);
     }
 
-    static createKey(x: number, y: number) {
+    static makeKey(x: number, y: number) {
         return x + ',' + y;
     }
 

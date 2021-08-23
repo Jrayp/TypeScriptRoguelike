@@ -1,4 +1,4 @@
-import { FOV } from 'rot-js';
+import { FOV, RNG } from 'rot-js';
 import G from "./../G";
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
@@ -6,15 +6,21 @@ import _Actor from "./_Actor";
 export default class Player extends _Actor {
 
     glyph = '\u263B';
-    fgColor = 'yellow'
+    fgColor = 'orange'
     bgColor = null;
 
     sightRange = 10;
     private _fov = new FOV.PreciseShadowcasting(this.lightPasses);
 
+    currentlySeenCoordKeys = new Set<string>();
+
     move(newCoords: Coords) {
-        if (super.move(newCoords))
+        if (super.move(newCoords)) {
+            if (G.board.lightLayer.getElementViaCoords(newCoords) == null && RNG.getUniform() < .25) {
+                G.log.write("It's very dark here...");
+            }
             return true;
+        }
         else {
             G.log.write("Ouch! You run into a wall!")
             return false
@@ -23,23 +29,24 @@ export default class Player extends _Actor {
 
     computeFov() {
         const actorCoords = this.getCoords();
-        const seenCells: Set<string> = new Set();
+        this.currentlySeenCoordKeys.clear();
 
-        function fovCallback(x: number, y: number, r: number, visibility: number) {
-            seenCells.add(Coords.createKey(x, y));
-        }
+        this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, this.fovCallback);
 
-        this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, fovCallback);
+        return this.currentlySeenCoordKeys;
+    }
 
-        return seenCells;
+    // Using arrow notation to bind 'this' to the callback
+    private fovCallback = (x: number, y: number, r: number, visibility: number) => {
+        this.currentlySeenCoordKeys.add(Coords.makeKey(x, y));
     }
 
     private lightPasses(x: number, y: number) {
-        const coords = new Coords(x, y);
-        if (!G.board.coordsWithinBounds(coords))
+        const key = Coords.makeKey(x, y);
+        if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaCoords(coords).transparent;
+            return G.board.tileLayer.getElementViaKey(key).transparent;
     }
 
 
