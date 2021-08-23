@@ -19,7 +19,8 @@ export default class Light {
     private _lighting = new Lighting(this.reflectivity, { range: this.intensity, passes: 2 })
         .setFOV(this._lightCone);
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, color: Color = [155, 155, 155]) {
+        this.color = color;
         this._lighting.setLight(x, y, this.color);
     }
 

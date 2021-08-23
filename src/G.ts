@@ -38,8 +38,8 @@ export default class G {
         G.playerLight.update();
 
         for (let tileAndCoords of G.board.tileLayer.iterator()) {
-            if (tileAndCoords[0].name === "Floor" && RNG.getUniform() < .03) {
-                let light = new Light(tileAndCoords[1].x, tileAndCoords[1].y);
+            if (tileAndCoords[0].name === "Floor" && RNG.getUniform() < .02) {
+                let light = new Light(tileAndCoords[1].x, tileAndCoords[1].y, [225,125,60]);
                 light.update();
                 G.lights.push(light);
             }
