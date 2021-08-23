@@ -13,13 +13,18 @@ export default class Light {
     static ambientLight: Color = [0, 0, 0];
 
     intensity = 8;
-    color: Color = [255, 255, 255];
+    color: Color = [155, 155, 155];
 
-    private _lightCone = new FOV.PreciseShadowcasting(this.lightPasses, { topology: 4 });
+    private _lightCone = new FOV.PreciseShadowcasting(this.lightPasses, { topology: 8 });
     private _lighting = new Lighting(this.reflectivity, { range: this.intensity, passes: 2 })
         .setFOV(this._lightCone);
 
     constructor(x: number, y: number) {
+        this._lighting.setLight(x, y, this.color);
+    }
+
+    move(x: number, y: number) {
+        this._lighting.clearLights();
         this._lighting.setLight(x, y, this.color);
     }
 

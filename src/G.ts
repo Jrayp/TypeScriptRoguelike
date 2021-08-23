@@ -33,10 +33,15 @@ export default class G {
             }
         }
 
+        let playerCoords = this.player.getCoords();
+        G.playerLight = new Light(playerCoords.x, playerCoords.y);
+        G.playerLight.update();
+
         for (let tileAndCoords of G.board.tileLayer.iterator()) {
             if (tileAndCoords[0].name === "Floor" && RNG.getUniform() < .03) {
                 let light = new Light(tileAndCoords[1].x, tileAndCoords[1].y);
                 light.update();
+                G.lights.push(light);
             }
         }
 
@@ -86,6 +91,9 @@ export default class G {
         }
     }
 
+    static lights: Light[] = [];
+    static playerLight: Light | null;
+
     private static performPlayerAction(action: [string, number, number]) {
         switch (action[0]) {
             case 'move':
@@ -97,11 +105,27 @@ export default class G {
                 G.log.write("You pressed A.. amazing!");
                 break;
             case 'light':
-                G.log.write("You cast a light spell!");
-                let playerCoords = this.player.getCoords();
-                let l = new Light(playerCoords.x, playerCoords.y);
-                l.update();
+                if (this.playerLight == null) {
+                    G.log.write("You cast a light spell!");
+                    let playerCoords = this.player.getCoords();
+                    G.playerLight = new Light(playerCoords.x, playerCoords.y);
+                }
+                else {
+                    G.log.write("You wave your hand over your light source...");
+                    this.playerLight = null;
+                }
                 break;
+        }
+
+        G.board.lightLayer.clear();
+        for (let light of G.lights) {
+            light.update();
+        }
+
+        if (this.playerLight != null) {
+            let playerCoords = this.player.getCoords();
+            G.playerLight!.move(playerCoords.x, playerCoords.y);
+            G.playerLight!.update();
         }
 
         let playerSeenCoords = G.player.computeFov();
