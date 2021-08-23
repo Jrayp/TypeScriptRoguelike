@@ -12,6 +12,8 @@ export default class Player extends _Actor {
     sightRange = 10;
     private _fov = new FOV.PreciseShadowcasting(this.lightPasses);
 
+    currentlySeenCoordKeys = new Set<string>();
+
     move(newCoords: Coords) {
         if (super.move(newCoords))
             return true;
@@ -23,15 +25,16 @@ export default class Player extends _Actor {
 
     computeFov() {
         const actorCoords = this.getCoords();
-        const seenCells: Set<string> = new Set();
+        this.currentlySeenCoordKeys.clear();
 
-        function fovCallback(x: number, y: number, r: number, visibility: number) {
-            seenCells.add(Coords.makeKey(x, y));
-        }
+        this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, this.fovCallback);
 
-        this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, fovCallback);
+        return this.currentlySeenCoordKeys;
+    }
 
-        return seenCells;
+    // Using arrow notation to bind 'this' to the callback
+    private fovCallback = (x: number, y: number, r: number, visibility: number) => {
+        this.currentlySeenCoordKeys.add(Coords.makeKey(x, y));
     }
 
     private lightPasses(x: number, y: number) {

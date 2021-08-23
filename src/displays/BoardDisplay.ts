@@ -1,4 +1,5 @@
-import { Color, Display } from 'rot-js';
+import { Color as ColorHelper, Display } from 'rot-js';
+import { Color } from 'rot-js/lib/color';
 import C from '../C';
 import Board from './../Board';
 
@@ -16,32 +17,49 @@ export default class BoardDisplay extends Display {
         const actorLayer = board.actorLayer;
 
         for (let tileAndCoords of tileLayer.iterator()) {
-            let coords = tileAndCoords[1];
+            const coords = tileAndCoords[1];
+
+            let light: Color = board.lightLayer.hasCoords(coords) ? board.lightLayer.getElementViaCoords(coords) : [0, 0, 0];
+
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);
-                if (seenCells.has(coords.key)) {
-                    this.observedCells.add(coords.key);
-                    let seenFg = actor.fgColor ? Color.interpolate(Color.fromString(actor.fgColor), [255, 255, 255], .35) : null;
-                    let seenBg = actor.bgColor ? Color.interpolate(Color.fromString(actor.bgColor), [255, 255, 255], .35) : null;
-                    this.draw(coords.x, coords.y, actor.glyph, seenFg ? Color.toRGB(seenFg!) : null, seenBg ? Color.toRGB(seenBg!) : null);
-                } else {
-                    this.draw(coords.x, coords.y, actor.glyph, actor.fgColor, actor.bgColor);
-                }
-                // actor.draw(this);
+                let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.fgColor), light)) : null;
+                let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.bgColor), light)) : null;
+                this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
             } else {
                 let tile = tileAndCoords[0];
-                if (seenCells.has(coords.key)) {
-                    this.observedCells.add(coords.key);
-                    let seenFg = tile.fgColor ? Color.interpolate(Color.fromString(tile.fgColor), [255, 255, 255], .35) : null;
-                    let seenBg = tile.bgColor ? Color.interpolate(Color.fromString(tile.bgColor), [255, 255, 255], .35) : null;
-                    this.draw(coords.x, coords.y, tile.glyph, seenFg ? Color.toRGB(seenFg!) : null, seenBg ? Color.toRGB(seenBg!) : null);
-                } else if (this.observedCells.has(coords.key)) {
-                    this.draw(coords.x, coords.y, tile.glyph, tile.fgColor, tile.bgColor);
-                }
-                // tile.draw(this);
+                let fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.fgColor), light)) : null;
+                let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.bgColor), light)) : null;
+                this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
+
+
+
+            // if (actorLayer.hasCoords(coords)) {
+            //     let actor = actorLayer.getElementViaCoords(coords);
+            //     if (seenCells.has(coords.key)) {
+            //         this.observedCells.add(coords.key);
+            //         let seenFg = actor.fgColor ? Color.interpolate(Color.fromString(actor.fgColor), [255, 255, 255], .35) : null;
+            //         let seenBg = actor.bgColor ? Color.interpolate(Color.fromString(actor.bgColor), [255, 255, 255], .35) : null;
+            //         this.draw(coords.x, coords.y, actor.glyph, seenFg ? Color.toRGB(seenFg!) : null, seenBg ? Color.toRGB(seenBg!) : null);
+            //     } else {
+            //         this.draw(coords.x, coords.y, actor.glyph, actor.fgColor, actor.bgColor);
+            //     }
+            //     // actor.draw(this);
+            // } else {
+            //     let tile = tileAndCoords[0];
+            //     if (seenCells.has(coords.key)) {
+            //         this.observedCells.add(coords.key);
+            //         let seenFg = tile.fgColor ? Color.interpolate(Color.fromString(tile.fgColor), [255, 255, 255], .35) : null;
+            //         let seenBg = tile.bgColor ? Color.interpolate(Color.fromString(tile.bgColor), [255, 255, 255], .35) : null;
+            //         this.draw(coords.x, coords.y, tile.glyph, seenFg ? Color.toRGB(seenFg!) : null, seenBg ? Color.toRGB(seenBg!) : null);
+            //     } else if (this.observedCells.has(coords.key)) {
+            //         this.draw(coords.x, coords.y, tile.glyph, tile.fgColor, tile.bgColor);
+            //     }
+            //     // tile.draw(this);
         }
     }
-
 }
+
+
 
