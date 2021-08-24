@@ -28,7 +28,7 @@ export default abstract class _Actor implements Drawable, Positional, Named {
     move(newCoords: Coords) {
         let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 
-        if (G.board.tileLayer.getElementViaCoords(newCoords)?.passable) {
+        if (G.board.tileLayer.getElementViaCoords(newCoords).passable) {
             G.board.actorLayer.moveViaElement(this, newCoords);
             destinationTile.onEnter(this)
             return true;

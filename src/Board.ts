@@ -59,7 +59,7 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0) {
+            if (value == 0 && this.tileLayer.getElementViaKey(Coords.makeKey(x,y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
                 this.tileLayer.replace(new Coords(x, y), newTile);
             }

@@ -35,7 +35,7 @@ export default class G {
             }
         }
 
-        G.board.lightManager.addLight(new Light(G.player));
+        G.board.lightManager.addLight(new Light(G.player, 12, [225, 150, 30]));
 
         this.initInputHandlers();
 

@@ -5,15 +5,17 @@ import Light from "./Light";
 
 export default class LightManager {
 
+    ambientLight: Color = [0, 0, 0];
+
     private _lights = new Set<Light>();
-    _lightMap = new Map<string, Color>();
+    lightMap = new Map<string, Color>();
 
     getValueAt(key: string) {
-        return this._lightMap.get(key);
+        return this.lightMap.get(key);
     }
 
     update() {
-        this._lightMap.clear();
+        this.lightMap.clear();
         for (let light of this._lights) {
             light.update();
         }

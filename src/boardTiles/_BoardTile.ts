@@ -14,7 +14,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
 
     abstract name: string;
 
-    abstract passable: boolean;
+    abstract passable: boolean; // Should probably be handled via function
     abstract transparent: boolean;  // Consider making this applicable to actors 
     //as well (or anything really... really need to use ECS)
 

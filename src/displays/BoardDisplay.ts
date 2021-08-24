@@ -21,7 +21,7 @@ export default class BoardDisplay extends Display {
         for (let tileAndCoords of tileLayer.iterator()) {
             const coords = tileAndCoords[1];
 
-            let light: Color = lightManager._lightMap.get(coords.key) || [0, 0, 0];
+            let light: Color = lightManager.lightMap.get(coords.key) || lightManager.ambientLight;
 
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);

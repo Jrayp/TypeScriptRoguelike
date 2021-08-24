@@ -1,50 +1,36 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
+import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
 import Positional from "src/interfaces/Positional";
 import C from "../C";
 import G from "../G";
 import Coords from "../util/Coords";
 
-
-// TODO: Use the method in the example: It allows us to automatically adjust tile colors all over
-// Remember, idiot
-
 export default class Light {
 
-    // TODO: Should this be here? Prob not
-    static ambientLight: Color = [0, 0, 0];
-
-    intensity = 8;
-    color: Color = [155, 155, 155];
-
-    private _lightCone = new FOV.PreciseShadowcasting(this.lightPassingCallback, { topology: 8 });
-    private _lighting = new Lighting(this.reflectivityCallback, { range: this.intensity, passes: 2 })
-        .setFOV(this._lightCone);
-
+    color: Color;
+    intensity: number;
     attachedTo: Positional;
-    oldCoordsKey: string;
 
-    constructor(attachedTo: Positional, color: Color = [155, 155, 155]) {
-        const coords = attachedTo.getCoords();
+    private _lightCone: PreciseShadowcasting;
+    private _lighting: Lighting;
+    private _oldCoordsKey: string;
+
+    constructor(attachedTo: Positional, intensity: number, color: Color) {
         this.attachedTo = attachedTo;
+        this.intensity = intensity;
         this.color = color;
-        if (coords) {
-            this.oldCoordsKey = coords.key;
-            this._lighting.setLight(coords.x, coords.y, this.color);
-        }
-        else {
-            this.oldCoordsKey = "xx";
-        }
+
+        this._lightCone = new FOV.PreciseShadowcasting(this.lightPassingCallback, { topology: 8 });
+        this._lighting = new Lighting(this.reflectivityCallback, { range: this.intensity, passes: 2 })
+            .setFOV(this._lightCone);
     }
 
     update() {
         const coords = this.attachedTo.getCoords();
-        if (coords) {
-            if (coords.key != this.oldCoordsKey)
-                this.move(coords)
-
-            this._lighting.compute(this.lightingCallback);
-        }
+        if (coords.key != this._oldCoordsKey)
+            this.move(coords)
+        this._lighting.compute(this.lightingCallback);
     }
 
     private move(coords: Coords) {
@@ -55,23 +41,22 @@ export default class Light {
     private lightingCallback(x: number, y: number, color: Color) {
         const key = new Coords(x, y).key;
 
-        if (G.board.lightManager._lightMap.has(key)) {
-            let oldLight = G.board.lightManager._lightMap.get(key)!;
+        if (G.board.lightManager.lightMap.has(key)) {
+            let oldLight = G.board.lightManager.lightMap.get(key)!;
             let newLight = ColorHelper.add(oldLight, color);
-            G.board.lightManager._lightMap.set(key, newLight)
+            G.board.lightManager.lightMap.set(key, newLight)
         }
         else {
-            let newLight = ColorHelper.add(Light.ambientLight, color);
-            G.board.lightManager._lightMap.set(key, newLight);
+            let newLight = ColorHelper.add(G.board.lightManager.ambientLight, color);
+            G.board.lightManager.lightMap.set(key, newLight);
         }
     }
 
     private lightPassingCallback(x: number, y: number) {
-        const key = Coords.makeKey(x, y);
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaKey(key).transparent;
+            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
     }
 
     private reflectivityCallback(x: number, y: number) {
