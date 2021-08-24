@@ -1,16 +1,20 @@
-import BoardDrawable from 'src/interfaces/BoardDrawable';
-import BoardDisplay from 'src/displays/BoardDisplay';
-import Board from '../Board';
-import G from '../G'
+import { Color } from 'rot-js/lib/color';
+import BoardDisplay from './../displays/BoardDisplay';
+import Drawable from './../interfaces/Drawable';
+import Named from './../interfaces/named';
+import Positional from './../interfaces/Positional';
+import G from '../G';
 import Coords from './../util/Coords';
+import Destroyable from 'src/interfaces/Destroyable';
+import { EventEmitter } from 'stream';
 
+export default abstract class _Actor implements Drawable, Positional, Named {
 
+    abstract name: string;
 
-export default abstract class _Actor implements BoardDrawable {
-
-    glyph: string;
-    fgColor: string | null;
-    bgColor: string | null;
+    abstract glyph: string;
+    abstract fgColor: Color | null;
+    abstract bgColor: Color | null;
 
     getCoords(): Coords {
         return G.board.actorLayer.getCoordsViaElement(this);
@@ -18,13 +22,13 @@ export default abstract class _Actor implements BoardDrawable {
 
     draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
+        // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
     move(newCoords: Coords) {
         let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 
-        if (G.board.tileLayer.getElementViaCoords(newCoords)?.passable) {
+        if (G.board.tileLayer.getElementViaCoords(newCoords).passable) {
             G.board.actorLayer.moveViaElement(this, newCoords);
             destinationTile.onEnter(this)
             return true;
@@ -33,8 +37,5 @@ export default abstract class _Actor implements BoardDrawable {
             return false;
         }
     }
-
-
-
 
 }

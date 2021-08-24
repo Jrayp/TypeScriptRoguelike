@@ -1,5 +1,5 @@
 import { assert } from "console";
-import C from "./../C";
+import C from "../C";
 
 export default class Coords {
 

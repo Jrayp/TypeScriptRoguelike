@@ -1,3 +1,4 @@
+import { AssertionError } from "assert/strict";
 import { assert } from "console";
 import Coords from "./util/Coords";
 
@@ -12,8 +13,8 @@ export default class BoardLayer<T> {
     }
 
     set(coords: Coords, element: T) {
-        assert(this._keyToElement.has(coords.key) === false);
-        assert(this._elementToCoords.has(element) === false);
+        this.assert(this._keyToElement.has(coords.key) === false);
+        this.assert(this._elementToCoords.has(element) === false);
         this._keyToElement.set(coords.key, element);
         this._elementToCoords.set(element, coords);
     }
@@ -36,18 +37,17 @@ export default class BoardLayer<T> {
     }
 
     getElementViaKey(key: string): T {
-        assert(this._keyToElement.has(key), `No element at ${key}`);
+        this.assert(this._keyToElement.has(key), `No element found at ${key}.`);
         return this._keyToElement.get(key)!;
     }
 
-
     getElementViaCoords(coords: Coords): T {
-        assert(this._keyToElement.has(coords.key), `No element at ${coords.key}`);
+        this.assert(this._keyToElement.has(coords.key), `No element found at ${coords.key}.`);
         return this._keyToElement.get(coords.key)!;
     }
 
-    getCoordsViaElement(element: T) {
-        assert(this._elementToCoords.has(element));
+    getCoordsViaElement(element: T): Coords {
+        this.assert(this._elementToCoords.has(element), `No Coords found for ${element}.`);
         return this._elementToCoords.get(element)!;
     }
 
@@ -70,18 +70,24 @@ export default class BoardLayer<T> {
     }
 
     moveViaElement(element: T, destCoord: Coords) {
-        assert(this._elementToCoords.has(element));
-        assert(this._keyToElement.has(destCoord.key) === false);
-        this.removeViaElement(element)!;
+        this.assert(this._elementToCoords.has(element));
+        this.assert(this._keyToElement.has(destCoord.key) === false);
+        this.removeViaElement(element);
         this.set(destCoord, element);
     }
 
     moveViaCoords(currentCoord: Coords, destCoord: Coords) {
-        assert(this._keyToElement.has(currentCoord.key));
-        assert(this._keyToElement.has(destCoord.key) === false);
+        this.assert(this._keyToElement.has(currentCoord.key));
+        this.assert(this._keyToElement.has(destCoord.key) === false);
         let element = this._keyToElement.get(currentCoord.key)!;
         this.removeViaCoords(currentCoord);
         this.set(destCoord, element);
+    }
+
+    private assert(condition: any, msg?: string): asserts condition {
+        if (!condition) {
+            throw new Error(msg);
+        }
     }
 
     iterator() {

@@ -1,5 +1,6 @@
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
+import G from './../G';
 import C from '../C';
 import Board from './../Board';
 
@@ -15,25 +16,24 @@ export default class BoardDisplay extends Display {
     update(board: Board, seenCells: Set<string>) {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
+        const lightManager = G.board.lightManager;
 
         for (let tileAndCoords of tileLayer.iterator()) {
             const coords = tileAndCoords[1];
 
-            let light: Color = board.lightLayer.hasCoords(coords) ? board.lightLayer.getElementViaCoords(coords) : [0, 0, 0];
+            let light: Color = lightManager.lightMap.get(coords.key) || lightManager.ambientLight;
 
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);
-                let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.fgColor), light)) : null;
-                let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.bgColor), light)) : null;
+                let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.fgColor, light)) : null;
+                let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
-            } else {
+            } else { // Tiles 
                 let tile = tileAndCoords[0];
-                let fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.fgColor), light)) : null;
-                let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.bgColor), light)) : null;
+                let fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, light)) : null;
+                let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
-
-
 
             // if (actorLayer.hasCoords(coords)) {
             //     let actor = actorLayer.getElementViaCoords(coords);

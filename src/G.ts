@@ -1,9 +1,8 @@
-import { RNG } from "rot-js";
 import Player from "./actors/Player";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
-import Light from "./light";
+import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
 
@@ -18,12 +17,15 @@ export default class G {
     static log: Log;
     static player: Player;
 
+    static light: Light;
+
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
         document.body.append(G.boardDisplay.getContainer()!);
 
         G.log = new Log();
         G.board = new Board();
+        G.board.generate();
 
         G.player = new Player();
         for (let tileAndCoords of G.board.tileLayer.iterator()) {
@@ -33,23 +35,15 @@ export default class G {
             }
         }
 
-        let playerCoords = this.player.getCoords();
-        G.playerLight = new Light(playerCoords.x, playerCoords.y);
-        G.playerLight.update();
+        G.light = new Light(G.player, 8, [200, 200, 200]);
+        G.board.lightManager.addLight(G.light);
 
-        for (let tileAndCoords of G.board.tileLayer.iterator()) {
-            if (tileAndCoords[0].name === "Floor" && RNG.getUniform() < .02) {
-                let light = new Light(tileAndCoords[1].x, tileAndCoords[1].y, [225,125,60]);
-                light.update();
-                G.lights.push(light);
-            }
-        }
-
-        this.initInputHandlers();
-
-
+        G.initInputHandlers();
 
         let playerSeenCoords = G.player.computeFov();
+
+        G.board.lightManager.update();
+
         G.board.draw(playerSeenCoords);
 
         G.log.write("Welcome to TypeScript Roguelike!");
@@ -91,9 +85,6 @@ export default class G {
         }
     }
 
-    static lights: Light[] = [];
-    static playerLight: Light | null;
-
     private static performPlayerAction(action: [string, number, number]) {
         switch (action[0]) {
             case 'move':
@@ -105,29 +96,19 @@ export default class G {
                 G.log.write("You pressed A.. amazing!");
                 break;
             case 'light':
-                if (this.playerLight == null) {
-                    G.log.write("You cast a light spell!");
-                    let playerCoords = this.player.getCoords();
-                    G.playerLight = new Light(playerCoords.x, playerCoords.y);
+                if (G.light.active === true) {
+                    G.log.write("You wave your hand over your glowing orb...");
+                    G.light.active = false;
                 }
                 else {
-                    G.log.write("You wave your hand over your light source...");
-                    this.playerLight = null;
+                    G.log.write("You summon a glowing orb!");
+                    G.light.active = true;
                 }
+
                 break;
         }
 
-        G.board.lightLayer.clear();
-        for (let light of G.lights) {
-            light.update();
-        }
-
-        if (this.playerLight != null) {
-            let playerCoords = this.player.getCoords();
-            G.playerLight!.move(playerCoords.x, playerCoords.y);
-            G.playerLight!.update();
-        }
-
+        G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords);
     }
