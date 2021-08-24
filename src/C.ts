@@ -1,12 +1,14 @@
 
 export default class C {
-    static readonly ARENA_WIDTH = 60;
-    static readonly ARENA_HEIGHT = 30;
+    static readonly BOARD_WIDTH = 60;
+    static readonly BOARD_HEIGHT = 30;
 
     static readonly MAX_LOG_LENGTH = 50;
 
-    static readonly LOG_DISPLAY_WIDTH = C.ARENA_WIDTH;
+    static readonly LOG_DISPLAY_WIDTH = C.BOARD_WIDTH;
     static readonly LOG_DISPLAY_HEIGHT = 5;
+
+    static readonly LIGHT_DEFAULT_REFLECTIVITY = .3;
 
 
     static readonly BOARD_DISPLAY_OPTIONS = {
@@ -15,8 +17,8 @@ export default class C {
         fg: "dimGrey", // foreground
         // fontFamily: "Liberation Mono", // font (use a monospace for esthetics)
         fontFamily: "monospace", // font (use a monospace for esthetics)
-        width: C.ARENA_WIDTH,
-        height: C.ARENA_HEIGHT, // canvas height and width
+        width: C.BOARD_WIDTH,
+        height: C.BOARD_HEIGHT, // canvas height and width
         fontSize: 24, // canvas fontsize
         //forceSquareRatio: true // make the canvas squared ratio
     };

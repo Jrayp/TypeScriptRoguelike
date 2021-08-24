@@ -1,12 +1,12 @@
 import Coords from "./../util/Coords";
 import BoardDisplay from "../displays/BoardDisplay";
+import { Color } from "rot-js/lib/color";
 
 export default interface BoardDrawable {
 
-    // TODO: Consider using the tuple for colors
     glyph: string;
-    fgColor: string | null;
-    bgColor: string | null;
+    fgColor: Color | null;
+    bgColor: Color | null;
 
     getCoords(): Coords | undefined;
 

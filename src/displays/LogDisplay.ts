@@ -1,6 +1,5 @@
-import { Color, Display } from 'rot-js'
-import Log from './../Log';
-import C from '../C'
+import { Color, Display } from 'rot-js';
+import C from '../C';
 
 
 export default class LogDisplay extends Display {

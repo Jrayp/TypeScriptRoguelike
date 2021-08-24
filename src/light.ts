@@ -1,5 +1,6 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
+import C from "./C";
 import G from "./G";
 import Coords from "./util/Coords";
 
@@ -15,8 +16,8 @@ export default class Light {
     intensity = 8;
     color: Color = [155, 155, 155];
 
-    private _lightCone = new FOV.PreciseShadowcasting(this.lightPasses, { topology: 8 });
-    private _lighting = new Lighting(this.reflectivity, { range: this.intensity, passes: 2 })
+    private _lightCone = new FOV.PreciseShadowcasting(this.lightPassingCallback, { topology: 8 });
+    private _lighting = new Lighting(this.reflectivityCallback, { range: this.intensity, passes: 2 })
         .setFOV(this._lightCone);
 
     constructor(x: number, y: number, color: Color = [155, 155, 155]) {
@@ -48,7 +49,7 @@ export default class Light {
 
     }
 
-    private lightPasses(x: number, y: number) {
+    private lightPassingCallback(x: number, y: number) {
         const key = Coords.makeKey(x, y);
         if (!G.board.numbersWithinBounds(x, y))
             return false;
@@ -56,12 +57,12 @@ export default class Light {
             return G.board.tileLayer.getElementViaKey(key).transparent;
     }
 
-    private reflectivity(x: number, y: number) {
+    private reflectivityCallback(x: number, y: number) {
         const key = Coords.makeKey(x, y);
         if (!G.board.numbersWithinBounds(x, y) || !G.board.tileLayer.getElementViaKey(key).passable)
             return 0;
         else
-            return .3;
+            return C.LIGHT_DEFAULT_REFLECTIVITY;
     }
 
 }

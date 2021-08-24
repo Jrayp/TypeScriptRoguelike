@@ -23,13 +23,13 @@ export default class BoardDisplay extends Display {
 
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);
-                let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.fgColor), light)) : null;
-                let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(actor.bgColor), light)) : null;
+                let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.fgColor, light)) : null;
+                let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
-            } else {
+            } else { // Tiles 
                 let tile = tileAndCoords[0];
-                let fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.fgColor), light)) : null;
-                let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(ColorHelper.fromString(tile.bgColor), light)) : null;
+                let fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, light)) : null;
+                let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
 

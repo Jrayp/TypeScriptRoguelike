@@ -1,16 +1,14 @@
-import BoardDrawable from 'src/interfaces/BoardDrawable';
+import { Color } from 'rot-js/lib/color';
 import BoardDisplay from 'src/displays/BoardDisplay';
-import Board from '../Board';
-import G from '../G'
+import BoardDrawable from 'src/interfaces/BoardDrawable';
+import G from '../G';
 import Coords from './../util/Coords';
-
-
 
 export default abstract class _Actor implements BoardDrawable {
 
     glyph: string;
-    fgColor: string | null;
-    bgColor: string | null;
+    fgColor: Color | null;
+    bgColor: Color | null;
 
     getCoords(): Coords {
         return G.board.actorLayer.getCoordsViaElement(this);
@@ -18,7 +16,7 @@ export default abstract class _Actor implements BoardDrawable {
 
     draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
+        // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
     move(newCoords: Coords) {

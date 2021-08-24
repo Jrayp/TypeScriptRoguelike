@@ -1,3 +1,4 @@
+import { Color } from 'rot-js/lib/color';
 import _Actor from 'src/actors/_Actor';
 import Named from 'src/interfaces/named';
 import BoardDisplay from '../displays/BoardDisplay';
@@ -8,8 +9,8 @@ import Coords from './../util/Coords';
 export abstract class _BoardTile implements Named, BoardDrawable {
 
     abstract glyph: string;
-    abstract fgColor: string | null;
-    abstract bgColor: string | null;
+    abstract fgColor: Color | null;
+    abstract bgColor: Color | null;
 
     abstract name: string;
 
@@ -26,7 +27,7 @@ export abstract class _BoardTile implements Named, BoardDrawable {
 
     draw(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
-        boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
+        // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
 
     onEnter(actor: _Actor) {

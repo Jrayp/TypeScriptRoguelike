@@ -1,14 +1,13 @@
-import { Color, RNG } from "rot-js";
+import { RNG } from "rot-js";
+import { Color } from "rot-js/lib/color";
 import _Actor from "src/actors/_Actor";
-import Log from "./../Log";
-import LogDisplay from "../displays/LogDisplay";
+import G from "../G";
 import { _BoardTile } from "./_BoardTile";
-import G from "./../G";
 
 export class PuddleTile extends _BoardTile {
     name = 'Water';
     glyph = '~';
-    fgColor = Color.toRGB([20, 75, 210]);
+    fgColor = [20, 75, 210] as Color;
     bgColor = null;
     passable = true;
     transparent = true;

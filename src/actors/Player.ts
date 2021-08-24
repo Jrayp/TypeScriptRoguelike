@@ -1,12 +1,11 @@
-import { FOV, RNG } from 'rot-js';
-import G from "./../G";
+import { Color, FOV, RNG } from 'rot-js';
+import G from "../G";
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
 
 export default class Player extends _Actor {
-
     glyph = '\u263B';
-    fgColor = 'orange'
+    fgColor = Color.fromString("orange");
     bgColor = null;
 
     sightRange = 10;
@@ -15,6 +14,8 @@ export default class Player extends _Actor {
     currentlySeenCoordKeys = new Set<string>();
 
     move(newCoords: Coords) {
+
+
         if (super.move(newCoords)) {
             if (G.board.lightLayer.getElementViaCoords(newCoords) == null && RNG.getUniform() < .25) {
                 G.log.write("It's very dark here...");
