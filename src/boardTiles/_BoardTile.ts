@@ -1,13 +1,13 @@
 import { Color } from 'rot-js/lib/color';
-import _Actor from 'src/actors/_Actor';
-import Named from 'src/interfaces/named';
+import _Actor from './../actors/_Actor';
+import Positional from './../interfaces/Positional';
+import Named from './../interfaces/named';
 import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
-import BoardDrawable from '../interfaces/BoardDrawable';
+import Drawable from '../interfaces/Drawable';
 import Coords from './../util/Coords';
 
-export abstract class _BoardTile implements Named, BoardDrawable {
-
+export abstract class _BoardTile implements Named, Drawable, Positional {
     abstract glyph: string;
     abstract fgColor: Color | null;
     abstract bgColor: Color | null;

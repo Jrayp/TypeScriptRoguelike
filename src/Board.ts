@@ -15,6 +15,8 @@ import Coords from './util/Coords';
 export default class Board {
     tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
     actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
+    
+    // TODO: should just be a map
     lightLayer: BoardLayer<Color> = new BoardLayer<Color>();
 
     constructor() {

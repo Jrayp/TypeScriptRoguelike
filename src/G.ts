@@ -3,7 +3,7 @@ import Player from "./actors/Player";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
-import Light from "./Light";
+import DynamicLight from "./lights/DynamicLight";
 import Log from "./Log";
 import Coords from "./util/Coords";
 

@@ -1,14 +1,14 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
-import C from "./C";
-import G from "./G";
-import Coords from "./util/Coords";
+import C from "../C";
+import G from "../G";
+import Coords from "../util/Coords";
 
 
 // TODO: Use the method in the example: It allows us to automatically adjust tile colors all over
 // Remember, idiot
 
-export default class Light {
+export default class StaticLight {
 
     // TODO: Should this be here? Prob not
     static ambientLight: Color = [0, 0, 0];
@@ -43,7 +43,7 @@ export default class Light {
             G.board.lightLayer.replace(coords, newLight);
         }
         else {
-            let newLight = ColorHelper.add(Light.ambientLight, color);
+            let newLight = ColorHelper.add(StaticLight.ambientLight, color);
             G.board.lightLayer.set(coords, newLight);
         }
 
