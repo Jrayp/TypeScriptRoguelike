@@ -18,9 +18,9 @@ export default class Player extends _Actor {
 
 
         if (super.move(newCoords)) {
-            // if (G.board.lightLayer.getElementViaCoords(newCoords) == null && RNG.getUniform() < .25) {
-            //     G.log.write("It's very dark here...");
-            // }
+            if (G.board.lightManager.lightMap.get(newCoords.key) == null && RNG.getUniform() < .25) {
+                G.log.write("It's very dark here...");
+            }
             return true;
         }
         else {

@@ -10,7 +10,7 @@ export class GlowingCrystal extends _BoardTile {
     glyph = '*';
     fgColor: Color;
     bgColor = null;
-    passable = true; 
+    passable = true;
     transparent = true;
 
     glow: Light;

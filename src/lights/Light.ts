@@ -7,35 +7,37 @@ import G from "../G";
 import Coords from "../util/Coords";
 
 export default class Light {
-
-    color: Color;
-    intensity: number;
     attachedTo: Positional;
+    active = true;
 
+    private _color: Color;
+    private _intensity: number;
     private _lightCone: PreciseShadowcasting;
     private _lighting: Lighting;
     private _oldCoordsKey: string;
 
     constructor(attachedTo: Positional, intensity: number, color: Color) {
         this.attachedTo = attachedTo;
-        this.intensity = intensity;
-        this.color = color;
+        this._intensity = intensity;
+        this._color = color;
 
         this._lightCone = new FOV.PreciseShadowcasting(this.lightPassingCallback, { topology: 8 });
-        this._lighting = new Lighting(this.reflectivityCallback, { range: this.intensity, passes: 2 })
+        this._lighting = new Lighting(this.reflectivityCallback, { range: this._intensity, passes: 2 })
             .setFOV(this._lightCone);
     }
 
     update() {
-        const coords = this.attachedTo.getCoords();
-        if (coords.key != this._oldCoordsKey)
-            this.move(coords)
-        this._lighting.compute(this.lightingCallback);
+        if (this.active) {
+            const coords = this.attachedTo.getCoords();
+            if (coords.key != this._oldCoordsKey)
+                this.move(coords)
+            this._lighting.compute(this.lightingCallback);
+        }
     }
 
     private move(coords: Coords) {
         this._lighting.clearLights();
-        this._lighting.setLight(coords.x, coords.y, this.color);
+        this._lighting.setLight(coords.x, coords.y, this._color);
     }
 
     private lightingCallback(x: number, y: number, color: Color) {

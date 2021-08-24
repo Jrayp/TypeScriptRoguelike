@@ -1,10 +1,8 @@
-import { RNG } from "rot-js";
 import Player from "./actors/Player";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import Light from "./lights/Light";
-import LightManager from "./lights/LightManager";
 import Log from "./Log";
 import Coords from "./util/Coords";
 
@@ -18,6 +16,8 @@ export default class G {
     static board: Board;
     static log: Log;
     static player: Player;
+
+    static light: Light;
 
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
@@ -35,9 +35,10 @@ export default class G {
             }
         }
 
-        G.board.lightManager.addLight(new Light(G.player, 12, [225, 150, 30]));
+        G.light = new Light(G.player, 8, [200, 200, 200]);
+        G.board.lightManager.addLight(G.light);
 
-        this.initInputHandlers();
+        G.initInputHandlers();
 
         let playerSeenCoords = G.player.computeFov();
 
@@ -95,6 +96,14 @@ export default class G {
                 G.log.write("You pressed A.. amazing!");
                 break;
             case 'light':
+                if (G.light.active === true) {
+                    G.log.write("You wave your hand over your glowing orb...");
+                    G.light.active = false;
+                }
+                else {
+                    G.log.write("You summon a glowing orb!");
+                    G.light.active = true;
+                }
 
                 break;
         }

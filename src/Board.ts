@@ -6,7 +6,7 @@ import _Actor from './actors/_Actor';
 import BoardLayer from './BoardLayer';
 import { FloorTile } from './boardTiles/FloorTile';
 import { GlowingCrystal } from './boardTiles/GlowingCrystal';
-import { PuddleTile } from './boardTiles/PuddleTile';
+import { WaterTile } from './boardTiles/WaterTile';
 import { WallTile } from './boardTiles/WallTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
@@ -37,7 +37,7 @@ export default class Board {
                 if (RNG.getUniform() < .025)
                     newTile = new GlowingCrystal();
                 else
-                    newTile = new PuddleTile();
+                    newTile = new WaterTile();
             else
                 newTile = new WallTile();
 
