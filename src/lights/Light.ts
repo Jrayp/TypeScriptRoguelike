@@ -1,5 +1,6 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
+import Positional from "src/interfaces/Positional";
 import C from "../C";
 import G from "../G";
 import Coords from "../util/Coords";
@@ -20,30 +21,48 @@ export default class Light {
     private _lighting = new Lighting(this.reflectivityCallback, { range: this.intensity, passes: 2 })
         .setFOV(this._lightCone);
 
-    constructor(x: number, y: number, color: Color = [155, 155, 155]) {
-        this.color = color;
-        this._lighting.setLight(x, y, this.color);
-    }
+    attachedTo: Positional;
+    oldCoordsKey: string;
 
-    move(x: number, y: number) {
-        this._lighting.clearLights();
-        this._lighting.setLight(x, y, this.color);
+    constructor(attachedTo: Positional, color: Color = [155, 155, 155]) {
+        const coords = attachedTo.getCoords();
+        this.attachedTo = attachedTo;
+        this.color = color;
+        if (coords) {
+            this.oldCoordsKey = coords.key;
+            this._lighting.setLight(coords.x, coords.y, this.color);
+        }
+        else {
+            this.oldCoordsKey = "xx";
+        }
     }
 
     update() {
-        this._lighting.compute(this.lightingCallback);
+        const coords = this.attachedTo.getCoords();
+        if (coords) {
+            if (coords.key != this.oldCoordsKey)
+                this.move(coords)
+
+            this._lighting.compute(this.lightingCallback);
+        }
+    }
+
+    private move(coords: Coords) {
+        this._lighting.clearLights();
+        this._lighting.setLight(coords.x, coords.y, this.color);
     }
 
     private lightingCallback(x: number, y: number, color: Color) {
         const key = new Coords(x, y).key;
 
-        if (G.board.lightManager.lightMap.has(key)) {
-            let oldLight = G.board.lightManager.lightMap.get(key)!;
-            oldLight = ColorHelper.add(oldLight, color);
+        if (G.board.lightManager._lightMap.has(key)) {
+            let oldLight = G.board.lightManager._lightMap.get(key)!;
+            let newLight = ColorHelper.add(oldLight, color);
+            G.board.lightManager._lightMap.set(key, newLight)
         }
         else {
             let newLight = ColorHelper.add(Light.ambientLight, color);
-            G.board.lightManager.lightMap.set(key, newLight);
+            G.board.lightManager._lightMap.set(key, newLight);
         }
     }
 

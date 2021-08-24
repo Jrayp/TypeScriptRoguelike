@@ -21,7 +21,7 @@ export default class BoardDisplay extends Display {
         for (let tileAndCoords of tileLayer.iterator()) {
             const coords = tileAndCoords[1];
 
-            let light: Color = lightManager.lightMap.get(coords.key) || [0, 0, 0];
+            let light: Color = lightManager._lightMap.get(coords.key) || [0, 0, 0];
 
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);
@@ -34,8 +34,6 @@ export default class BoardDisplay extends Display {
                 let bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
-
-
 
             // if (actorLayer.hasCoords(coords)) {
             //     let actor = actorLayer.getElementViaCoords(coords);

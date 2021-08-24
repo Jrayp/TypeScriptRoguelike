@@ -1,16 +1,26 @@
 import { Color } from "rot-js/lib/color";
+import Drawable from "src/interfaces/Drawable";
+import Positional from "src/interfaces/Positional";
 import Light from "./Light";
 
 export default class LightManager {
 
-    lights = new Set<Light>();
-    lightMap = new Map<string, Color>();
+    private _lights = new Set<Light>();
+    _lightMap = new Map<string, Color>();
 
-    update(){
-        this.lightMap.clear();
-        for(let light of this.lights){
+    getValueAt(key: string) {
+        return this._lightMap.get(key);
+    }
+
+    update() {
+        this._lightMap.clear();
+        for (let light of this._lights) {
             light.update();
         }
+    }
+
+    addLight(light: Light) {
+        this._lights.add(light);
     }
 
 

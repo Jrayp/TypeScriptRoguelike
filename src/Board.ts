@@ -5,6 +5,7 @@ import Uniform from 'rot-js/lib/map/uniform';
 import _Actor from './actors/_Actor';
 import BoardLayer from './BoardLayer';
 import { FloorTile } from './boardTiles/FloorTile';
+import { GlowingCrystal } from './boardTiles/GlowingCrystal';
 import { PuddleTile } from './boardTiles/PuddleTile';
 import { WallTile } from './boardTiles/WallTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
@@ -20,8 +21,10 @@ export default class Board {
     lightManager: LightManager = new LightManager();
 
     constructor() {
-        this.generate();
+        // this.generate();
     }
+
+
 
     draw(seenCells: Set<string>) {
         G.boardDisplay.update(this, seenCells);
@@ -31,7 +34,10 @@ export default class Board {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
             if (value == 1)
-                newTile = new PuddleTile();
+                if (RNG.getUniform() < .025)
+                    newTile = new GlowingCrystal();
+                else
+                    newTile = new PuddleTile();
             else
                 newTile = new WallTile();
 

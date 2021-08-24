@@ -25,6 +25,7 @@ export default class G {
 
         G.log = new Log();
         G.board = new Board();
+        G.board.generate();
 
         G.player = new Player();
         for (let tileAndCoords of G.board.tileLayer.iterator()) {
@@ -34,9 +35,14 @@ export default class G {
             }
         }
 
+        G.board.lightManager.addLight(new Light(G.player));
+
         this.initInputHandlers();
 
         let playerSeenCoords = G.player.computeFov();
+
+        G.board.lightManager.update();
+
         G.board.draw(playerSeenCoords);
 
         G.log.write("Welcome to TypeScript Roguelike!");
@@ -93,6 +99,7 @@ export default class G {
                 break;
         }
 
+        G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords);
     }

@@ -5,8 +5,11 @@ import Named from './../interfaces/named';
 import Positional from './../interfaces/Positional';
 import G from '../G';
 import Coords from './../util/Coords';
+import Destroyable from 'src/interfaces/Destroyable';
+import { EventEmitter } from 'stream';
 
 export default abstract class _Actor implements Drawable, Positional, Named {
+
     abstract name: string;
 
     abstract glyph: string;
@@ -34,8 +37,5 @@ export default abstract class _Actor implements Drawable, Positional, Named {
             return false;
         }
     }
-
-
-
 
 }
