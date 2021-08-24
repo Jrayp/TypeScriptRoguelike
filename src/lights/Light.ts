@@ -37,13 +37,13 @@ export default class Light {
     private lightingCallback(x: number, y: number, color: Color) {
         const key = new Coords(x, y).key;
 
-        if (G.lightManager.lightMap.has(key)) {
-            let oldLight = G.lightManager.lightMap.get(key)!;
+        if (G.board.lightManager.lightMap.has(key)) {
+            let oldLight = G.board.lightManager.lightMap.get(key)!;
             oldLight = ColorHelper.add(oldLight, color);
         }
         else {
             let newLight = ColorHelper.add(Light.ambientLight, color);
-            G.lightManager.lightMap.set(key, newLight);
+            G.board.lightManager.lightMap.set(key, newLight);
         }
     }
 

@@ -16,7 +16,6 @@ export default class G {
     static readonly logDisplay: LogDisplay = new LogDisplay();
 
     static board: Board;
-    static lightManager: LightManager;
     static log: Log;
     static player: Player;
 
@@ -26,7 +25,6 @@ export default class G {
 
         G.log = new Log();
         G.board = new Board();
-        G.lightManager = new LightManager();
 
         G.player = new Player();
         for (let tileAndCoords of G.board.tileLayer.iterator()) {
@@ -35,9 +33,6 @@ export default class G {
                 break;
             }
         }
-
-        G.lightManager.lights.add(new Light(5, 5));
-        G.lightManager.update();
 
         this.initInputHandlers();
 

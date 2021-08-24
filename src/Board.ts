@@ -10,14 +10,14 @@ import { WallTile } from './boardTiles/WallTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
 import G from './G';
+import LightManager from './lights/LightManager';
 import Coords from './util/Coords';
 
 export default class Board {
     tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
     actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
-    
-    // TODO: should just be a map
-    // lightLayer: BoardLayer<Color> = new BoardLayer<Color>();
+
+    lightManager: LightManager = new LightManager();
 
     constructor() {
         this.generate();

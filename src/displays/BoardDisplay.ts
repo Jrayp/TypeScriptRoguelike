@@ -16,7 +16,7 @@ export default class BoardDisplay extends Display {
     update(board: Board, seenCells: Set<string>) {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
-        const lightManager = G.lightManager;
+        const lightManager = G.board.lightManager;
 
         for (let tileAndCoords of tileLayer.iterator()) {
             const coords = tileAndCoords[1];
