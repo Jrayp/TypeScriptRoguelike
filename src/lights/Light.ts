@@ -8,7 +8,7 @@ import Coords from "../util/Coords";
 // TODO: Use the method in the example: It allows us to automatically adjust tile colors all over
 // Remember, idiot
 
-export default class DynamicLight {
+export default class Light {
 
     // TODO: Should this be here? Prob not
     static ambientLight: Color = [0, 0, 0];
@@ -35,18 +35,16 @@ export default class DynamicLight {
     }
 
     private lightingCallback(x: number, y: number, color: Color) {
-        const coords = new Coords(x, y);
+        const key = new Coords(x, y).key;
 
-        if (G.board.lightLayer.hasCoords(coords)) {
-            let oldLight = G.board.lightLayer.getElementViaCoords(coords);
-            let newLight = ColorHelper.add(oldLight, color);
-            G.board.lightLayer.replace(coords, newLight);
+        if (G.lightManager.lightMap.has(key)) {
+            let oldLight = G.lightManager.lightMap.get(key)!;
+            oldLight = ColorHelper.add(oldLight, color);
         }
         else {
-            let newLight = ColorHelper.add(DynamicLight.ambientLight, color);
-            G.board.lightLayer.set(coords, newLight);
+            let newLight = ColorHelper.add(Light.ambientLight, color);
+            G.lightManager.lightMap.set(key, newLight);
         }
-
     }
 
     private lightPassingCallback(x: number, y: number) {

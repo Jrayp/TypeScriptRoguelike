@@ -1,5 +1,6 @@
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
+import G from './../G';
 import C from '../C';
 import Board from './../Board';
 
@@ -15,11 +16,12 @@ export default class BoardDisplay extends Display {
     update(board: Board, seenCells: Set<string>) {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
+        const lightManager = G.lightManager;
 
         for (let tileAndCoords of tileLayer.iterator()) {
             const coords = tileAndCoords[1];
 
-            let light: Color = board.lightLayer.hasCoords(coords) ? board.lightLayer.getElementViaCoords(coords) : [0, 0, 0];
+            let light: Color = lightManager.lightMap.get(coords.key) || [0, 0, 0];
 
             if (actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);

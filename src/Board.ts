@@ -17,7 +17,7 @@ export default class Board {
     actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
     
     // TODO: should just be a map
-    lightLayer: BoardLayer<Color> = new BoardLayer<Color>();
+    // lightLayer: BoardLayer<Color> = new BoardLayer<Color>();
 
     constructor() {
         this.generate();
