@@ -1,11 +1,11 @@
 import { RNG } from "rot-js";
 import { Color } from "rot-js/lib/color";
-import _Actor from "./../actors/_Actor";
-import Light from "./../lights/Light";
+import _Actor from "../actors/_Actor";
+import Light from "../lights/Light";
 import G from "../G";
 import { _BoardTile } from "./_BoardTile";
 
-export class GlowingCrystal extends _BoardTile {
+export class GlowingCrystalTile extends _BoardTile {
     name = 'Glowing Crystal';
     glyph = '*';
     fgColor: Color;

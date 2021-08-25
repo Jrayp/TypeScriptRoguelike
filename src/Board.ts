@@ -1,13 +1,13 @@
 import { Map, RNG } from 'rot-js';
-import { Color } from 'rot-js/lib/color';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
 import _Actor from './actors/_Actor';
 import BoardLayer from './BoardLayer';
+import { CavernGrassTile } from './boardTiles/CavernGrassTile';
 import { FloorTile } from './boardTiles/FloorTile';
-import { GlowingCrystal } from './boardTiles/GlowingCrystal';
-import { WaterTile } from './boardTiles/WaterTile';
+import { GlowingCrystalTile } from './boardTiles/GlowingCrystalTile';
 import { WallTile } from './boardTiles/WallTile';
+import { WaterTile } from './boardTiles/WaterTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
 import G from './G';
@@ -35,7 +35,7 @@ export default class Board {
             let newTile: _BoardTile;
             if (value == 1)
                 if (RNG.getUniform() < .025)
-                    newTile = new GlowingCrystal();
+                    newTile = new GlowingCrystalTile();
                 else
                     newTile = new WaterTile();
             else
@@ -59,14 +59,12 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && this.tileLayer.getElementViaKey(Coords.makeKey(x,y)).name != "Glowing Crystal") {
+            if (value == 0 && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
                 this.tileLayer.replace(new Coords(x, y), newTile);
             }
 
         }
-
-
 
         let structuredMap: Digger | Uniform;
 
@@ -77,6 +75,27 @@ export default class Board {
 
         structuredMap.create(structuredUserCallback);
 
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+
+        let vegetationUserCallback = (x: number, y: number, value: number) => {
+            let newTile: _BoardTile;
+            if (value == 1 && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name == "Floor") {
+                newTile = new CavernGrassTile();
+                this.tileLayer.replace(new Coords(x, y), newTile);
+            }
+
+        }
+
+
+        let vegetationMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
+        vegetationMap.randomize(.4);
+        for (var i = 0; i < 3; i++) {
+            vegetationMap.create();
+        }
+
+        vegetationMap.create(vegetationUserCallback);
 
     }
 

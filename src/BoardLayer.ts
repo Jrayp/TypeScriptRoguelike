@@ -1,5 +1,4 @@
-import { AssertionError } from "assert/strict";
-import { assert } from "console";
+import { assertTrue } from "./util/Assertions";
 import Coords from "./util/Coords";
 
 export default class BoardLayer<T> {
@@ -13,8 +12,8 @@ export default class BoardLayer<T> {
     }
 
     set(coords: Coords, element: T) {
-        this.assert(this._keyToElement.has(coords.key) === false);
-        this.assert(this._elementToCoords.has(element) === false);
+        assertTrue(this._keyToElement.has(coords.key) === false);
+        assertTrue(this._elementToCoords.has(element) === false);
         this._keyToElement.set(coords.key, element);
         this._elementToCoords.set(element, coords);
     }
@@ -37,17 +36,17 @@ export default class BoardLayer<T> {
     }
 
     getElementViaKey(key: string): T {
-        this.assert(this._keyToElement.has(key), `No element found at ${key}.`);
+        assertTrue(this._keyToElement.has(key), `No element found at ${key}.`);
         return this._keyToElement.get(key)!;
     }
 
     getElementViaCoords(coords: Coords): T {
-        this.assert(this._keyToElement.has(coords.key), `No element found at ${coords.key}.`);
+        assertTrue(this._keyToElement.has(coords.key), `No element found at ${coords.key}.`);
         return this._keyToElement.get(coords.key)!;
     }
 
     getCoordsViaElement(element: T): Coords {
-        this.assert(this._elementToCoords.has(element), `No Coords found for ${element}.`);
+        assertTrue(this._elementToCoords.has(element), `No Coords found for ${element}.`);
         return this._elementToCoords.get(element)!;
     }
 
@@ -70,24 +69,18 @@ export default class BoardLayer<T> {
     }
 
     moveViaElement(element: T, destCoord: Coords) {
-        this.assert(this._elementToCoords.has(element));
-        this.assert(this._keyToElement.has(destCoord.key) === false);
+        assertTrue(this._elementToCoords.has(element),);
+        assertTrue(this._keyToElement.has(destCoord.key) === false, `Can't move element to ${destCoord.key} as there is already an element at the destination.`);
         this.removeViaElement(element);
         this.set(destCoord, element);
     }
 
     moveViaCoords(currentCoord: Coords, destCoord: Coords) {
-        this.assert(this._keyToElement.has(currentCoord.key));
-        this.assert(this._keyToElement.has(destCoord.key) === false);
+        assertTrue(this._keyToElement.has(currentCoord.key));
+        assertTrue(this._keyToElement.has(destCoord.key) === false), `Can't move element to ${destCoord.key} as there is already an element at the destination.`;
         let element = this._keyToElement.get(currentCoord.key)!;
         this.removeViaCoords(currentCoord);
         this.set(destCoord, element);
-    }
-
-    private assert(condition: any, msg?: string): asserts condition {
-        if (!condition) {
-            throw new Error(msg);
-        }
     }
 
     iterator() {

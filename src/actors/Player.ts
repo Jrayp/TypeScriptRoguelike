@@ -6,7 +6,7 @@ import _Actor from "./_Actor";
 export default class Player extends _Actor {
     name = "Player";
     glyph = '\u263B';
-    fgColor = Color.fromString("orange");
+    fgColor = Color.fromString("brown");
     bgColor = null;
 
     sightRange = 10;

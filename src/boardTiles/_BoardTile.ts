@@ -22,7 +22,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     }
 
     getCoords(): Coords {
-        return G.board.tileLayer.getCoordsViaElement(this) || undefined;
+        return G.board.tileLayer.getCoordsViaElement(this);
     }
 
     draw(boardDisplay: BoardDisplay): void {
@@ -32,5 +32,9 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
 
     onEnter(actor: _Actor) {
         return true;
+    }
+
+    occupiedByActor() {
+        return G.board.actorLayer.hasKey(this.getCoords().key);
     }
 }

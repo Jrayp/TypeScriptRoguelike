@@ -1,3 +1,5 @@
+import { RNG } from "rot-js";
+import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
@@ -17,7 +19,7 @@ export default class G {
     static log: Log;
     static player: Player;
 
-    static light: Light;
+    static playerLight: Light;
 
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
@@ -35,8 +37,15 @@ export default class G {
             }
         }
 
-        G.light = new Light(G.player, 8, [200, 200, 200]);
-        G.board.lightManager.addLight(G.light);
+        let posList: Coords[] = [];
+        for (let tileAndCoords of G.board.tileLayer.iterator()) {
+            if (tileAndCoords[0].passable && !tileAndCoords[0].occupiedByActor() && RNG.getUniform() < .025) {
+                G.board.actorLayer.set(tileAndCoords[1], new Goomba());
+            }
+        }
+
+        G.playerLight = new Light(G.player, 8, [150, 150, 150]);
+        G.board.lightManager.addLight(G.playerLight);
 
         G.initInputHandlers();
 
@@ -96,13 +105,13 @@ export default class G {
                 G.log.write("You pressed A.. amazing!");
                 break;
             case 'light':
-                if (G.light.active === true) {
+                if (G.playerLight.active === true) {
                     G.log.write("You wave your hand over your glowing orb...");
-                    G.light.active = false;
+                    G.playerLight.active = false;
                 }
                 else {
                     G.log.write("You summon a glowing orb!");
-                    G.light.active = true;
+                    G.playerLight.active = true;
                 }
 
                 break;
