@@ -22,9 +22,10 @@ export default class BoardDisplay extends Display {
             const coords = tileAndCoords[1];
 
             let light: Color = lightManager.lightMap.get(coords.key) || lightManager.ambientLight;
-            let luminosity = 0.2126 * light[0] + 0.7152 * light[1] + 0.0722 * light[2];
+            let brightness = (light[0] + light[1] + light[2]) / 3;
 
-            if (luminosity > 50 && seenCells.has(coords.key) && actorLayer.hasCoords(coords)) {
+
+            if (brightness > 50 && seenCells.has(coords.key) && actorLayer.hasCoords(coords)) {
                 let actor = actorLayer.getElementViaCoords(coords);
                 let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.fgColor, light)) : null;
                 let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.bgColor, light)) : null;
