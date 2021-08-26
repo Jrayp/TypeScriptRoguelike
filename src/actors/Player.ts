@@ -3,6 +3,7 @@ import { TryMoveResult } from './../Enums';
 import G from "../G";
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
+import _Npc from './_Npc';
 
 export default class Player extends _Actor {
     name = "Player";
@@ -42,6 +43,11 @@ export default class Player extends _Actor {
         // destinationTile.onEnter(this)
 
         return TryMoveResult.SUCCESFUL;
+    }
+
+    melee(npc: _Actor) {
+        npc.kill();
+
     }
 
     computeFov() {

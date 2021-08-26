@@ -12,10 +12,13 @@ export default class NPCManager {
             npc.act();
     }
 
-    addNpc(npc: _Npc) {
+    add(npc: _Npc) {
         this._npcSet.add(npc);
     }
 
 
+    remove(npc: _Npc) {
+        this._npcSet.delete(npc);
+    }
 
 }

@@ -1,6 +1,7 @@
 import { RNG } from "rot-js";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
+import _Npc from "./actors/_Npc";
 import Board from "./Board";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
@@ -42,7 +43,7 @@ export default class G {
             if (tileAndCoords[0].passable && !tileAndCoords[0].occupant() && RNG.getUniform() < .025) {
                 let g = new Goomba();
                 G.board.actorLayer.set(tileAndCoords[1], g);
-                G.board.npcManager.addNpc(g);
+                G.board.npcManager.add(g);
             }
         }
 
@@ -90,7 +91,7 @@ export default class G {
             case 'Numpad1': return ['move', -1, +1];
             case 'Numpad4': return ['move', -1, 0];
             case 'Numpad7': return ['move', -1, -1];
-            case 'Numpad5': return ['move', 0, 0];
+            case 'Numpad5': return ['wait', 0, 0];
             case 'KeyA': return ['write', 0, 0];
             case 'KeyL': return ['light', 0, 0];
             default: return undefined;
@@ -107,19 +108,22 @@ export default class G {
                     case TryMoveResult.SUCCESFUL:
                         G.board.actorLayer.moveElement(G.player, destPos);
                         const enterMessage = G.board.tileLayer.getElementViaCoords(destPos).onEnter(G.player);
-                        if(enterMessage)
+                        if (enterMessage)
                             this.log.write(enterMessage);
                         break;
                     case TryMoveResult.IMPASSABLE:
                         this.log.write("You bump into a wall!"); // Can be function on impassable types
                         break;
                     case TryMoveResult.ENEMY:
-                        this.log.write("You bump into a Goomba!");
+                        this.player.melee(G.board.actorLayer.getElementViaCoords(destPos))
+                        this.log.write("*Poof* You kick the Goomba");
                         break;
                 }
                 break;
             case 'write':
                 G.log.write("You pressed A.. amazing!");
+                break;
+            case 'wait':
                 break;
             case 'light':
                 if (G.playerLight.active === true) {

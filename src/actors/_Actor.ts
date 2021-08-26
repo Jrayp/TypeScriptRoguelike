@@ -25,6 +25,10 @@ export default abstract class _Actor implements Named, Drawable, Positional {
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
+    kill(){
+        
+    }
+
     // move(newCoords: Coords) {
     //     let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 

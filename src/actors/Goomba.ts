@@ -12,6 +12,8 @@ export default class Goomba extends _Npc {
     fgColor = ColorHelper.fromString("orange");
     bgColor = null;
 
+    alive = true;
+
     constructor() {
         super();
     }
@@ -40,6 +42,11 @@ export default class Goomba extends _Npc {
     move(newCoords: Coords) {
         G.board.actorLayer.moveElement(this, newCoords);
         return true;
+    }
+
+    kill() {
+        G.board.actorLayer.removeViaElement(this);
+        G.board.npcManager.remove(this);
     }
 
 }
