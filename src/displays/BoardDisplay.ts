@@ -25,7 +25,7 @@ export default class BoardDisplay extends Display {
             let brightness = (light[0] + light[1] + light[2]) / 3;
 
 
-            if (brightness > 50 && seenCells.has(coords.key) && actorLayer.hasCoords(coords)) {
+            if (G.player.getCoords()!.key == coords.key || (brightness > 30 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
                 let actor = actorLayer.getElementViaCoords(coords);
                 let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.fgColor, light)) : null;
                 let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.bgColor, light)) : null;
