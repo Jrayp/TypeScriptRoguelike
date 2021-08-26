@@ -10,4 +10,7 @@ export default abstract class _Npc extends _Actor {
     fgColor: Color | null;
     bgColor: Color | null;
 
+
+    act(){};
+
 }

@@ -14,7 +14,8 @@ export class CavernGrassTile extends _BoardTile {
 
     onEnter(actor: _Actor) {
         if (RNG.getUniform() < .1)
-            G.log.write("*Squish* *squish* The cavern grass is spongy");
-        return true;
+            return "*Squish* *squish* The cavern grass is spongy";
+        else return undefined;
+
     }
 }

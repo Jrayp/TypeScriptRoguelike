@@ -23,7 +23,6 @@ export class GlowingCrystalTile extends _BoardTile {
     }
 
     onEnter(actor: _Actor) {
-        G.log.write("The crystal is eerily cold to the touch.");
-        return true;
+        return "The crystal is eerily cold to the touch.";
     }
 }

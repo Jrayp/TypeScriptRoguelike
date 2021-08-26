@@ -8,7 +8,7 @@ import Coords from './../util/Coords';
 import Destroyable from 'src/interfaces/Destroyable';
 import { EventEmitter } from 'stream';
 
-export default abstract class _Actor implements Drawable, Positional, Named {
+export default abstract class _Actor implements Named, Drawable, Positional {
 
     abstract name: string;
 
@@ -16,7 +16,7 @@ export default abstract class _Actor implements Drawable, Positional, Named {
     abstract fgColor: Color | null;
     abstract bgColor: Color | null;
 
-    getCoords(): Coords {
+    getCoords(): Coords | undefined {
         return G.board.actorLayer.getCoordsViaElement(this);
     }
 
@@ -25,17 +25,17 @@ export default abstract class _Actor implements Drawable, Positional, Named {
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
-    move(newCoords: Coords) {
-        let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
+    // move(newCoords: Coords) {
+    //     let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 
-        if (G.board.tileLayer.getElementViaCoords(newCoords).passable) {
-            G.board.actorLayer.moveViaElement(this, newCoords);
-            destinationTile.onEnter(this)
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    //     if (G.board.tileLayer.getElementViaCoords(newCoords).passable) {
+    //         G.board.actorLayer.moveViaElement(this, newCoords);
+    //         destinationTile.onEnter(this)
+    //         return true;
+    //     }
+    //     else {
+    //         return false;
+    //     }
+    // }
 
 }

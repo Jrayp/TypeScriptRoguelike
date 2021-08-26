@@ -14,9 +14,8 @@ export class WaterTile extends _BoardTile {
 
     onEnter(actor: _Actor) {
         if (RNG.getUniform() < .98)
-            G.log.write("*Splash* You wade through some water...");
+            return "*Splash* You wade through some water...";
         else
-            G.log.write("SOMETHING TRIES TO DRAG YOU UNDERWATER... and lets go");
-        return true;
+            return "SOMETHING TRIES TO DRAG YOU UNDERWATER... and lets go";
     }
 }

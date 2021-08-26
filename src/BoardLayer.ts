@@ -1,3 +1,5 @@
+import { ALL } from "dns";
+import { _BoardTile } from "./boardTiles/_BoardTile";
 import C from "./C";
 import { assertTrue } from "./util/Assertions";
 import Coords from "./util/Coords";
@@ -72,9 +74,9 @@ export default class BoardLayer<T> {
         return this._keyToElement.get(coords.key)!;
     }
 
-    getCoordsViaElement(element: T): Coords {
-        assertTrue(this._elementToCoords.has(element), `No Coords found for ${element}.`);
-        return this._elementToCoords.get(element)!;
+    getCoordsViaElement(element: T): Coords | undefined {
+        // assertTrue(this._elementToCoords.has(element), `No Coords found for ${element}.`);
+        return this._elementToCoords.get(element);
     }
 
 
@@ -87,61 +89,93 @@ export default class BoardLayer<T> {
         this.set(coords, element);
     }
 
-    moveViaElement(element: T, destCoord: Coords) {
+    moveElement(element: T, destCoord: Coords) {
         assertTrue(this._elementToCoords.has(element),);
         assertTrue(this._keyToElement.has(destCoord.key) === false, `Can't move element to ${destCoord.key} as there is already an element at the destination.`);
         this.removeViaElement(element);
         this.set(destCoord, element);
     }
 
-    moveViaCoords(currentCoord: Coords, destCoord: Coords) {
-        assertTrue(this._keyToElement.has(currentCoord.key));
-        assertTrue(this._keyToElement.has(destCoord.key) === false), `Can't move element to ${destCoord.key} as there is already an element at the destination.`;
-        let element = this._keyToElement.get(currentCoord.key)!;
-        this.removeViaCoords(currentCoord);
-        this.set(destCoord, element);
-    }
+    // moveViaCoords(currentCoord: Coords, destCoord: Coords) {
+    //     assertTrue(this._keyToElement.has(currentCoord.key));
+    //     assertTrue(this._keyToElement.has(destCoord.key) === false), `Can't move element to ${destCoord.key} as there is already an element at the destination.`;
+    //     let element = this._keyToElement.get(currentCoord.key)!;
+    //     this.removeViaCoords(currentCoord);
+    //     this.set(destCoord, element);
+    // }
 
 
     ///////////////////////////////////////////////////////
-    // Collestions
+    // Collections
     ///////////////////////////////////////////////////////
 
-    getSurroundingElementsSet(coords: Coords) {
-        let surroundingElementSet = new Set<T>();
-        for (let d of C.DIR_COORDS) {
-            const c = Coords.addCoordsToCoords(coords, d);
-            if (this._keyToElement.has(c.key))
-                surroundingElementSet.add(this._keyToElement.get(c.key)!);
-        }
-        return surroundingElementSet;
-    }
+    // getSurroundingElementsSet(coords: Coords, includeUndefined: boolean): Set<T | undefined> {
+    //     let surroundingElementSet = new Set<T | undefined>();
+    //     for (let d of C.DIR_COORDS) {
+    //         const c = Coords.addCoordsToCoords(coords, d);
+    //         if (includeUndefined || this._keyToElement.has(c.key))
+    //             surroundingElementSet.add(this._keyToElement.get(c.key));
+    //     }
+    //     return surroundingElementSet;
+    // }
 
-    getSurroundingElementsList(coords: Coords) {
-        let surroundingElementList: T[] = [];
-        for (let d of C.DIR_COORDS) {
-            const c = Coords.addCoordsToCoords(coords, d);
-            if (this._keyToElement.has(c.key))
-                surroundingElementList.push(this._keyToElement.get(c.key)!);
-        }
-        return surroundingElementList;
-    }
+    // getSurroundingElementsList(coords: Coords, includeUndefined: boolean): (T | undefined)[] {
+    //     let surroundingElementList: (T | undefined)[] = [];
+    //     for (let d of C.DIR_COORDS) {
+    //         const c = Coords.addCoordsToCoords(coords, d);
+
+    //         if (includeUndefined || this._keyToElement.has(c.key))
+    //             surroundingElementList.push(this._keyToElement.get(c.key));
+    //     }
+    //     return surroundingElementList;
+    // }
+
+    // getSurroundingElementsListCond(coords: Coords, cond: (element: T | undefined) => boolean): (T | undefined)[] {
+    //     let surroundingElementList: (T | undefined)[] = [];
+    //     for (let d of C.DIR_COORDS) {
+    //         const c = Coords.addCoordsToCoords(coords, d);
+    //         const e = this._keyToElement.get(c.key);
+    //         if (cond(e))
+    //             surroundingElementList.push(this._keyToElement.get(c.key));
+    //     }
+    //     return surroundingElementList;
+    // }
 
     ///////////////////////////////////////////////////////
     // Iterators
     ///////////////////////////////////////////////////////
 
-    * iterateSurroundingElements(coords: Coords) {
+    // * iterateSurrounding(coords: Coords, condition: ((coords: Coords, element: T | undefined) => boolean) | undefined = undefined): Generator<[Coords, T | undefined]> {
+    //     for (let d of C.DIR_COORDS) {
+    //         const c = Coords.addCoordsToCoords(coords, d);
+    //         const e = this._keyToElement.get(c.key);
+    //         if (condition == undefined || condition(c, e))
+    //             yield [c, e];
+    //     }
+    // }
+
+    * iterateSurrounding(coords: Coords): Generator<[Coords, T | undefined]> {
         for (let d of C.DIR_COORDS) {
             const c = Coords.addCoordsToCoords(coords, d);
-            if (this._keyToElement.has(c.key))
-                yield this._keyToElement.get(c.key)!;
+            const e = this._keyToElement.get(c.key);
+            yield [c, e];
         }
     }
+
 
     iterateElements() {
         return [...this._elementToCoords];
     }
+
+
+    ///////////////////////////////////////////////////////
+    // Common Conditionals
+    ///////////////////////////////////////////////////////
+
+    // static openTileCondition(c: Coords, t: _BoardTile) {
+    //     return t.passable && t.occupant() == false;
+    // }
+
 }
 
 

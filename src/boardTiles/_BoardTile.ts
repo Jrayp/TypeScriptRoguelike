@@ -7,6 +7,7 @@ import G from '../G';
 import Drawable from '../interfaces/Drawable';
 import Coords from './../util/Coords';
 
+// Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements Named, Drawable, Positional {
     abstract glyph: string;
     abstract fgColor: Color | null;
@@ -22,7 +23,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     }
 
     getCoords(): Coords {
-        return G.board.tileLayer.getCoordsViaElement(this);
+        return G.board.tileLayer.getCoordsViaElement(this)!;
     }
 
     draw(boardDisplay: BoardDisplay): void {
@@ -30,11 +31,12 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
 
-    onEnter(actor: _Actor) {
-        return true;
+    onEnter(actor: _Actor): string | undefined {
+        return undefined;
     }
 
-    occupiedByActor() {
-        return G.board.actorLayer.hasKey(this.getCoords().key);
+    occupant() {
+        const coords = this.getCoords();
+        return G.board.actorLayer.hasCoords(coords) ? G.board.actorLayer.getElementViaCoords(coords) : undefined;
     }
 }

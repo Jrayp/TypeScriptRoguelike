@@ -1,4 +1,5 @@
 import { Color, FOV, RNG } from 'rot-js';
+import { TryMoveResult } from './../Enums';
 import G from "../G";
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
@@ -14,23 +15,37 @@ export default class Player extends _Actor {
 
     currentlySeenCoordKeys = new Set<string>();
 
-    move(newCoords: Coords) {
+    // move(newCoords: Coords) {
+    //     if (super.move(newCoords)) {
+    //         if (G.board.lightManager.lightMap.get(newCoords.key) == null && RNG.getUniform() < .25) {
+    //             G.log.write("It's very dark here...");
+    //         }
+    //         return true;
+    //     }
+    //     else {
+    //         G.log.write("Ouch! You run into a wall!")
+    //         return false
+    //     }
+    // }
 
+    tryMove(newCoords: Coords) {
+        const destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
 
-        if (super.move(newCoords)) {
-            if (G.board.lightManager.lightMap.get(newCoords.key) == null && RNG.getUniform() < .25) {
-                G.log.write("It's very dark here...");
-            }
-            return true;
-        }
-        else {
-            G.log.write("Ouch! You run into a wall!")
-            return false
-        }
+        const occupant = destinationTile.occupant();
+        if (occupant) // For now always enemy
+            return TryMoveResult.ENEMY;
+
+        if (!destinationTile.passable)
+            return TryMoveResult.IMPASSABLE;
+
+        // G.board.actorLayer.moveElement(this, newCoords);
+        // destinationTile.onEnter(this)
+
+        return TryMoveResult.SUCCESFUL;
     }
 
     computeFov() {
-        const actorCoords = this.getCoords();
+        const actorCoords = this.getCoords()!;
         this.currentlySeenCoordKeys.clear();
 
         this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, this.fovCallback);

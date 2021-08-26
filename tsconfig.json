@@ -14,8 +14,6 @@
         "outDir": "ts-built"
     },
     "include": [
-        "./src/**/*.ts",
-        "./src/**/*.d.ts",
-        "src/Main.ts"
+        "src/**/*"
     ]
 }
