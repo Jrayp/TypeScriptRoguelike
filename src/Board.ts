@@ -62,7 +62,7 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x,y) && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
                 this.tileLayer.replace(new Coords(x, y), newTile);
             }
@@ -102,6 +102,8 @@ export default class Board {
 
     }
 
+    
+
     ///////////////////////////////////////////////////////
     // Static
     ///////////////////////////////////////////////////////
@@ -109,7 +111,6 @@ export default class Board {
     coordsOnEdge(coords: Coords) {
         return coords.x == 0 || coords.x == C.BOARD_WIDTH - 1 || coords.y == 0 || coords.y == C.BOARD_HEIGHT - 1;
     }
-
 
     numbersOnEdge(x: number, y: number) {
         return x == 0 || x == C.BOARD_WIDTH - 1 || y == 0 || y == C.BOARD_HEIGHT - 1;

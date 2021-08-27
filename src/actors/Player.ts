@@ -4,6 +4,7 @@ import G from "../G";
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
 import _Npc from './_Npc';
+import Light from './../lights/Light';
 
 export default class Player extends _Actor {
     name = "Player";
@@ -11,23 +12,19 @@ export default class Player extends _Actor {
     fgColor = Color.fromString("brown");
     bgColor = null;
 
+    light: Light;
+
     sightRange = 10;
     private _fov = new FOV.PreciseShadowcasting(this.lightPasses);
 
     currentlySeenCoordKeys = new Set<string>();
 
-    // move(newCoords: Coords) {
-    //     if (super.move(newCoords)) {
-    //         if (G.board.lightManager.lightMap.get(newCoords.key) == null && RNG.getUniform() < .25) {
-    //             G.log.write("It's very dark here...");
-    //         }
-    //         return true;
-    //     }
-    //     else {
-    //         G.log.write("Ouch! You run into a wall!")
-    //         return false
-    //     }
-    // }
+    constructor() {
+        super();
+
+        this.light = new Light(this, 8, [150, 150, 150]);
+        G.board.lightManager.addLight(this.light);
+    }
 
     tryMove(newCoords: Coords) {
         const destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);

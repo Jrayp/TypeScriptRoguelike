@@ -21,14 +21,12 @@ export default class G {
     static log: Log;
     static player: Player;
 
-    static playerLight: Light;
-
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
         document.body.append(G.boardDisplay.getContainer()!);
 
         G.log = new Log();
-        G.board = new Board();
+        G.board = new Board()
         G.board.generate();
 
         G.player = new Player();
@@ -42,21 +40,17 @@ export default class G {
         for (let tileAndCoords of G.board.tileLayer.iterateElements()) {
             if (tileAndCoords[0].passable && !tileAndCoords[0].occupant() && RNG.getUniform() < .025) {
                 let g = new Goomba();
-                G.board.actorLayer.set(tileAndCoords[1], g);
                 G.board.npcManager.add(g);
+                G.board.actorLayer.set(tileAndCoords[1], g);
             }
         }
 
-        G.playerLight = new Light(G.player, 8, [150, 150, 150]);
-        G.board.lightManager.addLight(G.playerLight);
-
-        G.initInputHandlers();
-
-        let playerSeenCoords = G.player.computeFov();
-
         G.board.lightManager.update();
 
+        let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords);
+
+        G.initInputHandlers();
 
         G.log.write("Welcome to TypeScript Roguelike!");
     }
@@ -126,13 +120,13 @@ export default class G {
             case 'wait':
                 break;
             case 'light':
-                if (G.playerLight.active === true) {
+                if (G.player.light.active === true) {
                     G.log.write("You wave your hand over your glowing orb...");
-                    G.playerLight.active = false;
+                    G.player.light.active = false;
                 }
                 else {
                     G.log.write("You summon a glowing orb!");
-                    G.playerLight.active = true;
+                    G.player.light.active = true;
                 }
 
                 break;

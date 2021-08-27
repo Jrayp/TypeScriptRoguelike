@@ -41,17 +41,7 @@ export default class Light {
     }
 
     private lightingCallback(x: number, y: number, color: Color) {
-        const key = new Coords(x, y).key;
-
-        if (G.board.lightManager.lightMap.has(key)) {
-            let oldLight = G.board.lightManager.lightMap.get(key)!;
-            let newLight = ColorHelper.add(oldLight, color);
-            G.board.lightManager.lightMap.set(key, newLight)
-        }
-        else {
-            let newLight = ColorHelper.add(G.board.lightManager.ambientLight, color);
-            G.board.lightManager.lightMap.set(key, newLight);
-        }
+        G.board.lightManager.applyLight(x, y, color);
     }
 
     private lightPassingCallback(x: number, y: number) {

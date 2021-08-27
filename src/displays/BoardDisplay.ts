@@ -21,11 +21,11 @@ export default class BoardDisplay extends Display {
         for (let tileAndCoords of tileLayer.iterateElements()) {
             const coords = tileAndCoords[1];
 
-            let light: Color = lightManager.lightMap.get(coords.key) || lightManager.ambientLight;
-            let brightness = (light[0] + light[1] + light[2]) / 3;
+            let light: Color = lightManager.getColor(coords.key) || lightManager.ambientLight;
+            let brightness = lightManager.getBrightness(coords.key) || 0;
 
 
-            if (G.player.getCoords()!.key == coords.key || (brightness > 30 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
+            if (G.player.getCoords()!.key == coords.key || (brightness > 0 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
                 let actor = actorLayer.getElementViaCoords(coords);
                 let fgDrawColor = actor.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.fgColor, light)) : null;
                 let bgDrawColor = actor.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(actor.bgColor, light)) : null;
