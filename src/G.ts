@@ -5,6 +5,7 @@ import Player from "./actors/Player";
 import _Npc from "./actors/_Npc";
 import Board from "./Board";
 import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
+import { RubbleTile } from "./boardTiles/RubbleTile";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { Direction, GameState, TryMoveResult } from "./Enums";
@@ -97,7 +98,8 @@ export default class G {
             case 'KeyA': return ['write', 0, 0];
             case 'KeyL': return ['light', 0, 0];
             case 'KeyC': return ['crystal', 0, 0];
-            case 'KeyS': return ['startAction', 0, 0];
+            case 'KeyF': return ['fireball', 0, 0];
+            case 'KeyO': return ['circle', 0, 0];
             default: return undefined;
         }
     }
@@ -122,11 +124,16 @@ export default class G {
                 break;
             case 'wait':
                 break;
-            case 'startAction':
+            case 'circle':
+                for (let t of G.board.tileLayer.iterateCircle(G.player.getCoords()!, 4)) {
+                    G.board.tileLayer.replace(t[0], new RubbleTile([255, 0, 0]));
+                }
+                break;
+            case 'fireball':
                 let startCoord = Coords.addCoordsToCoords(G.player.getCoords()!, GMath.DIR_COORDS[Direction.N]);
                 G.board.actionLayer.set(startCoord, new FireballAction());
                 G.board.actionManager.startLoop();
-                break;
+                return;
             case 'crystal':
                 let coords = this.player.getCoords()!;
                 let tile = G.board.tileLayer.getElementViaCoords(coords);

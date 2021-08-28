@@ -101,63 +101,13 @@ export default class BoardLayer<T> {
         this.set(destCoord, element);
     }
 
-    // moveViaCoords(currentCoord: Coords, destCoord: Coords) {
-    //     assertTrue(this._keyToElement.has(currentCoord.key));
-    //     assertTrue(this._keyToElement.has(destCoord.key) === false), `Can't move element to ${destCoord.key} as there is already an element at the destination.`;
-    //     let element = this._keyToElement.get(currentCoord.key)!;
-    //     this.removeViaCoords(currentCoord);
-    //     this.set(destCoord, element);
-    // }
-
-
     ///////////////////////////////////////////////////////
-    // Collections
+    // Iterators & Generators
     ///////////////////////////////////////////////////////
 
-    // getSurroundingElementsSet(coords: Coords, includeUndefined: boolean): Set<T | undefined> {
-    //     let surroundingElementSet = new Set<T | undefined>();
-    //     for (let d of C.DIR_COORDS) {
-    //         const c = Coords.addCoordsToCoords(coords, d);
-    //         if (includeUndefined || this._keyToElement.has(c.key))
-    //             surroundingElementSet.add(this._keyToElement.get(c.key));
-    //     }
-    //     return surroundingElementSet;
-    // }
-
-    // getSurroundingElementsList(coords: Coords, includeUndefined: boolean): (T | undefined)[] {
-    //     let surroundingElementList: (T | undefined)[] = [];
-    //     for (let d of C.DIR_COORDS) {
-    //         const c = Coords.addCoordsToCoords(coords, d);
-
-    //         if (includeUndefined || this._keyToElement.has(c.key))
-    //             surroundingElementList.push(this._keyToElement.get(c.key));
-    //     }
-    //     return surroundingElementList;
-    // }
-
-    // getSurroundingElementsListCond(coords: Coords, cond: (element: T | undefined) => boolean): (T | undefined)[] {
-    //     let surroundingElementList: (T | undefined)[] = [];
-    //     for (let d of C.DIR_COORDS) {
-    //         const c = Coords.addCoordsToCoords(coords, d);
-    //         const e = this._keyToElement.get(c.key);
-    //         if (cond(e))
-    //             surroundingElementList.push(this._keyToElement.get(c.key));
-    //     }
-    //     return surroundingElementList;
-    // }
-
-    ///////////////////////////////////////////////////////
-    // Iterators
-    ///////////////////////////////////////////////////////
-
-    // * iterateSurrounding(coords: Coords, condition: ((coords: Coords, element: T | undefined) => boolean) | undefined = undefined): Generator<[Coords, T | undefined]> {
-    //     for (let d of C.DIR_COORDS) {
-    //         const c = Coords.addCoordsToCoords(coords, d);
-    //         const e = this._keyToElement.get(c.key);
-    //         if (condition == undefined || condition(c, e))
-    //             yield [c, e];
-    //     }
-    // }
+    iterateElements() {
+        return [...this._elementToCoords];
+    }
 
     * iterateSurrounding(coords: Coords): Generator<[Coords, T | undefined]> {
         for (let d of GMath.DIR_COORDS) {
@@ -167,19 +117,25 @@ export default class BoardLayer<T> {
         }
     }
 
+    * iterateCircle(center: Coords, radius: number): Generator<[Coords, T | undefined]> {
+        let top = Math.floor(center.y - radius);
+        let bottom = Math.ceil(center.y + radius);
+        let left = Math.floor(center.x - radius);
+        let right = Math.ceil(center.x + radius);
 
-    iterateElements() {
-        return [...this._elementToCoords];
+        for (let y = top; y <= bottom; y++) {
+            for (let x = left; x <= right; x++) {
+                if (GMath.insideCircle(center, x, y, radius)) {
+                    const c = new Coords(x, y);
+                    const e = this._keyToElement.get(c.key);
+                    yield [c, e]
+                }
+            }
+        }
     }
 
 
-    ///////////////////////////////////////////////////////
-    // Common Conditionals
-    ///////////////////////////////////////////////////////
 
-    // static openTileCondition(c: Coords, t: _BoardTile) {
-    //     return t.passable && t.occupant() == false;
-    // }
 
 }
 

@@ -5,6 +5,7 @@ import GMath from "./../util/GMath";
 import G from "./../G";
 import _Action from "./_Action";
 import Light from "./../lights/Light";
+import Board from "src/Board";
 
 export default class FireballAction extends _Action {
     glyph = '*';
@@ -32,6 +33,9 @@ export default class FireballAction extends _Action {
     }
 
     explode() {
+        const coords = this.getCoords();
+        let generator = G.board.tileLayer.iterateCircle(coords, 4);
+
         G.board.actionManager.removeAction(this);
         G.board.lightManager.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");

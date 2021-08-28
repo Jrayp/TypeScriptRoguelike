@@ -5,7 +5,7 @@ import _Action from "./_Action";
 // TODO consider just extending the actor layer (maybe not)
 export default class ActionManager {
 
-    fps = 10;
+    fps = 12;
     changeEvery = 1000 / this.fps;
     elapsed = this.changeEvery;
     start: number | null;
@@ -23,6 +23,14 @@ export default class ActionManager {
         this.start = null;
         this.elapsed = this.changeEvery;
         requestAnimationFrame(this.loop);
+    }
+
+    finalize() {
+        G.board.npcManager.update();
+        G.board.lightManager.update();
+        let playerSeenCoords = G.player.computeFov();
+        G.board.draw(playerSeenCoords);
+        G.state = GameState.PLAYER_CONTROL;
     }
 
     updateAndDraw(dt: any) {
@@ -51,7 +59,7 @@ export default class ActionManager {
         if (G.board.actionLayer.count() > 0)
             requestAnimationFrame(this.loop);
         else
-            G.state = GameState.PLAYER_CONTROL;
+            this.finalize();
     }
 
 }
