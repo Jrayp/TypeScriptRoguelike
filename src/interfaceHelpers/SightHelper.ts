@@ -5,12 +5,14 @@ import G from "./../G";
 export default class SightHelper {
 
     static computeFov(sight: Sight) {
-        const coords = sight.getCoords();
+        const sightImplmenterCoords = sight.getCoords();
         sight.currentlySeenCoordKeys.clear();
-        if (coords) {
-            sight.fov.compute(coords.x, coords.y, sight.sightRange,
+        if (sightImplmenterCoords) {
+            sight.fov.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
-                    sight.currentlySeenCoordKeys.add(Coords.makeKey(x, y));
+                    let coordsKey = Coords.makeKey(x, y);
+                    if (G.board.lightManager.getBrightness(coordsKey)) // Only seen if there is light
+                        sight.currentlySeenCoordKeys.add(coordsKey);
                 });
         }
         return sight.currentlySeenCoordKeys;

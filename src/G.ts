@@ -3,6 +3,7 @@ import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import _Npc from "./actors/_Npc";
 import Board from "./Board";
+import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { TryMoveResult } from "./Enums";
@@ -89,6 +90,7 @@ export default class G {
             case 'Numpad5': return ['wait', 0, 0];
             case 'KeyA': return ['write', 0, 0];
             case 'KeyL': return ['light', 0, 0];
+            case 'KeyC': return ['crystal', 0, 0];
             default: return undefined;
         }
     }
@@ -120,6 +122,12 @@ export default class G {
                 break;
             case 'wait':
                 break;
+            case 'crystal':
+                let coords = this.player.getCoords()!;
+                let tile = G.board.tileLayer.getElementViaCoords(coords);
+                if (tile.name != "Glowing Crystal")
+                    G.board.tileLayer.replace(coords, new GlowingCrystalTile());
+                    break;
             case 'light':
                 if (G.player.light.active === true) {
                     G.log.write("You wave your hand over your glowing orb...");

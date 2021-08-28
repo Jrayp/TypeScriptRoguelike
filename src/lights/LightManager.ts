@@ -3,6 +3,9 @@ import Coords from "./../util/Coords";
 import Light from "./Light";
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import GMath from "./../util/GMath";
+import Sight from "./../interfaces/Sight";
+import { _BoardTile } from "./../boardTiles/_BoardTile";
+import G from "./../G";
 
 export default class LightManager {
 
@@ -51,4 +54,27 @@ export default class LightManager {
         this._brightnessMap.set(key, brightness);
     }
 
+    percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: Sight) {
+        let tileCoords = opaqueTile.getCoords();
+        let objectiveBrightness = this._brightnessMap.get(tileCoords.key) || 0;
+
+        let brightestNeighborColor: Color | undefined = undefined;
+        let highestBrightness = 0;
+        let generator = G.board.tileLayer.iterateSurrounding(tileCoords);
+        for (let neighborCoordsAndTile of generator) {
+            if (neighborCoordsAndTile[1]?.transparent) {
+                let key = neighborCoordsAndTile[0].key;
+                let inFov = sight.currentlySeenCoordKeys.has(key);
+                if (inFov) {
+                    let brightness = this._brightnessMap.get(key) || 0;
+                    if (brightness > highestBrightness) {
+                        brightestNeighborColor = this._colorMap.get(key)!;
+                        highestBrightness = brightness;
+                    }
+                }
+            }
+        }
+        // Return the objective color, or the color of neighbor with highest brightness. Whichever is less
+        return objectiveBrightness < highestBrightness ? this._colorMap.get(tileCoords.key) || undefined : brightestNeighborColor;
+    }
 }

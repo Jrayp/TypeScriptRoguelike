@@ -1,11 +1,10 @@
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
-import G from './../G';
-import C from '../C';
-import Board from './../Board';
-import _Action from 'src/actions/_Action';
 import _Actor from 'src/actors/_Actor';
 import { _BoardTile } from 'src/boardTiles/_BoardTile';
+import C from '../C';
+import Board from './../Board';
+import G from './../G';
 
 
 export default class BoardDisplay extends Display {
@@ -31,6 +30,7 @@ export default class BoardDisplay extends Display {
 
         for (let tileAndCoords of tileLayer.iterateElements()) {
             const coords = tileAndCoords[1];
+            const tile = tileAndCoords[0];
 
             let light: Color = lightManager.getColor(coords.key) || lightManager.ambientLight;
             let brightness = lightManager.getBrightness(coords.key) || 0;
@@ -40,8 +40,17 @@ export default class BoardDisplay extends Display {
                 fgDrawColor = actor.fgColor == null ? null : ColorHelper.toRGB(actor.fgColor);
                 bgDrawColor = actor.bgColor == null ? null : ColorHelper.toRGB(actor.bgColor);
                 this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
-            } else if (brightness > 0 && seenCells.has(coords.key)) { // Tiles 
-                tile = tileAndCoords[0];
+            }
+            else if (seenCells.has(coords.key) && !tile.transparent) { // Walls etc 
+                let percievedLightColor = G.board.lightManager.percievedLightColorOfOpaque(tile, G.player);
+                if (percievedLightColor) {
+                    fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, percievedLightColor)) : null;
+                    bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, percievedLightColor)) : null;
+                    this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
+                    this.observedCells.add(coords.key);
+                }
+            }
+            else if (brightness > 0 && seenCells.has(coords.key)) { // Opaque Tiles 
                 fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, light)) : null;
                 bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
