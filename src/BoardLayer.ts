@@ -3,6 +3,7 @@ import { _BoardTile } from "./boardTiles/_BoardTile";
 import C from "./C";
 import { assertTrue } from "./util/Assertions";
 import Coords from "./util/Coords";
+import GMath from "./util/GMath";
 
 export default class BoardLayer<T> {
     private _elementToCoords: Map<T, Coords> = new Map();
@@ -155,7 +156,7 @@ export default class BoardLayer<T> {
     // }
 
     * iterateSurrounding(coords: Coords): Generator<[Coords, T | undefined]> {
-        for (let d of C.DIR_COORDS) {
+        for (let d of GMath.DIR_COORDS) {
             const c = Coords.addCoordsToCoords(coords, d);
             const e = this._keyToElement.get(c.key);
             yield [c, e];

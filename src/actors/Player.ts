@@ -1,12 +1,13 @@
-import { Color, FOV, RNG } from 'rot-js';
-import { TryMoveResult } from './../Enums';
+import { Color, FOV } from 'rot-js';
+import SightHelper from './../interfaceHelpers/SightHelper';
+import Sight from './../interfaces/Sight';
 import G from "../G";
+import { TryMoveResult } from './../Enums';
+import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
-import _Npc from './_Npc';
-import Light from './../lights/Light';
 
-export default class Player extends _Actor {
+export default class Player extends _Actor implements Sight {
     name = "Player";
     glyph = '\u263B';
     fgColor = Color.fromString("brown");
@@ -14,16 +15,20 @@ export default class Player extends _Actor {
 
     light: Light;
 
-    sightRange = 10;
-    private _fov = new FOV.PreciseShadowcasting(this.lightPasses);
+    sightRange = 30;
+    fov = new FOV.PreciseShadowcasting(SightHelper.sightPassesCallback);
 
     currentlySeenCoordKeys = new Set<string>();
 
     constructor() {
         super();
 
-        this.light = new Light(this, 8, [150, 150, 150]);
+        this.light = new Light(this, 4, [175, 175, 175]);
         G.board.lightManager.addLight(this.light);
+    }
+
+    computeFov(): Set<string> {
+        return SightHelper.computeFov(this);
     }
 
     tryMove(newCoords: Coords) {
@@ -36,9 +41,6 @@ export default class Player extends _Actor {
         if (!destinationTile.passable)
             return TryMoveResult.IMPASSABLE;
 
-        // G.board.actorLayer.moveElement(this, newCoords);
-        // destinationTile.onEnter(this)
-
         return TryMoveResult.SUCCESFUL;
     }
 
@@ -47,26 +49,6 @@ export default class Player extends _Actor {
 
     }
 
-    computeFov() {
-        const actorCoords = this.getCoords()!;
-        this.currentlySeenCoordKeys.clear();
-
-        this._fov.compute(actorCoords.x, actorCoords.y, this.sightRange, this.fovCallback);
-
-        return this.currentlySeenCoordKeys;
-    }
-
-    // Using arrow notation to bind 'this' to the callback
-    private fovCallback = (x: number, y: number, r: number, visibility: number) => {
-        this.currentlySeenCoordKeys.add(Coords.makeKey(x, y));
-    }
-
-    private lightPasses(x: number, y: number) {
-        if (!G.board.numbersWithinBounds(x, y))
-            return false;
-        else
-            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
-    }
 
 
 }

@@ -2,6 +2,7 @@ import { Color } from "rot-js/lib/color";
 import Coords from "./../util/Coords";
 import Light from "./Light";
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
+import GMath from "./../util/GMath";
 
 export default class LightManager {
 
@@ -46,7 +47,7 @@ export default class LightManager {
         }
 
         let brightness = (newLight[0] + newLight[1] + newLight[2]) / 3;
-        brightness = (brightness - 0) / (255 - 0);
+        brightness = GMath.normalize(brightness, 0, 255, 0, 10);
         this._brightnessMap.set(key, brightness);
     }
 

@@ -9,6 +9,7 @@ import { TryMoveResult } from "./Enums";
 import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
+import GMath from "./util/GMath";
 
 
 export default class G {

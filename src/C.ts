@@ -11,17 +11,6 @@ export default class C {
 
     static readonly LIGHT_DEFAULT_REFLECTIVITY = .3;
 
-    static readonly DIR_COORDS = [
-        new Coords(0, -1),
-        new Coords(1, -1),
-        new Coords(1, 0),
-        new Coords(1, 1),
-        new Coords(0, 1),
-        new Coords(-1, 1),
-        new Coords(-1, 0),
-        new Coords(-1, -1),
-    ]
-
     static readonly BOARD_DISPLAY_OPTIONS = {
         // Configure the display
         bg: "black", // background
