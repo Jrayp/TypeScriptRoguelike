@@ -103,17 +103,10 @@ export default class G {
                 let result = G.player.tryMove(destPos);
                 switch (result) {
                     case TryMoveResult.SUCCESFUL:
-                        G.board.actorLayer.moveElement(G.player, destPos);
-                        const enterMessage = G.board.tileLayer.getElementViaCoords(destPos).onEnter(G.player);
-                        if (enterMessage)
-                            this.log.write(enterMessage);
                         break;
                     case TryMoveResult.IMPASSABLE:
-                        this.log.write("You bump into a wall!"); // Can be function on impassable types
                         break;
                     case TryMoveResult.ENEMY:
-                        this.player.melee(G.board.actorLayer.getElementViaCoords(destPos))
-                        this.log.write("*Poof* You kick the Goomba");
                         break;
                 }
                 break;
@@ -127,7 +120,7 @@ export default class G {
                 let tile = G.board.tileLayer.getElementViaCoords(coords);
                 if (tile.name != "Glowing Crystal")
                     G.board.tileLayer.replace(coords, new GlowingCrystalTile());
-                    break;
+                break;
             case 'light':
                 if (G.player.light.active === true) {
                     G.log.write("You wave your hand over your glowing orb...");

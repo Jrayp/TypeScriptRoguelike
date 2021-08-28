@@ -6,6 +6,8 @@ import { TryMoveResult } from './../Enums';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
+import { _BoardTile } from 'src/boardTiles/_BoardTile';
+import Diggable from 'src/interfaces/Diggable';
 
 export default class Player extends _Actor implements Sight {
     name = "Player";
@@ -31,15 +33,28 @@ export default class Player extends _Actor implements Sight {
         return SightHelper.computeFov(this);
     }
 
-    tryMove(newCoords: Coords) {
-        const destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
+    tryMove(destCoords: Coords) {
+        const destinationTile = G.board.tileLayer.getElementViaCoords(destCoords);
 
         const occupant = destinationTile.occupant();
-        if (occupant) // For now always enemy
+        if (occupant) { // For now always enemy
+            this.melee(G.board.actorLayer.getElementViaCoords(destCoords))
+            G.log.write("*Poof* You kick the Goomba");
             return TryMoveResult.ENEMY;
+        }
 
-        if (!destinationTile.passable)
+        if (!destinationTile.passable) {
+            if (this.isDiggable(destinationTile)) {
+                destinationTile.dig();
+            }
+            // G.log.write("You bump into a wall!"); // Can be function on impassable types
             return TryMoveResult.IMPASSABLE;
+        }
+
+        G.board.actorLayer.moveElement(G.player, destCoords);
+        const enterMessage = G.board.tileLayer.getElementViaCoords(destCoords).onEnter(G.player);
+        if (enterMessage)
+            G.log.write(enterMessage);
 
         return TryMoveResult.SUCCESFUL;
     }
@@ -47,6 +62,10 @@ export default class Player extends _Actor implements Sight {
     melee(npc: _Actor) {
         npc.kill();
 
+    }
+
+    isDiggable(tile: _BoardTile | Diggable): tile is Diggable {
+        return 'dig' in tile;
     }
 
 

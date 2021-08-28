@@ -3,6 +3,7 @@ import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
 import _Actor from './actors/_Actor';
 import BoardLayer from './BoardLayer';
+import { BorderTile } from './boardTiles/BorderTile';
 import { CavernGrassTile } from './boardTiles/CavernGrassTile';
 import { FloorTile } from './boardTiles/FloorTile';
 import { GlowingCrystalTile } from './boardTiles/GlowingCrystalTile';
@@ -35,7 +36,9 @@ export default class Board {
     generate() {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 || this.numbersOnEdge(x, y))
+            if (this.numbersOnEdge(x, y))
+                newTile = new BorderTile();
+            else if (value == 0)
                 newTile = new WallTile();
             else if (value == 1)
                 if (RNG.getUniform() < .025)
@@ -102,7 +105,7 @@ export default class Board {
 
     }
 
-    
+
 
     ///////////////////////////////////////////////////////
     // Static

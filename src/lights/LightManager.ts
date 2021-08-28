@@ -31,6 +31,12 @@ export default class LightManager {
         }
     }
 
+    updateFov() {
+        for (let light of this._lights) {
+            light.updateFov();
+        }
+    }
+
     addLight(light: Light) {
         this._lights.add(light);
     }
