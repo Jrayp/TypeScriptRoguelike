@@ -35,11 +35,14 @@ export default class Light {
         }
     }
 
+    updateFov() {
+        this._lighting.setFOV(this._lightCone);
+    }
+
     private move(coords: Coords) {
         this._lighting.clearLights();
         this._lighting.setLight(coords.x, coords.y, this._color);
     }
-
     private lightingCallback(x: number, y: number, color: Color) {
         G.board.lightManager.applyLight(x, y, color);
     }

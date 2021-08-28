@@ -6,6 +6,8 @@ import { TryMoveResult } from './../Enums';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
+import { _BoardTile } from 'src/boardTiles/_BoardTile';
+import Diggable from 'src/interfaces/Diggable';
 
 export default class Player extends _Actor implements Sight {
     name = "Player";
@@ -42,7 +44,10 @@ export default class Player extends _Actor implements Sight {
         }
 
         if (!destinationTile.passable) {
-            G.log.write("You bump into a wall!"); // Can be function on impassable types
+            if (this.isDiggable(destinationTile)) {
+                destinationTile.dig();
+            }
+            // G.log.write("You bump into a wall!"); // Can be function on impassable types
             return TryMoveResult.IMPASSABLE;
         }
 
@@ -57,6 +62,10 @@ export default class Player extends _Actor implements Sight {
     melee(npc: _Actor) {
         npc.kill();
 
+    }
+
+    isDiggable(tile: _BoardTile | Diggable): tile is Diggable {
+        return 'dig' in tile;
     }
 
 
