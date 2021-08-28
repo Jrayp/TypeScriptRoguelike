@@ -1,4 +1,5 @@
 import { RNG } from "rot-js";
+import FireballAction from "./actions/FireBallAction";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import _Npc from "./actors/_Npc";
@@ -6,7 +7,7 @@ import Board from "./Board";
 import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
-import { TryMoveResult } from "./Enums";
+import { Direction, GameState, TryMoveResult } from "./Enums";
 import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
@@ -22,6 +23,8 @@ export default class G {
     static board: Board;
     static log: Log;
     static player: Player;
+
+    static state = GameState.PLAYER_CONTROL;
 
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
@@ -78,6 +81,9 @@ export default class G {
 
 
     private static determinePlayerAction(key: string): [string, number, number] | undefined {
+        if (this.state != GameState.PLAYER_CONTROL)
+            return undefined;
+
         switch (key) {
             case 'Numpad8': return ['move', 0, -1];
             case 'Numpad9': return ['move', +1, -1];
@@ -91,6 +97,7 @@ export default class G {
             case 'KeyA': return ['write', 0, 0];
             case 'KeyL': return ['light', 0, 0];
             case 'KeyC': return ['crystal', 0, 0];
+            case 'KeyS': return ['startAction', 0, 0];
             default: return undefined;
         }
     }
@@ -114,6 +121,11 @@ export default class G {
                 G.log.write("You pressed A.. amazing!");
                 break;
             case 'wait':
+                break;
+            case 'startAction':
+                let startCoord = Coords.addCoordsToCoords(G.player.getCoords()!, GMath.DIR_COORDS[Direction.N]);
+                G.board.actionLayer.set(startCoord, new FireballAction());
+                G.board.actionManager.startLoop();
                 break;
             case 'crystal':
                 let coords = this.player.getCoords()!;
@@ -140,3 +152,6 @@ export default class G {
         G.board.draw(playerSeenCoords);
     }
 }
+
+
+

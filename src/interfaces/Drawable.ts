@@ -7,5 +7,5 @@ export default interface Drawable {
     fgColor: Color | null;
     bgColor: Color | null;
 
-    draw(boardDisplay: BoardDisplay): void;
+    getDrawData(boardDisplay: BoardDisplay): void;
 }

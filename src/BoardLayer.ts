@@ -49,6 +49,10 @@ export default class BoardLayer<T> {
     // Existance
     ///////////////////////////////////////////////////////
 
+    count() {
+        return this._keyToElement.size;
+    }
+
     hasKey(key: string) {
         return this._keyToElement.has(key);
     }

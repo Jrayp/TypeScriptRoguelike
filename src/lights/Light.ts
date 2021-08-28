@@ -35,6 +35,10 @@ export default class Light {
         }
     }
 
+    extinguish(){
+        this._lighting.clearLights();
+    }
+
     updateFov() {
         this._lighting.setFOV(this._lightCone);
     }

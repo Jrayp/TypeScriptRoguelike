@@ -10,7 +10,7 @@ export class RubbleTile extends _BoardTile {
     passable = true;
     transparent = true;
 
-    static possibleGlyphs: [string, string, string, string, string] = ['%', ',', ';', '`', ':']
+    static possibleGlyphs: [string, string, string, string, string, string] = ['%', ',', ';', '`', ':', '.']
 
     constructor(color: Color) {
         super();

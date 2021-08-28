@@ -1,4 +1,9 @@
 
+export enum GameState {
+    PLAYER_CONTROL,
+    ACTION
+}
+
 export enum Direction {
     N,
     NE,

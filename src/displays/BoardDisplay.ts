@@ -19,6 +19,7 @@ export default class BoardDisplay extends Display {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
         const lightManager = G.board.lightManager;
+        const actionLayer = G.board.actionLayer;
 
         this.clear();
 
@@ -35,8 +36,15 @@ export default class BoardDisplay extends Display {
             let light: Color = lightManager.getColor(coords.key) || lightManager.ambientLight;
             let brightness = lightManager.getBrightness(coords.key) || 0;
 
-            if (G.player.getCoords()?.key == coords.key || (brightness > 0 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
+            if (brightness > 0 && seenCells.has(coords.key) && actionLayer.hasCoords(coords)) {
+                let action = actionLayer.getElementViaCoords(coords);
+                fgDrawColor = action.fgColor == null ? null : ColorHelper.toRGB(action.fgColor);
+                bgDrawColor = action.bgColor == null ? null : ColorHelper.toRGB(action.bgColor);
+                this.draw(coords.x, coords.y, action.glyph, fgDrawColor, bgDrawColor);
+            }
+            else if (G.player.getCoords()?.key == coords.key || (brightness > 0 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
                 actor = actorLayer.getElementViaCoords(coords);
+                // TODO: Get draw data from actor
                 fgDrawColor = actor.fgColor == null ? null : ColorHelper.toRGB(actor.fgColor);
                 bgDrawColor = actor.bgColor == null ? null : ColorHelper.toRGB(actor.bgColor);
                 this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
@@ -44,6 +52,7 @@ export default class BoardDisplay extends Display {
             else if (seenCells.has(coords.key) && !tile.transparent) { // Walls etc 
                 let percievedLightColor = G.board.lightManager.percievedLightColorOfOpaque(tile, G.player);
                 if (percievedLightColor) {
+                    // TODO: Get draw data from tile
                     fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, percievedLightColor)) : null;
                     bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, percievedLightColor)) : null;
                     this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
@@ -51,6 +60,7 @@ export default class BoardDisplay extends Display {
                 }
             }
             else if (brightness > 0 && seenCells.has(coords.key)) { // Opaque Tiles 
+                // TODO: Get draw data from tile
                 fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, light)) : null;
                 bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);

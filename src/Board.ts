@@ -1,6 +1,8 @@
 import { Map, RNG } from 'rot-js';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
+import ActionManager from './actions/ActionManager';
+import _Action from './actions/_Action';
 import _Actor from './actors/_Actor';
 import BoardLayer from './BoardLayer';
 import { BorderTile } from './boardTiles/BorderTile';
@@ -19,9 +21,11 @@ import Coords from './util/Coords';
 export default class Board {
     tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
     actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
+    actionLayer: BoardLayer<_Action> = new BoardLayer<_Action>();
 
     lightManager: LightManager = new LightManager();
     npcManager: NPCManager = new NPCManager();
+    actionManager : ActionManager = new ActionManager();
 
     constructor() {
         // this.generate();

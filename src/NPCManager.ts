@@ -1,5 +1,6 @@
 import _Npc from "./actors/_Npc";
 
+// TODO consider just extending the actor layer
 export default class NPCManager {
 
     private _npcSet = new Set<_Npc>();

@@ -41,6 +41,11 @@ export default class LightManager {
         this._lights.add(light);
     }
 
+    removeLight(light: Light) {
+        light.extinguish();
+        this._lights.delete(light);
+    }
+
     applyLight(x: number, y: number, lightColor: Color) {
         const key = new Coords(x, y).key;
 

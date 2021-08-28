@@ -26,7 +26,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
         return G.board.tileLayer.getCoordsViaElement(this)!;
     }
 
-    draw(boardDisplay: BoardDisplay): void {
+    getDrawData(boardDisplay: BoardDisplay): void {
         let coords = this.getCoords();
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
