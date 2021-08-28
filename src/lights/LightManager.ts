@@ -1,11 +1,11 @@
+import { Color as ColorHelper } from "rot-js";
 import { Color } from "rot-js/lib/color";
-import Coords from "./../util/Coords";
-import Light from "./Light";
-import { Color as ColorHelper, FOV, Lighting } from "rot-js";
-import GMath from "./../util/GMath";
-import Sight from "./../interfaces/Sight";
 import { _BoardTile } from "./../boardTiles/_BoardTile";
 import G from "./../G";
+import Sight from "./../interfaces/Sight";
+import Coords from "./../util/Coords";
+import GMath from "./../util/GMath";
+import Light from "./Light";
 
 export default class LightManager {
 
