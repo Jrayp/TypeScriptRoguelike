@@ -1,6 +1,6 @@
 import { Color } from "rot-js/lib/color";
 import G from "./../G";
-import Light from "src/lights/Light";
+import Light from "./../lights/Light";
 import _Action from "./_Action";
 
 export default class ExplosionAction extends _Action {
@@ -17,7 +17,7 @@ export default class ExplosionAction extends _Action {
     }
 
     doStep() {
-        const coords = this.getCoords();
+        const coords = this.coords;
         
         
         

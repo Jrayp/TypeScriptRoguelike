@@ -6,6 +6,7 @@ import _Npc from "./actors/_Npc";
 import Board from "./Board";
 import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
 import { RubbleTile } from "./boardTiles/RubbleTile";
+import { WallTile } from "./boardTiles/WallTile";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { Direction, GameState, TryMoveResult } from "./Enums";
@@ -107,7 +108,7 @@ export default class G {
     private static performPlayerAction(action: [string, number, number]) {
         switch (action[0]) {
             case 'move':
-                let currentPos = G.player.getCoords()!;
+                let currentPos = G.player.coords!;
                 let destPos = Coords.addCoordsToNumbers(currentPos, action[1], action[2]);
                 let result = G.player.tryMove(destPos);
                 switch (result) {
@@ -125,17 +126,19 @@ export default class G {
             case 'wait':
                 break;
             case 'circle':
-                for (let t of G.board.tileLayer.iterateCircle(G.player.getCoords()!, 4)) {
-                    G.board.tileLayer.replace(t[0], new RubbleTile([255, 0, 0]));
+                for (let t of G.board.tileLayer.iterateCircle(G.player.coords!, 3.5)) {
+                    // G.board.tileLayer.replace(t[0], new RubbleTile([255, 0, 255]));
+                    G.board.tileLayer.replace(t[0], new WallTile());
+
                 }
                 break;
             case 'fireball':
-                let startCoord = Coords.addCoordsToCoords(G.player.getCoords()!, GMath.DIR_COORDS[Direction.N]);
+                let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
                 G.board.actionLayer.set(startCoord, new FireballAction());
                 G.board.actionManager.startLoop();
                 return;
             case 'crystal':
-                let coords = this.player.getCoords()!;
+                let coords = this.player.coords!;
                 let tile = G.board.tileLayer.getElementViaCoords(coords);
                 if (tile.name != "Glowing Crystal")
                     G.board.tileLayer.replace(coords, new GlowingCrystalTile());

@@ -20,7 +20,7 @@ export default class Goomba extends _Npc {
 
     act() {
         let freeCoords: Coords[] = [];
-        let generator = G.board.tileLayer.iterateSurrounding(this.getCoords()!);
+        let generator = G.board.tileLayer.iterateSurrounding(this.coords!);
         for (let coordsAndTile of generator) {
             const tile = coordsAndTile[1]!;
             if (tile.occupant() == G.player) {

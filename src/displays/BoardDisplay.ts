@@ -15,6 +15,7 @@ export default class BoardDisplay extends Display {
         super(C.BOARD_DISPLAY_OPTIONS);
     }
 
+    // TODO: only need to draw whats in fov...
     update(board: Board, seenCells: Set<string>) {
         const tileLayer = board.tileLayer;
         const actorLayer = board.actorLayer;
@@ -42,7 +43,7 @@ export default class BoardDisplay extends Display {
                 bgDrawColor = action.bgColor == null ? null : ColorHelper.toRGB(action.bgColor);
                 this.draw(coords.x, coords.y, action.glyph, fgDrawColor, bgDrawColor);
             }
-            else if (G.player.getCoords()?.key == coords.key || (brightness > 0 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
+            else if (G.player.coords?.key == coords.key || (brightness > 0 && seenCells.has(coords.key) && actorLayer.hasCoords(coords))) {
                 actor = actorLayer.getElementViaCoords(coords);
                 // TODO: Get draw data from actor
                 fgDrawColor = actor.fgColor == null ? null : ColorHelper.toRGB(actor.fgColor);
@@ -56,7 +57,7 @@ export default class BoardDisplay extends Display {
                     fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, percievedLightColor)) : null;
                     bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, percievedLightColor)) : null;
                     this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
-                    this.observedCells.add(coords.key);
+                    // this.observedCells.add(coords.key);
                 }
             }
             else if (brightness > 0 && seenCells.has(coords.key)) { // Opaque Tiles 
@@ -64,7 +65,7 @@ export default class BoardDisplay extends Display {
                 fgDrawColor = tile.fgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.fgColor, light)) : null;
                 bgDrawColor = tile.bgColor ? ColorHelper.toRGB(ColorHelper.multiply(tile.bgColor, light)) : null;
                 this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
-                this.observedCells.add(coords.key);
+                // this.observedCells.add(coords.key);
             }
             // else if (this.observedCells.has(coords.key)) {
             //     tile = tileAndCoords[0];

@@ -22,12 +22,12 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     constructor() {
     }
 
-    getCoords(): Coords {
+    get coords(): Coords {
         return G.board.tileLayer.getCoordsViaElement(this)!;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
-        let coords = this.getCoords();
+        let coords = this.coords;
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
 
@@ -36,7 +36,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     }
 
     occupant() {
-        const coords = this.getCoords();
+        const coords = this.coords;
         return G.board.actorLayer.hasCoords(coords) ? G.board.actorLayer.getElementViaCoords(coords) : undefined;
     }
 }

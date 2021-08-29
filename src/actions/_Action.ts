@@ -11,7 +11,7 @@ export default abstract class _Action implements Drawable, Positional {
     abstract fgColor: Color | null;
     abstract bgColor: Color | null;
 
-    getCoords(): Coords {
+    get coords(): Coords {
         return G.board.actionLayer.getCoordsViaElement(this)!;
     }
 

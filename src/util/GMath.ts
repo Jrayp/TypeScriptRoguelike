@@ -25,8 +25,8 @@ export default class GMath {
     static insideCircle(center: Coords, x: number, y: number, radius: number) {
         let dx = center.x - x;
         let dy = center.y - y;
-        let distance_squared = dx * dx + dy * dy;
-        return distance_squared <= radius * radius;
+        let distanceSquared = dx * dx + dy * dy;
+        return distanceSquared <= radius * radius;
     }
 
 }

@@ -28,7 +28,7 @@ export default class Light {
 
     update() {
         if (this.active) {
-            const coords = this.attachedTo.getCoords();
+            const coords = this.attachedTo.coords;
             if (coords && coords.key != this._oldCoordsKey)
                 this.move(coords)
             this._lighting.compute(this.lightingCallback);

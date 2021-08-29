@@ -117,6 +117,8 @@ export default class BoardLayer<T> {
         }
     }
 
+    // TODO: Find clean way of returning radius of tile. maybe in squared form so we only 
+    // squareroot when need
     * iterateCircle(center: Coords, radius: number): Generator<[Coords, T | undefined]> {
         let top = Math.floor(center.y - radius);
         let bottom = Math.ceil(center.y + radius);

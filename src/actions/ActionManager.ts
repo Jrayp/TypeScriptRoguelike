@@ -5,7 +5,7 @@ import _Action from "./_Action";
 // TODO consider just extending the actor layer (maybe not)
 export default class ActionManager {
 
-    fps = 12;
+    fps = 18;
     changeEvery = 1000 / this.fps;
     elapsed = this.changeEvery;
     start: number | null;

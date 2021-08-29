@@ -5,7 +5,7 @@ import G from "./../G";
 export default class SightHelper {
 
     static computeFov(sight: Sight) {
-        const sightImplmenterCoords = sight.getCoords();
+        const sightImplmenterCoords = sight.coords;
         sight.currentlySeenCoordKeys.clear();
         if (sightImplmenterCoords) {
             sight.fov.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
