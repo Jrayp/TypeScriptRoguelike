@@ -4,18 +4,18 @@ import G from "./../G";
 
 export default class SightHelper {
 
-    static computeFov(sight: Sight) {
+    static computeFovNpc(sight: Sight) {
         const sightImplmenterCoords = sight.coords;
-        sight.currentlySeenCoordKeys.clear();
+        sight.seenCoords.clear();
         if (sightImplmenterCoords) {
             sight.fov.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
                     let coordsKey = Coords.makeKey(x, y);
-                    if (G.board.lightManager.getBrightness(coordsKey)) // Only seen if there is light
-                        sight.currentlySeenCoordKeys.add(coordsKey);
+                    if (G.board.tileLayer.getElementViaKey(coordsKey).transparent && G.board.lightManager.getBrightness(coordsKey)) // Only seen if there is light
+                        sight.seenCoords.add(coordsKey); // Npc's only care about seeing transparent tiles
                 });
         }
-        return sight.currentlySeenCoordKeys;
+        return sight.seenCoords;
     }
 
     static sightPassesCallback(x: number, y: number) {

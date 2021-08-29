@@ -65,7 +65,7 @@ export default class LightManager {
         this._brightnessMap.set(key, brightness);
     }
 
-    // TODO: The onme being lit up is in FOV because its already bright (and thus seen by the player)
+    // TODO: The one being lit up is in FOV because its already bright (and thus seen by the player)
     // The other one isnt
     percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: Sight) {
         let tileCoords = opaqueTile.coords;
@@ -77,7 +77,7 @@ export default class LightManager {
         for (let neighborCoordsAndTile of generator) {
             if (neighborCoordsAndTile[1]?.transparent) {
                 let key = neighborCoordsAndTile[0].key;
-                let inFov = sight.currentlySeenCoordKeys.has(key);
+                let inFov = sight.seenCoords.has(key);
                 if (inFov) {
                     let brightness = this._brightnessMap.get(key) || 0;
                     if (brightness > highestBrightness) {
