@@ -1,10 +1,10 @@
 import { Color } from "rot-js/lib/color";
-import G from "./../G";
-import Drawable from "./../interfaces/Drawable";
-import Positional from "./../interfaces/Positional";
-import Coords from "./../util/Coords";
+import G from "../G";
+import Drawable from "../interfaces/Drawable";
+import Positional from "../interfaces/Positional";
+import Coords from "../util/Coords";
 
-export default abstract class _Action implements Drawable, Positional {
+export default abstract class _Effect implements Drawable, Positional {
     abstract _glyph: string;
     abstract _fgColor: Color | null;
     abstract _bgColor: Color | null;
@@ -20,7 +20,7 @@ export default abstract class _Action implements Drawable, Positional {
     }
 
     get coords(): Coords {
-        return G.board.actions.getCoordsViaElement(this)!;
+        return G.board.effects.getCoordsViaElement(this)!;
     }
 
     doStep() {

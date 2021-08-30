@@ -1,9 +1,9 @@
 import { Color } from "rot-js/lib/color";
-import G from "./../G";
-import Light from "./../lights/Light";
-import _Action from "./_Action";
+import G from "../G";
+import Light from "../lights/Light";
+import _Effect from "./_Effect";
 
-export default class ExplosionAction extends _Action {
+export default class ExplosionAction extends _Effect {
     _glyph = '*'
     _fgColor = [255, 165, 22] as Color;
     _bgColor = null;
@@ -13,7 +13,7 @@ export default class ExplosionAction extends _Action {
     constructor() {
         super();
         this.light = new Light(this, 6, [255, 200, 40]);
-        G.board.lightManager.addLight(this.light);
+        G.board.lights.addLight(this.light);
     }
 
     doStep() {

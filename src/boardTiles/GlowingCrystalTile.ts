@@ -19,7 +19,7 @@ export class GlowingCrystalTile extends _BoardTile {
         super();
         this._fgColor = [RNG.getUniformInt(0, 75), RNG.getUniformInt(155, 255), RNG.getUniformInt(75, 255)];
         this.glow = new Light(this, RNG.getUniformInt(3, 8), this._fgColor);
-        G.board.lightManager.addLight(this.glow);
+        G.board.lights.addLight(this.glow);
     }
 
     onEnter(actor: _Actor) {
@@ -27,6 +27,6 @@ export class GlowingCrystalTile extends _BoardTile {
     }
 
     onRemove() {
-        this.glow.extinguish();
+        G.board.lights.removeLight(this.glow);
     }
 }

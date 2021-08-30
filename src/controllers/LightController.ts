@@ -5,15 +5,15 @@ import G from "./../G";
 import Sight from "./../interfaces/Sight";
 import Coords from "./../util/Coords";
 import GMath from "./../util/GMath";
-import Light from "./Light";
+import Light from "./../lights/Light";
 
-export default class LightManager {
+export default class LightController {
 
     ambientLight: Color = [0, 0, 0];
-    private _colorMap = new Map<string, Color>();
-    private _brightnessMap = new Map<string, number>();
 
     private _lights = new Set<Light>();
+    private _colorMap = new Map<string, Color>();
+    private _brightnessMap = new Map<string, number>();
 
     getColor(key: string) {
         return this._colorMap.get(key);
@@ -21,6 +21,15 @@ export default class LightManager {
 
     getBrightness(key: string) {
         return this._brightnessMap.get(key);
+    }
+
+    addLight(light: Light) {
+        this._lights.add(light);
+    }
+
+    removeLight(light: Light) {
+        light.extinguish();
+        this._lights.delete(light);
     }
 
     update() {
@@ -37,14 +46,9 @@ export default class LightManager {
         }
     }
 
-    addLight(light: Light) {
-        this._lights.add(light);
-    }
 
-    removeLight(light: Light) {
-        light.extinguish();
-        this._lights.delete(light);
-    }
+
+
 
     applyLight(x: number, y: number, lightColor: Color) {
         const key = new Coords(x, y).key;
@@ -60,6 +64,7 @@ export default class LightManager {
             this._colorMap.set(key, newLight);
         }
 
+        // Currently adds brightness to wall tiles but doesnt make much sense given how FOV works
         let brightness = (newLight[0] + newLight[1] + newLight[2]) / 3;
         brightness = GMath.normalize(brightness, 0, 255, 0, 10);
         this._brightnessMap.set(key, brightness);

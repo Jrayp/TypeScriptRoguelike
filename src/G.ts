@@ -1,5 +1,5 @@
 import { RNG } from "rot-js";
-import FireballAction from "./actions/FireBallAction";
+import FireballEffect from "./effects/FireBallEffect";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import _Npc from "./actors/_Npc";
@@ -51,7 +51,7 @@ export default class G {
             }
         }
 
-        G.board.lightManager.update();
+        G.board.lights.update();
 
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
@@ -133,8 +133,8 @@ export default class G {
                 break;
             case 'fireball':
                 let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
-                G.board.actions.set(startCoord, new FireballAction());
-                G.board.actionManager.startLoop();
+                G.board.effects.set(startCoord, new FireballEffect());
+                G.board.effects.startLoop();
                 return;
             case 'crystal':
                 let coords = this.player.coords!;
@@ -158,7 +158,7 @@ export default class G {
         // Uh oh.. whaty about light so npc and thier vision??? 
         // Maybe doesnt matter they just have to see what they see before moving?
         G.board.actors.update();
-        G.board.lightManager.update();
+        G.board.lights.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
     }

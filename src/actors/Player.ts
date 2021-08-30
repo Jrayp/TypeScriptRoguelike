@@ -27,7 +27,7 @@ export default class Player extends _Actor implements Sight {
         super();
 
         this.light = new Light(this, 4, [175, 175, 175]);
-        G.board.lightManager.addLight(this.light);
+        G.board.lights.addLight(this.light);
     }
 
     computeFov(): Set<string> {
@@ -40,7 +40,7 @@ export default class Player extends _Actor implements Sight {
         this.fovAlgo.compute(thisCoords.x, thisCoords.y, this.sightRange,
             (x: number, y: number, r: number, visibility: number) => {
                 let coordsKey = Coords.makeKey(x, y);
-                if (G.board.lightManager.getBrightness(coordsKey)) {
+                if (G.board.lights.getBrightness(coordsKey)) {
                     let tile = G.board.tiles.getElementViaKey(coordsKey);
                     if (tile.transparent) {
                         this.seenCoords.add(coordsKey);
@@ -55,7 +55,7 @@ export default class Player extends _Actor implements Sight {
         for (let opaqueKeyAndColor of this.percievedOpaqueColors) {
             let coordsKey = opaqueKeyAndColor[0];
             let tile = G.board.tiles.getElementViaKey(coordsKey);
-            let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this)!;
+            let percievedColor = G.board.lights.percievedLightColorOfOpaque(tile, this)!;
             if (percievedColor) {
                 this.percievedOpaqueColors.set(coordsKey, percievedColor);
                 this.seenCoords.add(coordsKey);

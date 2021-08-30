@@ -1,6 +1,3 @@
-import { ALL } from "dns";
-import { _BoardTile } from "../boardTiles/_BoardTile";
-import C from "../C";
 import { assertTrue } from "./Assertions";
 import Coords from "./Coords";
 import GMath from "./GMath";
@@ -118,7 +115,7 @@ export default class UniqueCoordsMap<T> {
     }
 
     // TODO: Find clean way of returning radius of tile. maybe in squared form so we only 
-    // squareroot when need
+    // squareroot when needed
     * iterateCircle(center: Coords, radius: number): Generator<[Coords, T | undefined]> {
         let top = Math.floor(center.y - radius);
         let bottom = Math.ceil(center.y + radius);

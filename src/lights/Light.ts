@@ -48,7 +48,7 @@ export default class Light {
         this._lighting.setLight(coords.x, coords.y, this._color);
     }
     private lightingCallback(x: number, y: number, color: Color) {
-        G.board.lightManager.applyLight(x, y, color);
+        G.board.lights.applyLight(x, y, color);
     }
 
     private lightPassingCallback(x: number, y: number) {

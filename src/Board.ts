@@ -2,10 +2,6 @@ import { Map, RNG } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
-import ActionManager from './actions/ActionManager';
-import _Action from './actions/_Action';
-import _Actor from './actors/_Actor';
-import UniqueCoordsMap from './util/UniqueCoordsMap';
 import { BorderTile } from './boardTiles/BorderTile';
 import { CavernGrassTile } from './boardTiles/CavernGrassTile';
 import { FloorTile } from './boardTiles/FloorTile';
@@ -15,18 +11,19 @@ import { WaterTile } from './boardTiles/WaterTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
 import ActorController from './controllers/ActorController';
-import G from './G';
-import LightManager from './lights/LightManager';
-import Coords from './util/Coords';
+import EffectsController from './controllers/EffectsController';
+import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
+import G from './G';
+import Coords from './util/Coords';
 
 export default class Board {
     tiles = new TileController();
     actors = new ActorController();
-    actions: UniqueCoordsMap<_Action> = new UniqueCoordsMap<_Action>();
+    effects = new EffectsController();
 
-    lightManager: LightManager = new LightManager();
-    actionManager: ActionManager = new ActionManager();
+    lights = new LightController();
+    
 
     constructor() {
         // this.generate();

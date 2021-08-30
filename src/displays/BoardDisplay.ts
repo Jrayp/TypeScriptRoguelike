@@ -15,8 +15,8 @@ export default class BoardDisplay extends Display {
     update(board: Board, seenTileKeys: Set<string>, percievedOpaqueColors: Map<string, Color>) {
         const tileLayer = board.tiles;
         const actorLayer = board.actors;
-        const lightManager = G.board.lightManager;
-        const actionLayer = G.board.actions;
+        const lightManager = G.board.lights;
+        const actionLayer = G.board.effects;
 
         this.clear();
 
