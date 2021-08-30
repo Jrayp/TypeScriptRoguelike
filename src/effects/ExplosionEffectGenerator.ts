@@ -26,7 +26,7 @@ export default class ExplosionGenerator extends _EffectGenerator {
             }
         }
         if (this.step == this.radius)
-            G.board.effects.gens.delete(this);
+            G.board.effects.removeGenerator(this);
 
         this.step++;
     }

@@ -7,16 +7,21 @@ import Loop from "./../Loop";
 
 export default class EffectsController extends UniqueCoordsMap<_Effect>{
 
-    fps = 14;
-    changeEvery = 1000 / this.fps;
-    elapsed = this.changeEvery;
-    start: number | null;
+    private _generators = new Set<_EffectGenerator>();
 
-    gens = new Set<_EffectGenerator>();
+    addGenerator(generator: _EffectGenerator, startImmediatly: boolean) {
+        this._generators.add(generator);
+        if (startImmediatly)
+            generator.generate();
+    }
+
+    removeGenerator(generator: _EffectGenerator) {
+        this._generators.delete(generator);
+    }
 
     handleEffects() {
         G.state = GameState.ACTION;
-        let loop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this.gens.size == 0 }, this.finalize);
+        let loop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
         loop.start();
     }
 
@@ -29,7 +34,7 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
     }
 
     updateAndDraw = () => {
-        for (let gen of this.gens)
+        for (let gen of this._generators)
             gen.generate();
         for (let coordsAndAction of G.board.effects.iterateElements()) {
             const action = coordsAndAction[0];

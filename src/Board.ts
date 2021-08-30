@@ -14,6 +14,7 @@ import ActorController from './controllers/ActorController';
 import EffectsController from './controllers/EffectsController';
 import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
+import _EffectGenerator from './effects/_EffectGenerator';
 import G from './G';
 import Coords from './util/Coords';
 
