@@ -12,21 +12,35 @@ export default abstract class _Actor implements Named, Drawable, Positional {
 
     abstract name: string;
 
-    abstract glyph: string;
-    abstract fgColor: Color | null;
-    abstract bgColor: Color | null;
+    abstract _glyph: string;
+    abstract _fgColor: Color | null;
+    abstract _bgColor: Color | null;
 
-    getCoords(): Coords | undefined {
-        return G.board.actorLayer.getCoordsViaElement(this);
+    get glyph(): any {
+        return this._glyph;
+    }
+    get fgColor(): any {
+        return this._fgColor;
+    }
+    get bgColor(): any {
+        return this._bgColor;
     }
 
-    draw(boardDisplay: BoardDisplay): void {
-        let coords = this.getCoords();
+    get coords(): Coords | undefined {
+        return G.board.actors.getCoordsViaElement(this);
+    }
+
+    getDrawData(boardDisplay: BoardDisplay): void {
+        let coords = this.coords;
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
     }
 
-    kill(){
-        
+    kill() {
+
+    }
+
+    act() {
+
     }
 
     // move(newCoords: Coords) {

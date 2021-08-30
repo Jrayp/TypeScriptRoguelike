@@ -1,4 +1,9 @@
 
+export enum GameState {
+    PLAYER_CONTROL,
+    ACTION
+}
+
 export enum Direction {
     N,
     NE,
@@ -15,4 +20,10 @@ export enum TryMoveResult {
     ENEMY,
     FRIENDLY,
     IMPASSABLE
+}
+
+export enum DrawDataType {
+    GLYPH,
+    FOREGROUND_COLOR,
+    BACKGROUND_COLOR
 }

@@ -4,25 +4,26 @@ import G from "./../G";
 
 export default class SightHelper {
 
-    static computeFov(sight: Sight) {
-        const sightImplmenterCoords = sight.getCoords();
-        sight.currentlySeenCoordKeys.clear();
+    static computeFovNpc(sight: Sight) {
+        const sightImplmenterCoords = sight.coords;
+        sight.seenCoords.clear();
         if (sightImplmenterCoords) {
-            sight.fov.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
+            sight.fovAlgo.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
                     let coordsKey = Coords.makeKey(x, y);
-                    if (G.board.lightManager.getBrightness(coordsKey)) // Only seen if there is light
-                        sight.currentlySeenCoordKeys.add(coordsKey);
+                    if (G.board.tiles.getElementViaKey(coordsKey).transparent && G.board.lights.getBrightness(coordsKey))
+                        sight.seenCoords.add(coordsKey); // Npc's only care about seeing transparent tiles
                 });
+            sight.seenCoords.add(sightImplmenterCoords.key); // Always see own coords
         }
-        return sight.currentlySeenCoordKeys;
+        return sight.seenCoords;
     }
 
     static sightPassesCallback(x: number, y: number) {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Coords.makeKey(x, y)).transparent;
     }
 
 }

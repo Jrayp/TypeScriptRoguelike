@@ -12,14 +12,14 @@ export default abstract class _DiggableTile extends _BoardTile implements Diggab
 
         switch (this.digStrength) {
             case 2:
-                this.glyph = '+';
+                this._glyph = ':';
                 break;
             case 1:
-                this.glyph = 'x';
+                this._glyph = ';';
                 break;
             case 0:
-                G.board.tileLayer.replace(this.getCoords(), new RubbleTile(this.bgColor!));
-                G.board.lightManager.updateFov();
+                G.board.tiles.replace(this.coords, new RubbleTile(this._bgColor!));
+                G.board.lights.updateFov();
         }
     }
 

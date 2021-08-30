@@ -1,8 +1,7 @@
 import { Map, RNG } from 'rot-js';
+import { Color } from 'rot-js/lib/color';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
-import _Actor from './actors/_Actor';
-import BoardLayer from './BoardLayer';
 import { BorderTile } from './boardTiles/BorderTile';
 import { CavernGrassTile } from './boardTiles/CavernGrassTile';
 import { FloorTile } from './boardTiles/FloorTile';
@@ -11,17 +10,20 @@ import { WallTile } from './boardTiles/WallTile';
 import { WaterTile } from './boardTiles/WaterTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
+import ActorController from './controllers/ActorController';
+import EffectsController from './controllers/EffectsController';
+import LightController from './controllers/LightController';
+import TileController from './controllers/TileController';
 import G from './G';
-import LightManager from './lights/LightManager';
-import NPCManager from './npcManager';
 import Coords from './util/Coords';
 
 export default class Board {
-    tileLayer: BoardLayer<_BoardTile> = new BoardLayer<_BoardTile>();
-    actorLayer: BoardLayer<_Actor> = new BoardLayer<_Actor>();
+    tiles = new TileController();
+    actors = new ActorController();
+    effects = new EffectsController();
 
-    lightManager: LightManager = new LightManager();
-    npcManager: NPCManager = new NPCManager();
+    lights = new LightController();
+    
 
     constructor() {
         // this.generate();
@@ -29,8 +31,8 @@ export default class Board {
 
 
 
-    draw(seenCells: Set<string>) {
-        G.boardDisplay.update(this, seenCells);
+    draw(seenCells: Set<string>, percievedOpaqueColors: Map<string, Color>) {
+        G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
     }
 
     generate() {
@@ -47,7 +49,7 @@ export default class Board {
                     newTile = new WaterTile();
 
 
-            this.tileLayer.set(new Coords(x, y), newTile!);
+            this.tiles.set(new Coords(x, y), newTile!);
         }
 
 
@@ -65,9 +67,9 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
-                this.tileLayer.replace(new Coords(x, y), newTile);
+                this.tiles.replace(new Coords(x, y), newTile);
             }
 
         }
@@ -87,9 +89,9 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tileLayer.getElementViaKey(Coords.makeKey(x, y)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaKey(Coords.makeKey(x, y)).name == "Floor") {
                 newTile = new CavernGrassTile();
-                this.tileLayer.replace(new Coords(x, y), newTile);
+                this.tiles.replace(new Coords(x, y), newTile);
             }
 
         }

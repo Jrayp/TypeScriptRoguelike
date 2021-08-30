@@ -1,12 +1,15 @@
 import { RNG } from "rot-js";
+import FireballEffect from "./effects/FireBallEffect";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import _Npc from "./actors/_Npc";
 import Board from "./Board";
 import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
+import { RubbleTile } from "./boardTiles/RubbleTile";
+import { WallTile } from "./boardTiles/WallTile";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
-import { TryMoveResult } from "./Enums";
+import { Direction, GameState, TryMoveResult } from "./Enums";
 import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
@@ -23,6 +26,8 @@ export default class G {
     static log: Log;
     static player: Player;
 
+    static state = GameState.PLAYER_CONTROL;
+
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
         document.body.append(G.boardDisplay.getContainer()!);
@@ -32,25 +37,24 @@ export default class G {
         G.board.generate();
 
         G.player = new Player();
-        for (let tileAndCoords of G.board.tileLayer.iterateElements()) {
+        for (let tileAndCoords of G.board.tiles.iterateElements()) {
             if (tileAndCoords[0].name === "Floor") {
-                G.board.actorLayer.set(tileAndCoords[1], G.player);
+                G.board.actors.set(tileAndCoords[1], G.player);
                 break;
             }
         }
 
-        for (let tileAndCoords of G.board.tileLayer.iterateElements()) {
+        for (let tileAndCoords of G.board.tiles.iterateElements()) {
             if (tileAndCoords[0].passable && !tileAndCoords[0].occupant() && RNG.getUniform() < .025) {
                 let g = new Goomba();
-                G.board.npcManager.add(g);
-                G.board.actorLayer.set(tileAndCoords[1], g);
+                G.board.actors.set(tileAndCoords[1], g);
             }
         }
 
-        G.board.lightManager.update();
+        G.board.lights.update();
 
         let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords);
+        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
 
         G.initInputHandlers();
 
@@ -78,6 +82,9 @@ export default class G {
 
 
     private static determinePlayerAction(key: string): [string, number, number] | undefined {
+        if (this.state != GameState.PLAYER_CONTROL)
+            return undefined;
+
         switch (key) {
             case 'Numpad8': return ['move', 0, -1];
             case 'Numpad9': return ['move', +1, -1];
@@ -91,6 +98,8 @@ export default class G {
             case 'KeyA': return ['write', 0, 0];
             case 'KeyL': return ['light', 0, 0];
             case 'KeyC': return ['crystal', 0, 0];
+            case 'KeyF': return ['fireball', 0, 0];
+            case 'KeyO': return ['circle', 0, 0];
             default: return undefined;
         }
     }
@@ -98,7 +107,7 @@ export default class G {
     private static performPlayerAction(action: [string, number, number]) {
         switch (action[0]) {
             case 'move':
-                let currentPos = G.player.getCoords()!;
+                let currentPos = G.player.coords!;
                 let destPos = Coords.addCoordsToNumbers(currentPos, action[1], action[2]);
                 let result = G.player.tryMove(destPos);
                 switch (result) {
@@ -115,11 +124,23 @@ export default class G {
                 break;
             case 'wait':
                 break;
+            case 'circle':
+                for (let t of G.board.tiles.iterateCircumference(G.player.coords!, 1.5)) {
+                    G.board.tiles.replace(t[0], new RubbleTile([255, 0, 255]));
+                    // G.board.tiles.replace(t[0], new WallTile());
+
+                }
+                break;
+            case 'fireball':
+                let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
+                G.board.effects.set(startCoord, new FireballEffect());
+                G.board.effects.handleEffects();
+                return;
             case 'crystal':
-                let coords = this.player.getCoords()!;
-                let tile = G.board.tileLayer.getElementViaCoords(coords);
+                let coords = this.player.coords!;
+                let tile = G.board.tiles.getElementViaCoords(coords);
                 if (tile.name != "Glowing Crystal")
-                    G.board.tileLayer.replace(coords, new GlowingCrystalTile());
+                    G.board.tiles.replace(coords, new GlowingCrystalTile());
                 break;
             case 'light':
                 if (G.player.light.active === true) {
@@ -134,9 +155,14 @@ export default class G {
                 break;
         }
 
-        G.board.npcManager.update();
-        G.board.lightManager.update();
+        // Uh oh.. whaty about light so npc and thier vision??? 
+        // Maybe doesnt matter they just have to see what they see before moving?
+        G.board.actors.update();
+        G.board.lights.update();
         let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords);
+        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
     }
 }
+
+
+

@@ -5,15 +5,15 @@ import G from "./../G";
 import Sight from "./../interfaces/Sight";
 import Coords from "./../util/Coords";
 import GMath from "./../util/GMath";
-import Light from "./Light";
+import Light from "./../lights/Light";
 
-export default class LightManager {
+export default class LightController {
 
     ambientLight: Color = [0, 0, 0];
-    private _colorMap = new Map<string, Color>();
-    private _brightnessMap = new Map<string, number>();
 
     private _lights = new Set<Light>();
+    private _colorMap = new Map<string, Color>();
+    private _brightnessMap = new Map<string, number>();
 
     getColor(key: string) {
         return this._colorMap.get(key);
@@ -21,6 +21,16 @@ export default class LightManager {
 
     getBrightness(key: string) {
         return this._brightnessMap.get(key);
+    }
+
+    addLight(light: Light) {
+        this._lights.add(light);
+    }
+
+    removeLight(light: Light) {
+        light.active = false;
+        light.extinguish();
+        this._lights.delete(light);
     }
 
     update() {
@@ -37,12 +47,16 @@ export default class LightManager {
         }
     }
 
-    addLight(light: Light) {
-        this._lights.add(light);
-    }
-
     applyLight(x: number, y: number, lightColor: Color) {
         const key = new Coords(x, y).key;
+        let tile = G.board.tiles.getElementViaKey(key);
+        // Wall tiles don't really need brightness given the way we currently draw them, 
+        // but we need a value here so that the tile is picked up by the players FOV alg. 
+        // Yes its a hack for now
+        if (!tile.transparent) {
+            this._brightnessMap.set(key, -1);
+            return;
+        }
 
         let newLight: Color;
         if (this._colorMap.has(key)) {
@@ -61,16 +75,14 @@ export default class LightManager {
     }
 
     percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: Sight) {
-        let tileCoords = opaqueTile.getCoords();
-        let objectiveBrightness = this._brightnessMap.get(tileCoords.key) || 0;
-
+        let tileCoords = opaqueTile.coords;
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;
-        let generator = G.board.tileLayer.iterateSurrounding(tileCoords);
+        let generator = G.board.tiles.iterateSurrounding(tileCoords);
         for (let neighborCoordsAndTile of generator) {
             if (neighborCoordsAndTile[1]?.transparent) {
                 let key = neighborCoordsAndTile[0].key;
-                let inFov = sight.currentlySeenCoordKeys.has(key);
+                let inFov = sight.seenCoords.has(key);
                 if (inFov) {
                     let brightness = this._brightnessMap.get(key) || 0;
                     if (brightness > highestBrightness) {
@@ -80,7 +92,6 @@ export default class LightManager {
                 }
             }
         }
-        // Return the objective color, or the color of neighbor with highest brightness. Whichever is less
-        return objectiveBrightness < highestBrightness ? this._colorMap.get(tileCoords.key) || undefined : brightestNeighborColor;
+        return brightestNeighborColor;
     }
 }

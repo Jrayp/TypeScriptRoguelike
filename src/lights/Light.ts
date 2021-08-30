@@ -28,11 +28,15 @@ export default class Light {
 
     update() {
         if (this.active) {
-            const coords = this.attachedTo.getCoords();
+            const coords = this.attachedTo.coords;
             if (coords && coords.key != this._oldCoordsKey)
                 this.move(coords)
             this._lighting.compute(this.lightingCallback);
         }
+    }
+
+    extinguish() {
+        this._lighting.clearLights();
     }
 
     updateFov() {
@@ -44,19 +48,19 @@ export default class Light {
         this._lighting.setLight(coords.x, coords.y, this._color);
     }
     private lightingCallback(x: number, y: number, color: Color) {
-        G.board.lightManager.applyLight(x, y, color);
+        G.board.lights.applyLight(x, y, color);
     }
 
     private lightPassingCallback(x: number, y: number) {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Coords.makeKey(x, y)).transparent;
     }
 
     private reflectivityCallback(x: number, y: number) {
         const key = Coords.makeKey(x, y);
-        if (!G.board.numbersWithinBounds(x, y) || !G.board.tileLayer.getElementViaKey(key).passable)
+        if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).passable)
             return 0;
         else
             return C.LIGHT_DEFAULT_REFLECTIVITY;

@@ -1,11 +1,12 @@
 import { Color } from "rot-js/lib/color";
-import BoardDisplay from "../displays/BoardDisplay";
 
 export default interface Drawable {
 
-    glyph: string;
-    fgColor: Color | null;
-    bgColor: Color | null;
+    _glyph: string;
+    _fgColor: Color | null;
+    _bgColor: Color | null;
 
-    draw(boardDisplay: BoardDisplay): void;
+    get glyph() : string;
+    get fgColor() : Color | null;
+    get bgColor() : Color | null;
 }

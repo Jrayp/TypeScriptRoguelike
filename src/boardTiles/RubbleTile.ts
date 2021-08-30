@@ -4,18 +4,18 @@ import { _BoardTile } from "./_BoardTile";
 
 export class RubbleTile extends _BoardTile {
     name = 'Rubble';
-    glyph = ',';
-    fgColor = [25, 50, 75] as Color;
-    bgColor = null;
+    _glyph = ',';
+    _fgColor = [25, 50, 75] as Color;
+    _bgColor = null;
     passable = true;
     transparent = true;
 
-    static possibleGlyphs: [string, string, string, string, string] = ['%', ',', ';', '`', ':']
+    static possibleGlyphs: [string, string, string, string, string, string] = ['%', ',', ';', '`', ':', '.']
 
     constructor(color: Color) {
         super();
-        this.glyph = RNG.getItem(RubbleTile.possibleGlyphs)!;
-        this.fgColor = ColorHelper.randomize(color, 5);
+        this._glyph = RNG.getItem(RubbleTile.possibleGlyphs)!;
+        this._fgColor = ColorHelper.randomize(color, 5);
     }
 
 }

@@ -6,11 +6,9 @@ import _Actor from "./_Actor";
 
 export default abstract class _Npc extends _Actor {
     name: string;
-    glyph: string;
-    fgColor: Color | null;
-    bgColor: Color | null;
+    _glyph: string;
+    _fgColor: Color | null;
+    _bgColor: Color | null;
 
-
-    act(){};
 
 }

@@ -9,11 +9,22 @@ import Coords from './../util/Coords';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements Named, Drawable, Positional {
-    abstract glyph: string;
-    abstract fgColor: Color | null;
-    abstract bgColor: Color | null;
-
     abstract name: string;
+
+    abstract _glyph: string;
+    abstract _fgColor: Color | null;
+    abstract _bgColor: Color | null;
+
+    get glyph(): any {
+        return this._glyph;
+    }
+    get fgColor(): any {
+        return this._fgColor;
+    }
+    get bgColor(): any {
+        return this._bgColor;
+    }
+
 
     abstract passable: boolean; // Should probably be handled via function
     abstract transparent: boolean;  // Consider making this applicable to actors 
@@ -22,12 +33,12 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     constructor() {
     }
 
-    getCoords(): Coords {
-        return G.board.tileLayer.getCoordsViaElement(this)!;
+    get coords(): Coords {
+        return G.board.tiles.getCoordsViaElement(this)!;
     }
 
-    draw(boardDisplay: BoardDisplay): void {
-        let coords = this.getCoords();
+    getDrawData(boardDisplay: BoardDisplay): void {
+        let coords = this.coords;
         // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
     }
 
@@ -36,7 +47,11 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     }
 
     occupant() {
-        const coords = this.getCoords();
-        return G.board.actorLayer.hasCoords(coords) ? G.board.actorLayer.getElementViaCoords(coords) : undefined;
+        const coords = this.coords;
+        return G.board.actors.hasCoords(coords) ? G.board.actors.getElementViaCoords(coords) : undefined;
+    }
+
+    onRemove(){
+
     }
 }
