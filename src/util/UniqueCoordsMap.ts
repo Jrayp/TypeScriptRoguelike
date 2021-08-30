@@ -1,11 +1,11 @@
 import { ALL } from "dns";
-import { _BoardTile } from "./boardTiles/_BoardTile";
-import C from "./C";
-import { assertTrue } from "./util/Assertions";
-import Coords from "./util/Coords";
-import GMath from "./util/GMath";
+import { _BoardTile } from "../boardTiles/_BoardTile";
+import C from "../C";
+import { assertTrue } from "./Assertions";
+import Coords from "./Coords";
+import GMath from "./GMath";
 
-export default class BoardLayer<T> {
+export default class UniqueCoordsMap<T> {
     private _elementToCoords: Map<T, Coords> = new Map();
     private _keyToElement: Map<string, T> = new Map();
 

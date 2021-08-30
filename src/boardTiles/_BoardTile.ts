@@ -34,7 +34,7 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
     }
 
     get coords(): Coords {
-        return G.board.tileLayer.getCoordsViaElement(this)!;
+        return G.board.tiles.getCoordsViaElement(this)!;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
@@ -48,6 +48,10 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
 
     occupant() {
         const coords = this.coords;
-        return G.board.actorLayer.hasCoords(coords) ? G.board.actorLayer.getElementViaCoords(coords) : undefined;
+        return G.board.actors.hasCoords(coords) ? G.board.actors.getElementViaCoords(coords) : undefined;
+    }
+
+    onRemove(){
+
     }
 }

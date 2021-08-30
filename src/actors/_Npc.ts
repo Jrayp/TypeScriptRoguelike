@@ -11,6 +11,4 @@ export default abstract class _Npc extends _Actor {
     _bgColor: Color | null;
 
 
-    act(){};
-
 }

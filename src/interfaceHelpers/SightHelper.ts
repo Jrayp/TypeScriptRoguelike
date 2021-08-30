@@ -11,7 +11,7 @@ export default class SightHelper {
             sight.fovAlgo.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
                     let coordsKey = Coords.makeKey(x, y);
-                    if (G.board.tileLayer.getElementViaKey(coordsKey).transparent && G.board.lightManager.getBrightness(coordsKey))
+                    if (G.board.tiles.getElementViaKey(coordsKey).transparent && G.board.lightManager.getBrightness(coordsKey))
                         sight.seenCoords.add(coordsKey); // Npc's only care about seeing transparent tiles
                 });
             sight.seenCoords.add(sightImplmenterCoords.key); // Always see own coords
@@ -23,7 +23,7 @@ export default class SightHelper {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Coords.makeKey(x, y)).transparent;
     }
 
 }

@@ -69,7 +69,7 @@ export default class LightManager {
         let tileCoords = opaqueTile.coords;
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;
-        let generator = G.board.tileLayer.iterateSurrounding(tileCoords);
+        let generator = G.board.tiles.iterateSurrounding(tileCoords);
         for (let neighborCoordsAndTile of generator) {
             if (neighborCoordsAndTile[1]?.transparent) {
                 let key = neighborCoordsAndTile[0].key;

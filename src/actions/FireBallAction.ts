@@ -23,13 +23,13 @@ export default class FireballAction extends _Action {
 
     doStep() {
         const coords = this.coords;
-        const tile = G.board.tileLayer.getElementViaCoords(coords);
+        const tile = G.board.tiles.getElementViaCoords(coords);
         if (!tile.passable || tile.occupant()) {
             this.explode();
         }
         else {
             let dest = Coords.addCoordsToCoords(coords, GMath.DIR_COORDS[Direction.N])
-            G.board.actionLayer.moveElement(this, dest);
+            G.board.actions.moveElement(this, dest);
         }
     }
 

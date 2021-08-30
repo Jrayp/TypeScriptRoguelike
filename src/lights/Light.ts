@@ -35,7 +35,7 @@ export default class Light {
         }
     }
 
-    extinguish(){
+    extinguish() {
         this._lighting.clearLights();
     }
 
@@ -55,12 +55,12 @@ export default class Light {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tileLayer.getElementViaKey(Coords.makeKey(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Coords.makeKey(x, y)).transparent;
     }
 
     private reflectivityCallback(x: number, y: number) {
         const key = Coords.makeKey(x, y);
-        if (!G.board.numbersWithinBounds(x, y) || !G.board.tileLayer.getElementViaKey(key).passable)
+        if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).passable)
             return 0;
         else
             return C.LIGHT_DEFAULT_REFLECTIVITY;

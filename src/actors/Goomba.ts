@@ -1,5 +1,5 @@
 import { Color as ColorHelper, RNG } from "rot-js";
-import BoardLayer from "./../BoardLayer";
+import UniqueCoordsMap from "../util/UniqueCoordsMap";
 import { _BoardTile } from "./../boardTiles/_BoardTile";
 import G from "./../G";
 import Coords from "./../util/Coords";
@@ -20,7 +20,7 @@ export default class Goomba extends _Npc {
 
     act() {
         let freeCoords: Coords[] = [];
-        let generator = G.board.tileLayer.iterateSurrounding(this.coords!);
+        let generator = G.board.tiles.iterateSurrounding(this.coords!);
         for (let coordsAndTile of generator) {
             const tile = coordsAndTile[1]!;
             if (tile.occupant() == G.player) {
@@ -40,13 +40,12 @@ export default class Goomba extends _Npc {
     }
 
     move(newCoords: Coords) {
-        G.board.actorLayer.moveElement(this, newCoords);
+        G.board.actors.moveElement(this, newCoords);
         return true;
     }
 
     kill() {
-        G.board.actorLayer.removeViaElement(this);
-        G.board.npcManager.remove(this);
+        G.board.actors.removeViaElement(this);
     }
 
 }

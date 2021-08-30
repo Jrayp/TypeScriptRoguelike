@@ -11,11 +11,11 @@ export default class ActionManager {
     start: number | null;
 
     removeAction(action: _Action) {
-        G.board.actionLayer.removeViaElement(action);
+        G.board.actions.removeViaElement(action);
     }
 
     getAction(key: string) {
-        return G.board.actionLayer.getElementViaKey(key);
+        return G.board.actions.getElementViaKey(key);
     }
 
     startLoop() {
@@ -26,7 +26,7 @@ export default class ActionManager {
     }
 
     finalize() {
-        G.board.npcManager.update();
+        G.board.actors.update();
         G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
@@ -39,7 +39,7 @@ export default class ActionManager {
             this.elapsed = 0;
             // index = (index + 1) % 3;
 
-            for (let coordsAndAction of G.board.actionLayer.iterateElements()) {
+            for (let coordsAndAction of G.board.actions.iterateElements()) {
                 const coords = coordsAndAction[1];
                 const action = coordsAndAction[0];
                 action.doStep();
@@ -56,7 +56,7 @@ export default class ActionManager {
         let dt = timestamp - this.start!;
         this.start = timestamp;
         this.updateAndDraw(dt);
-        if (G.board.actionLayer.count() > 0)
+        if (G.board.actions.count() > 0)
             requestAnimationFrame(this.loop);
         else
             this.finalize();

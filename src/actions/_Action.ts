@@ -20,7 +20,7 @@ export default abstract class _Action implements Drawable, Positional {
     }
 
     get coords(): Coords {
-        return G.board.actionLayer.getCoordsViaElement(this)!;
+        return G.board.actions.getCoordsViaElement(this)!;
     }
 
     doStep() {

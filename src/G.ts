@@ -37,18 +37,17 @@ export default class G {
         G.board.generate();
 
         G.player = new Player();
-        for (let tileAndCoords of G.board.tileLayer.iterateElements()) {
+        for (let tileAndCoords of G.board.tiles.iterateElements()) {
             if (tileAndCoords[0].name === "Floor") {
-                G.board.actorLayer.set(tileAndCoords[1], G.player);
+                G.board.actors.set(tileAndCoords[1], G.player);
                 break;
             }
         }
 
-        for (let tileAndCoords of G.board.tileLayer.iterateElements()) {
+        for (let tileAndCoords of G.board.tiles.iterateElements()) {
             if (tileAndCoords[0].passable && !tileAndCoords[0].occupant() && RNG.getUniform() < .025) {
                 let g = new Goomba();
-                G.board.npcManager.add(g);
-                G.board.actorLayer.set(tileAndCoords[1], g);
+                G.board.actors.set(tileAndCoords[1], g);
             }
         }
 
@@ -126,22 +125,22 @@ export default class G {
             case 'wait':
                 break;
             case 'circle':
-                for (let t of G.board.tileLayer.iterateCircle(G.player.coords!, 3.5)) {
+                for (let t of G.board.tiles.iterateCircle(G.player.coords!, 3.5)) {
                     // G.board.tileLayer.replace(t[0], new RubbleTile([255, 0, 255]));
-                    G.board.tileLayer.replace(t[0], new WallTile());
+                    G.board.tiles.replace(t[0], new WallTile());
 
                 }
                 break;
             case 'fireball':
                 let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
-                G.board.actionLayer.set(startCoord, new FireballAction());
+                G.board.actions.set(startCoord, new FireballAction());
                 G.board.actionManager.startLoop();
                 return;
             case 'crystal':
                 let coords = this.player.coords!;
-                let tile = G.board.tileLayer.getElementViaCoords(coords);
+                let tile = G.board.tiles.getElementViaCoords(coords);
                 if (tile.name != "Glowing Crystal")
-                    G.board.tileLayer.replace(coords, new GlowingCrystalTile());
+                    G.board.tiles.replace(coords, new GlowingCrystalTile());
                 break;
             case 'light':
                 if (G.player.light.active === true) {
@@ -158,7 +157,7 @@ export default class G {
 
         // Uh oh.. whaty about light so npc and thier vision??? 
         // Maybe doesnt matter they just have to see what they see before moving?
-        G.board.npcManager.update();
+        G.board.actors.update();
         G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);

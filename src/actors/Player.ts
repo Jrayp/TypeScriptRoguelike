@@ -41,7 +41,7 @@ export default class Player extends _Actor implements Sight {
             (x: number, y: number, r: number, visibility: number) => {
                 let coordsKey = Coords.makeKey(x, y);
                 if (G.board.lightManager.getBrightness(coordsKey)) {
-                    let tile = G.board.tileLayer.getElementViaKey(coordsKey);
+                    let tile = G.board.tiles.getElementViaKey(coordsKey);
                     if (tile.transparent) {
                         this.seenCoords.add(coordsKey);
                     } else {
@@ -54,7 +54,7 @@ export default class Player extends _Actor implements Sight {
         // that the player can see.
         for (let opaqueKeyAndColor of this.percievedOpaqueColors) {
             let coordsKey = opaqueKeyAndColor[0];
-            let tile = G.board.tileLayer.getElementViaKey(coordsKey);
+            let tile = G.board.tiles.getElementViaKey(coordsKey);
             let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this)!;
             if (percievedColor) {
                 this.percievedOpaqueColors.set(coordsKey, percievedColor);
@@ -67,11 +67,11 @@ export default class Player extends _Actor implements Sight {
     }
 
     tryMove(destCoords: Coords) {
-        const destinationTile = G.board.tileLayer.getElementViaCoords(destCoords);
+        const destinationTile = G.board.tiles.getElementViaCoords(destCoords);
 
         const occupant = destinationTile.occupant();
         if (occupant) { // For now always enemy
-            this.melee(G.board.actorLayer.getElementViaCoords(destCoords))
+            this.melee(G.board.actors.getElementViaCoords(destCoords))
             G.log.write("*Poof* You kick the Goomba");
             return TryMoveResult.ENEMY;
         }
@@ -84,8 +84,8 @@ export default class Player extends _Actor implements Sight {
             return TryMoveResult.IMPASSABLE;
         }
 
-        G.board.actorLayer.moveElement(G.player, destCoords);
-        const enterMessage = G.board.tileLayer.getElementViaCoords(destCoords).onEnter(G.player);
+        G.board.actors.moveElement(G.player, destCoords);
+        const enterMessage = G.board.tiles.getElementViaCoords(destCoords).onEnter(G.player);
         if (enterMessage)
             G.log.write(enterMessage);
 

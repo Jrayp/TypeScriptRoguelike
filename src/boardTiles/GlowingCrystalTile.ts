@@ -25,4 +25,8 @@ export class GlowingCrystalTile extends _BoardTile {
     onEnter(actor: _Actor) {
         return "The crystal is eerily cold to the touch.";
     }
+
+    onRemove() {
+        this.glow.extinguish();
+    }
 }

@@ -18,7 +18,7 @@ export default abstract class _DiggableTile extends _BoardTile implements Diggab
                 this._glyph = ';';
                 break;
             case 0:
-                G.board.tileLayer.replace(this.coords, new RubbleTile(this._bgColor!));
+                G.board.tiles.replace(this.coords, new RubbleTile(this._bgColor!));
                 G.board.lightManager.updateFov();
         }
     }

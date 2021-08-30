@@ -27,7 +27,7 @@ export default abstract class _Actor implements Named, Drawable, Positional {
     }
 
     get coords(): Coords | undefined {
-        return G.board.actorLayer.getCoordsViaElement(this);
+        return G.board.actors.getCoordsViaElement(this);
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
@@ -36,6 +36,10 @@ export default abstract class _Actor implements Named, Drawable, Positional {
     }
 
     kill() {
+
+    }
+
+    act() {
 
     }
 
