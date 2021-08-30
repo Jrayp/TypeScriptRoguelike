@@ -9,15 +9,15 @@ import Board from "src/Board";
 import ExplosionAction from "./ExplosionAction";
 
 export default class FireballAction extends _Action {
-    glyph = '*';
-    fgColor = [244, 132, 22] as Color;
-    bgColor = null
+    _glyph = '*';
+    _fgColor = [244, 132, 22] as Color;
+    _bgColor = null
 
     light: Light;
 
     constructor() {
         super();
-        this.light = new Light(this, 8, this.fgColor);
+        this.light = new Light(this, 8, this._fgColor);
         G.board.lightManager.addLight(this.light);
     }
 

@@ -8,12 +8,13 @@ export default class SightHelper {
         const sightImplmenterCoords = sight.coords;
         sight.seenCoords.clear();
         if (sightImplmenterCoords) {
-            sight.fov.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
+            sight.fovAlgo.compute(sightImplmenterCoords.x, sightImplmenterCoords.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
                     let coordsKey = Coords.makeKey(x, y);
-                    if (G.board.tileLayer.getElementViaKey(coordsKey).transparent && G.board.lightManager.getBrightness(coordsKey)) // Only seen if there is light
+                    if (G.board.tileLayer.getElementViaKey(coordsKey).transparent && G.board.lightManager.getBrightness(coordsKey))
                         sight.seenCoords.add(coordsKey); // Npc's only care about seeing transparent tiles
                 });
+            sight.seenCoords.add(sightImplmenterCoords.key); // Always see own coords
         }
         return sight.seenCoords;
     }

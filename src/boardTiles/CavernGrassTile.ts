@@ -6,9 +6,9 @@ import { _BoardTile } from "./_BoardTile";
 
 export class CavernGrassTile extends _BoardTile {
     name = 'Cavern Grass';
-    glyph = '"';
-    fgColor = [35, 200, 100] as Color;
-    bgColor = null;
+    _glyph = '"';
+    _fgColor = [35, 200, 100] as Color;
+    _bgColor = null;
     passable = true;
     transparent = true;
 

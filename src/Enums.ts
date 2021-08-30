@@ -21,3 +21,9 @@ export enum TryMoveResult {
     FRIENDLY,
     IMPASSABLE
 }
+
+export enum DrawDataType {
+    GLYPH,
+    FOREGROUND_COLOR,
+    BACKGROUND_COLOR
+}

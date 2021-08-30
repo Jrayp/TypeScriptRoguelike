@@ -8,9 +8,9 @@ import _Npc from "./_Npc";
 
 export default class Goomba extends _Npc {
     name = "Goomba";
-    glyph = 'g';
-    fgColor = ColorHelper.fromString("orange");
-    bgColor = null;
+    _glyph = 'g';
+    _fgColor = ColorHelper.fromString("orange");
+    _bgColor = null;
 
     alive = true;
 

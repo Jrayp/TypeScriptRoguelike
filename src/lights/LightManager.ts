@@ -65,12 +65,8 @@ export default class LightManager {
         this._brightnessMap.set(key, brightness);
     }
 
-    // TODO: The one being lit up is in FOV because its already bright (and thus seen by the player)
-    // The other one isnt
     percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: Sight) {
         let tileCoords = opaqueTile.coords;
-        let objectiveBrightness = this._brightnessMap.get(tileCoords.key) || 0;
-
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;
         let generator = G.board.tileLayer.iterateSurrounding(tileCoords);
@@ -88,7 +84,5 @@ export default class LightManager {
             }
         }
         return brightestNeighborColor;
-        // Return the objective color, or the color of neighbor with highest brightness. Whichever is less
-        // return objectiveBrightness < highestBrightness ? this._colorMap.get(tileCoords.key) || undefined : brightestNeighborColor;
     }
 }

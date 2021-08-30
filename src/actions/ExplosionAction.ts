@@ -4,9 +4,9 @@ import Light from "./../lights/Light";
 import _Action from "./_Action";
 
 export default class ExplosionAction extends _Action {
-    glyph = '*'
-    fgColor = [255, 165, 22] as Color;
-    bgColor = null;
+    _glyph = '*'
+    _fgColor = [255, 165, 22] as Color;
+    _bgColor = null;
 
     light: Light;
 

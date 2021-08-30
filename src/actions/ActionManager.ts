@@ -29,7 +29,7 @@ export default class ActionManager {
         G.board.npcManager.update();
         G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords);
+        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
         G.state = GameState.PLAYER_CONTROL;
     }
 
@@ -46,7 +46,7 @@ export default class ActionManager {
             }
             G.board.lightManager.update();
             let seenCells = G.player.computeFov();
-            G.board.draw(seenCells);
+            G.board.draw(seenCells, G.player.percievedOpaqueColors);
         }
     }
 

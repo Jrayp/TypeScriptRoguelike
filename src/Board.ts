@@ -1,4 +1,5 @@
 import { Map, RNG } from 'rot-js';
+import { Color } from 'rot-js/lib/color';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
 import ActionManager from './actions/ActionManager';
@@ -25,7 +26,7 @@ export default class Board {
 
     lightManager: LightManager = new LightManager();
     npcManager: NPCManager = new NPCManager();
-    actionManager : ActionManager = new ActionManager();
+    actionManager: ActionManager = new ActionManager();
 
     constructor() {
         // this.generate();
@@ -33,8 +34,8 @@ export default class Board {
 
 
 
-    draw(seenCells: Set<string>) {
-        G.boardDisplay.update(this, seenCells);
+    draw(seenCells: Set<string>, percievedOpaqueColors: Map<string, Color>) {
+        G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
     }
 
     generate() {

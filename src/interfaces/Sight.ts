@@ -1,16 +1,12 @@
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
 import Positional from "./Positional";
 
-
-
 export default interface Sight extends Positional {
 
-    fov: PreciseShadowcasting;
+    fovAlgo: PreciseShadowcasting;
     sightRange: number;
+    seenCoords: Set<string>;
 
-    seenCoords : Set<string>;
-
-
-    computeFov() :  Set<string>;
+    computeFov(): Set<string>;
 
 }

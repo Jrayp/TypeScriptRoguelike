@@ -1,11 +1,9 @@
-import { Color as ColorHelper, FOV } from 'rot-js';
+import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
-import { _BoardTile } from './../boardTiles/_BoardTile';
-import Diggable from './../interfaces/Diggable';
-import GMath from './../util/GMath';
 import G from "../G";
 import { TryMoveResult } from './../Enums';
 import SightHelper from './../interfaceHelpers/SightHelper';
+import { isDiggable } from './../interfaces/Diggable';
 import Sight from './../interfaces/Sight';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
@@ -13,17 +11,17 @@ import _Actor from "./_Actor";
 
 export default class Player extends _Actor implements Sight {
     name = "Player";
-    glyph = '\u263B';
-    fgColor = ColorHelper.fromString("brown");
-    bgColor = null;
+    _glyph = '@';
+    _fgColor = [150, 75, 0] as Color;
+    _bgColor = null;
 
     light: Light;
 
+    // Sight properties
     sightRange = 30;
-    fov = new FOV.PreciseShadowcasting(SightHelper.sightPassesCallback);
-
     seenCoords = new Set<string>();
     percievedOpaqueColors = new Map<string, Color>();
+    fovAlgo = new FOV.PreciseShadowcasting(SightHelper.sightPassesCallback);
 
     constructor() {
         super();
@@ -33,75 +31,38 @@ export default class Player extends _Actor implements Sight {
     }
 
     computeFov(): Set<string> {
-        const currentCoords = this.coords;
+        const thisCoords = this.coords!;
         this.seenCoords.clear();
         this.percievedOpaqueColors.clear();
-        if (currentCoords) {
-            this.fov.compute(currentCoords.x, currentCoords.y, this.sightRange,
-                (x: number, y: number, r: number, visibility: number) => {
-                    let coordsKey = Coords.makeKey(x, y);
-                    if (G.board.lightManager.getBrightness(coordsKey)) {
-                        let tile = G.board.tileLayer.getElementViaKey(coordsKey);
-                        if (tile.transparent) {
-                            {
-                                this.seenCoords.add(coordsKey);
-                                for (let n of G.board.tileLayer.iterateSurrounding(tile.coords)) {
-                                    if (!n[1]?.transparent) {
-                                        this.percievedOpaqueColors.set(n[0].key, [0, 0, 0]);
-                                    }
-                                }
-                            }
-                        }
+        let placeHolderColor: Color = [0, 0, 0];
+
+        // Get all the coords in the players FOV and add opaue coords to the map
+        this.fovAlgo.compute(thisCoords.x, thisCoords.y, this.sightRange,
+            (x: number, y: number, r: number, visibility: number) => {
+                let coordsKey = Coords.makeKey(x, y);
+                if (G.board.lightManager.getBrightness(coordsKey)) {
+                    let tile = G.board.tileLayer.getElementViaKey(coordsKey);
+                    if (tile.transparent) {
+                        this.seenCoords.add(coordsKey);
+                    } else {
+                        this.percievedOpaqueColors.set(coordsKey, placeHolderColor);
                     }
+                }
+            });
 
-                });
-        }
-        for (let opaque of this.percievedOpaqueColors) {
-            let pc = G.board.lightManager.percievedLightColorOfOpaque(G.board.tileLayer.getElementViaKey(opaque[0]), this);
-            if (pc) {
-                this.percievedOpaqueColors.set(opaque[0], pc);
-                this.seenCoords.add(opaque[0]);
+        // Set percieved color of opaque tiles to that of teh brightest neighboring floor tile
+        // that the player can see.
+        for (let opaqueKeyAndColor of this.percievedOpaqueColors) {
+            let coordsKey = opaqueKeyAndColor[0];
+            let tile = G.board.tileLayer.getElementViaKey(coordsKey);
+            let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this)!;
+            if (percievedColor) {
+                this.percievedOpaqueColors.set(coordsKey, percievedColor);
+                this.seenCoords.add(coordsKey);
             }
-            else
-                this.percievedOpaqueColors.delete(opaque[0]);
         }
 
-
-        // for (let opaque of this.percievedOpaqueColors) {
-        //     let tile = G.board.tileLayer.getElementViaKey(opaque[0]);
-        //     let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this);
-        //     if (percievedColor) {
-        //         this.seenCoords.add(opaque[0]);
-        //         this.percievedOpaqueColors.set(opaque[0], percievedColor);
-        //     }
-        //     else
-        //         this.percievedOpaqueColors.delete(opaque[0]);
-        // }
-
-        // else {
-        //     let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this);
-        //     if(percievedColor)
-        //         this.percievedOpaqueColors.set(coordsKey)
-        // }
-
-        // if (currentCoords) {
-        //     this.fov.compute(currentCoords.x, currentCoords.y, this.sightRange,
-        //         (x: number, y: number, r: number, visibility: number) => {
-        //             let coordsKey = Coords.makeKey(x, y);
-        //             let tile = G.board.tileLayer.getElementViaKey(coordsKey);
-        //             if (G.board.lightManager.getBrightness(coordsKey))
-        //                 if (tile.transparent) {
-        //                     this.seenCoords.add(coordsKey);
-        //                 }
-        //                 else {
-        //                     let percievedColor = G.board.lightManager.percievedLightColorOfOpaque(tile, this);
-        //                     if (percievedColor) {
-        //                         this.seenCoords.add(coordsKey);
-        //                         this.percievedOpaqueColors.set(coordsKey, percievedColor!);
-        //                     }
-        //                 }
-        //         });
-        // }
+        this.seenCoords.add(thisCoords.key);
         return this.seenCoords;
     }
 
@@ -116,7 +77,7 @@ export default class Player extends _Actor implements Sight {
         }
 
         if (!destinationTile.passable) {
-            if (this.isDiggable(destinationTile)) {
+            if (isDiggable(destinationTile)) {
                 destinationTile.dig();
             }
             // G.log.write("You bump into a wall!"); // Can be function on impassable types
@@ -135,11 +96,4 @@ export default class Player extends _Actor implements Sight {
         npc.kill();
 
     }
-
-    isDiggable(tile: _BoardTile | Diggable): tile is Diggable {
-        return 'dig' in tile;
-    }
-
-
-
 }
