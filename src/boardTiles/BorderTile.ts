@@ -9,4 +9,5 @@ export class BorderTile extends _BoardTile {
     _bgColor = [50, 50, 50] as Color;
     passable = false;
     transparent = false;
+    destroyable = false;
 }

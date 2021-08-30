@@ -5,8 +5,8 @@ export default class Loop {
     private _elapsed = this._changeEvery;
     private _startStamp: number | null = null;
 
-    stopCondition: () => boolean;
     callback: () => void;
+    stopCondition: () => boolean;
     finalize: () => void;
 
     constructor(callback: () => void, stopCondition: () => boolean, finalize: () => void, fps = undefined) {

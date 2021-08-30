@@ -1,5 +1,5 @@
 import _Actor from "./../actors/_Actor";
-import UniqueCoordsMap from "../util/UniqueCoordsMap"
+import UniqueCoordsMap from "./../util/UniqueCoordsMap"
 
 export default class ActorController extends UniqueCoordsMap<_Actor>{
 

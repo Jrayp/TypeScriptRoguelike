@@ -48,6 +48,9 @@ export default class LightController {
     }
 
     applyLight(x: number, y: number, lightColor: Color) {
+        if (!G.board.numbersWithinBounds(x, y))
+            return;
+
         const key = new Coords(x, y).key;
         let tile = G.board.tiles.getElementViaKey(key);
         // Wall tiles don't really need brightness given the way we currently draw them, 

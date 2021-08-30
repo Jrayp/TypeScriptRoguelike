@@ -9,7 +9,7 @@ import _Effect from "./_Effect";
 export default class ExplosionEffect extends _Effect {
     _glyph = '#'
     _fgColor: Color | null = null;
-    _bgColor = null;
+    _bgColor: Color | null = null;
 
     light: Light;
 
@@ -18,6 +18,7 @@ export default class ExplosionEffect extends _Effect {
     constructor() {
         super();
         this._fgColor = ColorHelper.randomize([255, 165, 22], 40) as Color;
+        this._bgColor = ColorHelper.randomize([235, 155, 15], 40) as Color;
         this.light = new Light(this, 12, this._fgColor);
         G.board.lights.addLight(this.light);
     }
@@ -26,10 +27,11 @@ export default class ExplosionEffect extends _Effect {
 
         if (this.counter == 1) {
             let tile = G.board.tiles.getElementViaCoords(this.coords);
-            if (tile.passable)
-                G.board.tiles.replace(this.coords, new RubbleTile(ColorHelper.randomize([30, 30, 30], 5)));
-            else if (RNG.getUniform() < .75)
-                G.board.tiles.replace(this.coords, new RubbleTile(ColorHelper.randomize([30, 30, 30], 5)));
+            if (tile.destroyable)
+                if (tile.passable)
+                    G.board.tiles.replace(this.coords, new RubbleTile(ColorHelper.randomize([30, 30, 30], 5)));
+                else if (RNG.getUniform() < .75)
+                    G.board.tiles.replace(this.coords, new RubbleTile(ColorHelper.randomize([30, 30, 30], 5)));
 
         }
         if (this.counter == 5) {

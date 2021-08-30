@@ -25,10 +25,10 @@ export abstract class _BoardTile implements Named, Drawable, Positional {
         return this._bgColor;
     }
 
-
     abstract passable: boolean; // Should probably be handled via function
     abstract transparent: boolean;  // Consider making this applicable to actors 
     //as well (or anything really... really need to use ECS)
+    destroyable: boolean = true;
 
     constructor() {
     }
