@@ -6,9 +6,9 @@ import { _BoardTile } from "./_BoardTile";
 
 export class WaterTile extends _BoardTile {
     name = 'Water';
-    glyph = '~';
-    fgColor = [20, 75, 210] as Color;
-    bgColor = null;
+    _glyph = '~';
+    _fgColor = [20, 75, 210] as Color;
+    _bgColor = null;
     passable = true;
     transparent = true;
 

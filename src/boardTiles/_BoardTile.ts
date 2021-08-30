@@ -9,11 +9,22 @@ import Coords from './../util/Coords';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements Named, Drawable, Positional {
-    abstract glyph: string;
-    abstract fgColor: Color | null;
-    abstract bgColor: Color | null;
-
     abstract name: string;
+
+    abstract _glyph: string;
+    abstract _fgColor: Color | null;
+    abstract _bgColor: Color | null;
+
+    get glyph(): any {
+        return this._glyph;
+    }
+    get fgColor(): any {
+        return this._fgColor;
+    }
+    get bgColor(): any {
+        return this._bgColor;
+    }
+
 
     abstract passable: boolean; // Should probably be handled via function
     abstract transparent: boolean;  // Consider making this applicable to actors 

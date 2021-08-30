@@ -7,9 +7,9 @@ import { _BoardTile } from "./_BoardTile";
 
 export class GlowingCrystalTile extends _BoardTile {
     name = 'Glowing Crystal';
-    glyph = '*';
-    fgColor: Color;
-    bgColor = null;
+    _glyph = '*';
+    _fgColor: Color;
+    _bgColor = null;
     passable = true;
     transparent = true;
 
@@ -17,8 +17,8 @@ export class GlowingCrystalTile extends _BoardTile {
 
     constructor() {
         super();
-        this.fgColor = [RNG.getUniformInt(0, 75), RNG.getUniformInt(155, 255), RNG.getUniformInt(75, 255)];
-        this.glow = new Light(this, RNG.getUniformInt(3, 8), this.fgColor);
+        this._fgColor = [RNG.getUniformInt(0, 75), RNG.getUniformInt(155, 255), RNG.getUniformInt(75, 255)];
+        this.glow = new Light(this, RNG.getUniformInt(3, 8), this._fgColor);
         G.board.lightManager.addLight(this.glow);
     }
 

@@ -55,7 +55,7 @@ export default class G {
         G.board.lightManager.update();
 
         let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords);
+        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
 
         G.initInputHandlers();
 
@@ -156,10 +156,12 @@ export default class G {
                 break;
         }
 
+        // Uh oh.. whaty about light so npc and thier vision??? 
+        // Maybe doesnt matter they just have to see what they see before moving?
         G.board.npcManager.update();
         G.board.lightManager.update();
         let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords);
+        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
     }
 }
 
