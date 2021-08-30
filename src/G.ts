@@ -134,7 +134,7 @@ export default class G {
             case 'fireball':
                 let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
                 G.board.effects.set(startCoord, new FireballEffect());
-                G.board.effects.startLoop();
+                G.board.effects.handleEffects();
                 return;
             case 'crystal':
                 let coords = this.player.coords!;

@@ -7,6 +7,10 @@ export default class UniqueCoordsMap<T> {
     private _keyToElement: Map<string, T> = new Map();
 
 
+    get count()  {
+        return this._keyToElement.size;
+    }
+
     ///////////////////////////////////////////////////////
     // Setting and removal
     ///////////////////////////////////////////////////////
@@ -45,10 +49,6 @@ export default class UniqueCoordsMap<T> {
     ///////////////////////////////////////////////////////
     // Existance
     ///////////////////////////////////////////////////////
-
-    count() {
-        return this._keyToElement.size;
-    }
 
     hasKey(key: string) {
         return this._keyToElement.has(key);

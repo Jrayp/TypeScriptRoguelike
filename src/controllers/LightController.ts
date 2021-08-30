@@ -28,6 +28,7 @@ export default class LightController {
     }
 
     removeLight(light: Light) {
+        light.active = false;
         light.extinguish();
         this._lights.delete(light);
     }
@@ -46,12 +47,16 @@ export default class LightController {
         }
     }
 
-
-
-
-
     applyLight(x: number, y: number, lightColor: Color) {
         const key = new Coords(x, y).key;
+        let tile = G.board.tiles.getElementViaKey(key);
+        // Wall tiles don't really need brightness given the way we currently draw them, 
+        // but we need a value here so that the tile is picked up by the players FOV alg. 
+        // Yes its a hack for now
+        if (!tile.transparent) {
+            this._brightnessMap.set(key, -1);
+            return;
+        }
 
         let newLight: Color;
         if (this._colorMap.has(key)) {
@@ -64,7 +69,6 @@ export default class LightController {
             this._colorMap.set(key, newLight);
         }
 
-        // Currently adds brightness to wall tiles but doesnt make much sense given how FOV works
         let brightness = (newLight[0] + newLight[1] + newLight[2]) / 3;
         brightness = GMath.normalize(brightness, 0, 255, 0, 10);
         this._brightnessMap.set(key, brightness);

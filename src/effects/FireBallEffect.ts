@@ -8,14 +8,14 @@ import _Effect from "./_Effect";
 
 export default class FireballEffect extends _Effect {
     _glyph = '*';
-    _fgColor = [244, 132, 22] as Color;
+    _fgColor = [244, 105, 22] as Color;
     _bgColor = null
 
     light: Light;
 
     constructor() {
         super();
-        this.light = new Light(this, 8, this._fgColor);
+        this.light = new Light(this, 5, this._fgColor);
         G.board.lights.addLight(this.light);
     }
 
@@ -32,7 +32,7 @@ export default class FireballEffect extends _Effect {
     }
 
     explode() {
-        G.board.effects.removeAction(this);
+        G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
         // G.board.actionLayer.set(this.coords, new ExplosionAction());
