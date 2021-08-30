@@ -16,8 +16,8 @@ export default class UniqueCoordsMap<T>{
     ///////////////////////////////////////////////////////
 
     set(coords: Coords, element: T) {
-        assertTrue(this._keyToElement.has(coords.key) === false);
-        assertTrue(this._elementToCoords.has(element) === false);
+        assertTrue(this._keyToElement.has(coords.key) === false, `There is already an element at ${coords.key}`);
+        assertTrue(this._elementToCoords.has(element) === false, `There are already Coords at ${this._elementToCoords.get(element)}`);
         this._keyToElement.set(coords.key, element);
         this._elementToCoords.set(element, coords);
     }

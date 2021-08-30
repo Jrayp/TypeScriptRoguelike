@@ -125,7 +125,7 @@ export default class G {
             case 'wait':
                 break;
             case 'circle':
-                for (let t of G.board.tiles.iterateCircumference(G.player.coords!, 3.5)) {
+                for (let t of G.board.tiles.iterateCircumference(G.player.coords!, 1.5)) {
                     G.board.tiles.replace(t[0], new RubbleTile([255, 0, 255]));
                     // G.board.tiles.replace(t[0], new WallTile());
 

@@ -1,6 +1,6 @@
 export default class Loop {
 
-    private _fps = 18;
+    private _fps = 14;
     private _changeEvery = 1000 / this._fps;
     private _elapsed = this._changeEvery;
     private _startStamp: number | null = null;

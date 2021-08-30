@@ -45,30 +45,31 @@ export default class GMath {
         }
     }
 
+    private static dupeCoords = new Set<string>();
     static coordsOnCircumferenceSet(center: Coords, radius: number) {
-        let coords = new Set<Coords>();
+        this.dupeCoords.clear();
+        let coordsSet = new Set<Coords>();
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
-            coords.add(new Coords(center.x - d, center.y + r));
-            coords.add(new Coords(center.x + d, center.y + r));
-            coords.add(new Coords(center.x - d, center.y - r));
-            coords.add(new Coords(center.x + d, center.y - r));
-            coords.add(new Coords(center.x + r, center.y - d));
-            coords.add(new Coords(center.x + r, center.y + d));
-            coords.add(new Coords(center.x - r, center.y - d));
-            coords.add(new Coords(center.x - r, center.y + d));
+            this.addIfNotDupe(new Coords(center.x - d, center.y + r), coordsSet);
+            this.addIfNotDupe(new Coords(center.x + d, center.y + r), coordsSet);
+            this.addIfNotDupe(new Coords(center.x - d, center.y - r), coordsSet);
+            this.addIfNotDupe(new Coords(center.x + d, center.y - r), coordsSet);
+            this.addIfNotDupe(new Coords(center.x + r, center.y - d), coordsSet);
+            this.addIfNotDupe(new Coords(center.x + r, center.y + d), coordsSet);
+            this.addIfNotDupe(new Coords(center.x - r, center.y - d), coordsSet);
+            this.addIfNotDupe(new Coords(center.x - r, center.y + d), coordsSet);
         }
-        return coords;
+        return coordsSet;
+    }
+
+    private static addIfNotDupe(coords: Coords, set: Set<Coords>) {
+        if (!this.dupeCoords.has(coords.key)) {
+            set.add(coords);
+            this.dupeCoords.add(coords.key);
+        }
     }
 }
-
-// for (let y = top; y <= bottom; y++) {
-//     let dy = y - center.y;
-//     let dx = Math.floor(Math.sqrt(radius * radius - dy * dy)); // Can be precomputed if its a problem: See below
-//     let left = center.x - dx;
-//     let right = center.x + dx;
-
-// }
 
 // Could precompute sqrt as such:
 // dx = [

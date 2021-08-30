@@ -4,6 +4,8 @@ import G from "../G";
 import Light from "../lights/Light";
 import Coords from "../util/Coords";
 import GMath from "../util/GMath";
+import ExplosionEffect from "./ExplosionEffect";
+import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
 export default class FireballEffect extends _Effect {
@@ -32,10 +34,11 @@ export default class FireballEffect extends _Effect {
     }
 
     explode() {
+        const coords = this.coords;
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
-        // G.board.actionLayer.set(this.coords, new ExplosionAction());
+        G.board.effects.gens.add(new ExplosionGenerator(coords, 2));
     }
 }
 
