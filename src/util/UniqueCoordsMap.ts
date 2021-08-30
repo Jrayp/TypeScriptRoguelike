@@ -2,12 +2,12 @@ import { assertTrue } from "./Assertions";
 import Coords from "./Coords";
 import GMath from "./GMath";
 
-export default class UniqueCoordsMap<T> {
+export default class UniqueCoordsMap<T>{
     private _elementToCoords: Map<T, Coords> = new Map();
     private _keyToElement: Map<string, T> = new Map();
 
 
-    get count()  {
+    get count() {
         return this._keyToElement.size;
     }
 
@@ -114,23 +114,14 @@ export default class UniqueCoordsMap<T> {
         }
     }
 
-    // TODO: Find clean way of returning radius of tile. maybe in squared form so we only 
-    // squareroot when needed
     * iterateCircle(center: Coords, radius: number): Generator<[Coords, T | undefined]> {
-        let top = Math.floor(center.y - radius);
-        let bottom = Math.ceil(center.y + radius);
-        let left = Math.floor(center.x - radius);
-        let right = Math.ceil(center.x + radius);
+        for (let c of GMath.iterateCoordsWithinCircle(center, radius))
+            yield [c, this._keyToElement.get(c.key)];
+    }
 
-        for (let y = top; y <= bottom; y++) {
-            for (let x = left; x <= right; x++) {
-                if (GMath.insideCircle(center, x, y, radius)) {
-                    const c = new Coords(x, y);
-                    const e = this._keyToElement.get(c.key);
-                    yield [c, e]
-                }
-            }
-        }
+    * iterateCircumference(center: Coords, radius: number): Generator<[Coords, T | undefined]> {
+        for (let c of GMath.coordsOnCircumferenceSet(center, radius))
+            yield [c, this._keyToElement.get(c.key)];
     }
 
 

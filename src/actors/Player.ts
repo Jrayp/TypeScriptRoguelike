@@ -12,8 +12,14 @@ import _Actor from "./_Actor";
 export default class Player extends _Actor implements Sight {
     name = "Player";
     _glyph = '@';
-    _fgColor = [150, 75, 0] as Color;
+    _fgColor = [255, 0, 0] as Color;
     _bgColor = null;
+
+    get bgColor() {
+        if (!G.board.lights.getBrightness(this.coords!.key))
+            return [75, 0, 130];
+        else return this._bgColor;
+    }
 
     light: Light;
 

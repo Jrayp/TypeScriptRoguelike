@@ -1,5 +1,4 @@
 import { Color } from "rot-js/lib/color";
-import { DrawData } from "./../types/DrawData";
 
 export default interface Drawable {
 

@@ -1,3 +1,4 @@
+import { Z_ASCII } from "zlib";
 import Coords from "./Coords";
 
 export default class GMath {
@@ -29,4 +30,54 @@ export default class GMath {
         return distanceSquared <= radius * radius;
     }
 
+    static *iterateCoordsWithinCircle(center: Coords, radius: number) {
+        let top = Math.floor(center.y - radius);
+        let bottom = Math.floor(center.y + radius);
+
+        for (let y = top; y <= bottom; y++) {
+            let dy = y - center.y;
+            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
+            let left = Math.ceil(center.x - dx);
+            let right = Math.floor(center.x + dx);
+            for (let x = left; x <= right; x++) {
+                yield new Coords(x, y);
+            }
+        }
+    }
+
+    static coordsOnCircumferenceSet(center: Coords, radius: number) {
+        let coords = new Set<Coords>();
+        for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
+            let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
+            coords.add(new Coords(center.x - d, center.y + r));
+            coords.add(new Coords(center.x + d, center.y + r));
+            coords.add(new Coords(center.x - d, center.y - r));
+            coords.add(new Coords(center.x + d, center.y - r));
+            coords.add(new Coords(center.x + r, center.y - d));
+            coords.add(new Coords(center.x + r, center.y + d));
+            coords.add(new Coords(center.x - r, center.y - d));
+            coords.add(new Coords(center.x - r, center.y + d));
+        }
+        return coords;
+    }
 }
+
+// for (let y = top; y <= bottom; y++) {
+//     let dy = y - center.y;
+//     let dx = Math.floor(Math.sqrt(radius * radius - dy * dy)); // Can be precomputed if its a problem: See below
+//     let left = center.x - dx;
+//     let right = center.x + dx;
+
+// }
+
+// Could precompute sqrt as such:
+// dx = [
+//     [0], /* radius = 0.5 */
+//     [1,1], /* radius = 1.5 */
+//     [2,2,1], /* radius = 2.5 */
+//     [3,3,2,1], /* radius = 3.5 */
+//     [4,4,4,3,2], /* radius = 4.5 */
+//     [5,5,5,4,3,2], /* radius = 5.5 */
+//     [6,6,6,5,5,4,2], /* radius = 6.5 */
+//     …
+//   ];
