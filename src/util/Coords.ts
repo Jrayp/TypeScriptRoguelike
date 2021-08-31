@@ -7,11 +7,9 @@ export default class Coords {
     readonly key: string;
 
     constructor(x: number, y: number) {
-        assertTrue(Number.isInteger(x) && Number.isInteger(y), `x and y must be Integers. Passed: (${x},${y})`);
         this.x = x;
         this.y = y;
         this.key = Coords.makeKey(x, y);
-
     }
 
 

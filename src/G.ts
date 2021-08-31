@@ -14,6 +14,7 @@ import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
 import GMath from "./util/GMath";
+import FireballAction from "./actions/FireballAction";
 
 
 export default class G {
@@ -132,9 +133,14 @@ export default class G {
                 }
                 break;
             case 'fireball':
-                let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
-                G.board.effects.addEffect(startCoord, new FireballEffect(), false);
-                G.board.effects.handleEffects();
+                G.board.icons.clear();
+                let fireballAction = new FireballAction();
+                let endCoords = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
+                fireballAction.setTargetingIcons(G.player.coords!, new Coords(5, 5));
+                this.boardDisplay.drawUI();
+                // let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
+                // G.board.effects.addEffect(startCoord, new FireballEffect(), false);
+                // G.board.effects.handleEffects();
                 return;
             case 'crystal':
                 let coords = this.player.coords!;

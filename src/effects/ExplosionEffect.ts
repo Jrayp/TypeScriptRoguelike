@@ -40,10 +40,11 @@ export default class ExplosionEffect extends _Effect {
         }
         else if (this.counter == 3) {
             this._bgColor = null;
+            G.board.lights.removeLight(this.light);
+
         }
         else if (this.counter == 4) {
             G.board.effects.removeViaElement(this);
-            G.board.lights.removeLight(this.light);
         }
         this.counter++;
     }

@@ -27,16 +27,16 @@ export default class GMath {
         return start + t * (end - start);
     }
 
-    static lerpCoords(c1: Coords, c2: Coords, t: number) {
-        return new Coords(this.lerp(c1.x, c1.x, t), this.lerp(c2.x, c2.y, t));
+    static lerpCoords(c0: Coords, c1: Coords, t: number) {
+        return new Coords(this.lerp(c0.x, c1.x, t), this.lerp(c0.y, c1.y, t));
     }
 
-    static line(c1: Coords, c2: Coords) {
+    static line(c0: Coords, c1: Coords) {
         let coords: Coords[] = [];
-        let N = this.diagonalDistance(c1, c2);
+        let N = this.diagonalDistance(c0, c1);
         for (let step = 0; step <= N; step++) {
             let t = N === 0 ? 0.0 : step / N;
-            coords.push(this.roundCoords(this.lerpCoords(c1, c2, t)));
+            coords.push(this.roundCoords(this.lerpCoords(c0, c1, t)));
         }
         return coords;
     }
@@ -45,9 +45,9 @@ export default class GMath {
         return new Coords(Math.round(c.x), Math.round(c.y));
     }
 
-    static diagonalDistance(c1: Coords, c2: Coords) {
-        let dx = c2.x - c1.x;
-        let dy = c2.y - c1.y;
+    static diagonalDistance(c0: Coords, c1: Coords) {
+        let dx = c1.x - c0.x;
+        let dy = c1.y - c0.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 

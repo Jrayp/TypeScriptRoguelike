@@ -28,6 +28,7 @@ export default class BoardDisplay extends Display {
             tile = tileLayer.getElementViaKey(seenKey);
             const coords = tile.coords;
 
+
             if (actionLayer.hasCoords(coords)) {
                 let action = actionLayer.getElementViaCoords(coords);
                 fgDrawColor = this.convertColor(action.fgColor);
@@ -51,6 +52,24 @@ export default class BoardDisplay extends Display {
                 fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
                 bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor);
                 this.draw(coords.x, coords.y, tile._glyph, fgDrawColor, bgDrawColor);
+            }
+        }
+
+
+    }
+
+
+    drawUI() {
+        const icons = G.board.icons;
+        const tileLayer = G.board.tiles;
+
+        for (let t of tileLayer.iterateElements()) {
+            let coords = t[1];
+            if (icons.has(coords)) {
+                let icon = icons.get(coords)!;
+                let fgDrawColor = this.convertColor(icon.fgColor);
+                let bgDrawColor = this.convertColor(icon.bgColor);
+                this.draw(coords.x, coords.y, icon.glyph, fgDrawColor, bgDrawColor);
             }
         }
     }
