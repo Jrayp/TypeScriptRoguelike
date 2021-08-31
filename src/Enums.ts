@@ -1,7 +1,8 @@
 
 export enum GameState {
     PLAYER_CONTROL,
-    ACTION
+    EFFECT_LOOP,
+    TILE_SELECTION
 }
 
 export enum Direction {
