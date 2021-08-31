@@ -4,10 +4,17 @@ import UniqueCoordsMap from "../util/UniqueCoordsMap";
 import { GameState } from "./../Enums";
 import G from "./../G";
 import Loop from "./../Loop";
+import Coords from "./../util/Coords";
 
 export default class EffectsController extends UniqueCoordsMap<_Effect>{
 
     private _generators = new Set<_EffectGenerator>();
+
+    addEffect(coords: Coords, effect: _Effect, doStepImmediatly: boolean) {
+        this.set(coords, effect);
+        if (doStepImmediatly)
+            effect.doStep();
+    }
 
     addGenerator(generator: _EffectGenerator, startImmediatly: boolean) {
         this._generators.add(generator);

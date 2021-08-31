@@ -133,7 +133,7 @@ export default class G {
                 break;
             case 'fireball':
                 let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
-                G.board.effects.set(startCoord, new FireballEffect());
+                G.board.effects.addEffect(startCoord, new FireballEffect(), false);
                 G.board.effects.handleEffects();
                 return;
             case 'crystal':

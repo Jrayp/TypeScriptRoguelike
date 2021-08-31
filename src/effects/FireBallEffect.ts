@@ -4,20 +4,21 @@ import G from "../G";
 import Light from "../lights/Light";
 import Coords from "../util/Coords";
 import GMath from "../util/GMath";
-import ExplosionEffect from "./ExplosionEffect";
 import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
 export default class FireballEffect extends _Effect {
     _glyph = '*';
-    _fgColor = [244, 125, 22] as Color;
+    _fgColor = [244, 135, 22] as Color;
     _bgColor = null
 
     light: Light;
 
+    lastCoords: Coords;
+
     constructor() {
         super();
-        this.light = new Light(this, 6, this._fgColor);
+        this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
     }
 
@@ -28,8 +29,13 @@ export default class FireballEffect extends _Effect {
             this.explode();
         }
         else {
-            let dest = Coords.addCoordsToCoords(coords, GMath.DIR_COORDS[Direction.N])
-            G.board.effects.moveElement(this, dest);
+            this.lastCoords = coords;
+            let dest = Coords.addCoordsToCoords(coords, GMath.DIR_COORDS[Direction.N]);
+            let destTile = G.board.tiles.getElementViaCoords(dest);
+            if (!destTile.passable)
+                this.explode();
+            else
+                G.board.effects.moveElement(this, dest);
         }
     }
 
