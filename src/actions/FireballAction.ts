@@ -1,11 +1,11 @@
 import { Icon } from "./../controllers/UIController";
 import G from "./../G";
-import Targetable from "./../interfaces/Targetable";
+import ITargetable from "../interfaces/ITargetable";
 import Coords from "./../util/Coords";
 import GMath from "./../util/GMath";
 import _Action from "./_Action";
 
-export default class FireballAction extends _Action implements Targetable {
+export default class FireballAction extends _Action implements ITargetable {
 
     radius = 2.45;
 

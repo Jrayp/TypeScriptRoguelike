@@ -1,13 +1,13 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import Positional from "src/interfaces/Positional";
+import IPositional from "src/interfaces/IPositional";
 import C from "../C";
 import G from "../G";
 import Coords from "../util/Coords";
 
 export default class Light {
-    attachedTo: Positional;
+    attachedTo: IPositional;
     active = true;
 
     private _color: Color;
@@ -16,7 +16,7 @@ export default class Light {
     private _lighting: Lighting;
     private _oldCoordsKey: string;
 
-    constructor(attachedTo: Positional, intensity: number, color: Color) {
+    constructor(attachedTo: IPositional, intensity: number, color: Color) {
         this.attachedTo = attachedTo;
         this._intensity = intensity;
         this._color = color;

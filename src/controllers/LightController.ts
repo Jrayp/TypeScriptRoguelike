@@ -2,7 +2,7 @@ import { Color as ColorHelper } from "rot-js";
 import { Color } from "rot-js/lib/color";
 import { _BoardTile } from "./../boardTiles/_BoardTile";
 import G from "./../G";
-import Sight from "./../interfaces/Sight";
+import ISight from "../interfaces/ISight";
 import Coords from "./../util/Coords";
 import GMath from "./../util/GMath";
 import Light from "./../lights/Light";
@@ -77,7 +77,7 @@ export default class LightController {
         this._brightnessMap.set(key, brightness);
     }
 
-    percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: Sight) {
+    percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: ISight) {
         let tileCoords = opaqueTile.coords;
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;

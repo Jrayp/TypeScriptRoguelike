@@ -10,6 +10,7 @@ import C from "./C";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { Direction, GameState, TryMoveResult } from "./Enums";
+import ITargetable from "./interfaces/ITargetable";
 import Log from "./Log";
 import Coords from "./util/Coords";
 import GMath from "./util/GMath";
@@ -39,7 +40,7 @@ export default class G {
     static tileWidth: number;
     static tileHeight: number;
 
-    static currentAction : _Action;
+    static currentTargeting : ITargetable;
 
     static init() {
         document.body.append(G.logDisplay.getContainer()!);

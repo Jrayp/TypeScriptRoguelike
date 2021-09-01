@@ -1,10 +1,10 @@
 import G from "./../G";
-import Diggable from "./../interfaces/Diggable";
+import IDiggable from "../interfaces/IDiggable";
 import { FloorTile } from "./FloorTile";
 import { RubbleTile } from "./RubbleTile";
 import { _BoardTile } from "./_BoardTile";
 
-export default abstract class _DiggableTile extends _BoardTile implements Diggable {
+export default abstract class _DiggableTile extends _BoardTile implements IDiggable {
     abstract digStrength: number;
 
     dig() {

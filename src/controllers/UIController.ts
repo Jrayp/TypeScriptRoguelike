@@ -1,10 +1,10 @@
 import { Color } from "rot-js/lib/color";
 import Coords from "./../util/Coords";
-import Drawable from "./../interfaces/Drawable";
+import IDrawable from "../interfaces/IDrawable";
 import UniqueCoordsMap from "./../util/UniqueCoordsMap";
 
 
-export class Icon implements Drawable {
+export class Icon implements IDrawable {
     _glyph: string;
     _fgColor: Color | null;
     _bgColor: Color | null;

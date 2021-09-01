@@ -3,13 +3,13 @@ import { Color } from 'rot-js/lib/color';
 import G from "../G";
 import { TryMoveResult } from './../Enums';
 import SightHelper from './../interfaceHelpers/SightHelper';
-import { isDiggable } from './../interfaces/Diggable';
-import Sight from './../interfaces/Sight';
+import { isDiggable } from '../interfaces/IDiggable';
+import ISight from '../interfaces/ISight';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
 
-export default class Player extends _Actor implements Sight {
+export default class Player extends _Actor implements ISight {
     name = "Player";
     _glyph = '@';
     _fgColor = [255, 0, 0] as Color;

@@ -1,10 +1,10 @@
 import { Color } from "rot-js/lib/color";
 import G from "../G";
-import Drawable from "../interfaces/Drawable";
-import Positional from "../interfaces/Positional";
+import IDrawable from "../interfaces/IDrawable";
+import IPositional from "../interfaces/IPositional";
 import Coords from "../util/Coords";
 
-export default abstract class _Effect implements Drawable, Positional {
+export default abstract class _Effect implements IDrawable, IPositional {
     abstract _glyph: string;
     abstract _fgColor: Color | null;
     abstract _bgColor: Color | null;
