@@ -1,20 +1,18 @@
 import { RNG } from "rot-js";
-import FireballEffect from "./effects/FireBallEffect";
+import FireballAction from "./actions/FireballAction";
+import _Action from "./actions/_Action";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
-import _Npc from "./actors/_Npc";
 import Board from "./Board";
 import { GlowingCrystalTile } from "./boardTiles/GlowingCrystalTile";
 import { RubbleTile } from "./boardTiles/RubbleTile";
-import { WallTile } from "./boardTiles/WallTile";
+import C from "./C";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { Direction, GameState, TryMoveResult } from "./Enums";
-import Light from "./lights/Light";
 import Log from "./Log";
 import Coords from "./util/Coords";
 import GMath from "./util/GMath";
-import FireballAction from "./actions/FireballAction";
 
 
 export default class G {
@@ -29,9 +27,29 @@ export default class G {
 
     static state = GameState.PLAYER_CONTROL;
 
+    static mouseX: number = 0;
+    static mouseY: number = 0;
+
+    static tileX: number = 0;
+    static tileY: number = 0;
+
+    static boardCanvas: HTMLElement;
+    static boardCanvasRect: DOMRect;
+
+    static tileWidth: number;
+    static tileHeight: number;
+
+    static currentAction : _Action;
+
     static init() {
         document.body.append(G.logDisplay.getContainer()!);
         document.body.append(G.boardDisplay.getContainer()!);
+
+        G.boardCanvas = G.boardDisplay.getContainer()!;
+        G.boardCanvasRect = G.boardCanvas.getBoundingClientRect();
+
+        G.tileWidth = G.boardCanvasRect.width / C.BOARD_WIDTH;
+        G.tileHeight = G.boardCanvasRect.height / C.BOARD_HEIGHT;
 
         G.log = new Log();
         G.board = new Board()
@@ -63,14 +81,30 @@ export default class G {
     }
 
     private static initInputHandlers() {
-        const canvas = G.boardDisplay.getContainer()!;
         const instructions = document.getElementById('focus-instructions');
-        canvas.setAttribute('tabindex', "1");
-        canvas.addEventListener('keydown', G.handleKeyDown);
+        G.boardCanvas.setAttribute('tabindex', "1");
+        G.boardCanvas.addEventListener('keydown', G.handleKeyDown);
+        G.boardCanvas.addEventListener('mousemove',G.handleMouseOver);
         // canvas.addEventListener('blur', () => { instructions!.classList.add('visible'); });
         // canvas.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
-        canvas.focus();
+        G.boardCanvas.focus();
     }
+
+
+    static handleMouseOver(event: MouseEvent) {
+        G.mouseX = event.clientX - G.boardCanvasRect.left;
+        G.mouseY = event.clientY - G.boardCanvasRect.top;
+
+        G.tileX = Math.floor(G.mouseX / G.tileWidth);
+        G.tileY = Math.floor(G.mouseY / G.tileHeight);
+
+        // G.board.icons.clear();
+        // let fireballAction = new FireballAction();
+        // let endCoords = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
+        // fireballAction.setTargetingIcons(G.player.coords!, new Coords(G.tileX, G.tileY));
+        // G.boardDisplay.drawUI();
+    }
+
 
     private static handleKeyDown(event: KeyboardEvent) {
         if (event.altKey || event.ctrlKey || event.metaKey) return;
@@ -83,7 +117,7 @@ export default class G {
 
 
     private static determinePlayerAction(key: string): [string, number, number] | undefined {
-        if (this.state != GameState.PLAYER_CONTROL)
+        if (G.state != GameState.PLAYER_CONTROL)
             return undefined;
 
         switch (key) {
@@ -136,14 +170,14 @@ export default class G {
                 G.board.icons.clear();
                 let fireballAction = new FireballAction();
                 let endCoords = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
-                fireballAction.setTargetingIcons(G.player.coords!, new Coords(5, 5));
-                this.boardDisplay.drawUI();
+                fireballAction.setTargetingIcons(G.player.coords!, new Coords(G.mouseX, G.mouseY));
+                G.boardDisplay.drawUI();
                 // let startCoord = Coords.addCoordsToCoords(G.player.coords!, GMath.DIR_COORDS[Direction.N]);
                 // G.board.effects.addEffect(startCoord, new FireballEffect(), false);
                 // G.board.effects.handleEffects();
                 return;
             case 'crystal':
-                let coords = this.player.coords!;
+                let coords = G.player.coords!;
                 let tile = G.board.tiles.getElementViaCoords(coords);
                 if (tile.name != "Glowing Crystal")
                     G.board.tiles.replace(coords, new GlowingCrystalTile());

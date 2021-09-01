@@ -20,6 +20,8 @@ export default class C {
         width: C.BOARD_WIDTH,
         height: C.BOARD_HEIGHT, // canvas height and width
         fontSize: 24, // canvas fontsize
+        // border: 1,
+        // tileColorize: true
         //forceSquareRatio: true // make the canvas squared ratio
     };
 
