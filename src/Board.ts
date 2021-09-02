@@ -32,6 +32,12 @@ export default class Board {
     }
 
 
+    getTopLayerElement(coords: Coords){
+        if(this.icons.has(coords))
+            return 
+
+    }
+
 
     draw(seenCells: Set<string>, percievedOpaqueColors: Map<string, Color>) {
         G.boardDisplay.update(this, seenCells, percievedOpaqueColors);

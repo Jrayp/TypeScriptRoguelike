@@ -1,13 +1,17 @@
 import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import G from "../G";
-import { TryMoveResult } from './../Enums';
-import SightHelper from './../interfaceHelpers/SightHelper';
 import { isDiggable } from '../interfaces/IDiggable';
 import ISight from '../interfaces/ISight';
+import AttackAction from './../actions/AttackAction';
+import DigAction from './../actions/DigAction';
+import MoveAction from './../actions/MoveAction';
+import { Direction } from './../Enums';
+import SightHelper from './../interfaceHelpers/SightHelper';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
+
 
 export default class Player extends _Actor implements ISight {
     name = "Player";
@@ -42,7 +46,10 @@ export default class Player extends _Actor implements ISight {
         this.percievedOpaqueColors.clear();
         let placeHolderColor: Color = [0, 0, 0];
 
-        // Get all the coords in the players FOV and add opaue coords to the map
+        // TODO: Just make the light not shine on the wall if the player cant see the neighboring
+        // floor tiles..
+
+        // Get all the coords in the players FOV and add opaque coords to a map
         this.fovAlgo.compute(thisCoords.x, thisCoords.y, this.sightRange,
             (x: number, y: number, r: number, visibility: number) => {
                 let coordsKey = Coords.makeKey(x, y);
@@ -56,7 +63,7 @@ export default class Player extends _Actor implements ISight {
                 }
             });
 
-        // Set percieved color of opaque tiles to that of teh brightest neighboring floor tile
+        // Set percieved color of opaque tiles to that of the brightest neighboring floor tile
         // that the player can see.
         for (let opaqueKeyAndColor of this.percievedOpaqueColors) {
             let coordsKey = opaqueKeyAndColor[0];
@@ -72,34 +79,42 @@ export default class Player extends _Actor implements ISight {
         return this.seenCoords;
     }
 
+    getAction(keyCode: string) {
+        switch (keyCode) {
+            case 'Numpad8': return this.tryMove(this.coords!.neighbor(Direction.N));
+            case 'Numpad9': return this.tryMove(this.coords!.neighbor(Direction.NE));
+            case 'Numpad6': return this.tryMove(this.coords!.neighbor(Direction.E));
+            case 'Numpad3': return this.tryMove(this.coords!.neighbor(Direction.SE));
+            case 'Numpad2': return this.tryMove(this.coords!.neighbor(Direction.S));
+            case 'Numpad1': return this.tryMove(this.coords!.neighbor(Direction.SW));
+            case 'Numpad4': return this.tryMove(this.coords!.neighbor(Direction.W));
+            case 'Numpad7': return this.tryMove(this.coords!.neighbor(Direction.NW));
+            // case 'Numpad5': return; // Wait
+            // case 'KeyA': return ['write', 0, 0];
+            // case 'KeyL': return ['light', 0, 0];
+            // case 'KeyC': return ['crystal', 0, 0];
+            // case 'KeyF': return ['fireball', 0, 0];
+            // case 'KeyO': return ['circle', 0, 0];
+            default: return undefined;
+        }
+    }
+
     tryMove(destCoords: Coords) {
         const destinationTile = G.board.tiles.getElementViaCoords(destCoords);
 
         const occupant = destinationTile.occupant();
         if (occupant) { // For now always enemy
-            this.melee(G.board.actors.getElementViaCoords(destCoords))
-            G.log.write("*Poof* You kick the Goomba");
-            return TryMoveResult.ENEMY;
+            return new AttackAction(occupant);
         }
-
-        if (!destinationTile.passable) {
+        else if (!destinationTile.passable) {
             if (isDiggable(destinationTile)) {
-                destinationTile.dig();
+                return new DigAction(destinationTile);
             }
-            // G.log.write("You bump into a wall!"); // Can be function on impassable types
-            return TryMoveResult.IMPASSABLE;
+            return undefined;
         }
 
-        G.board.actors.moveElement(G.player, destCoords);
-        const enterMessage = G.board.tiles.getElementViaCoords(destCoords).onEnter(G.player);
-        if (enterMessage)
-            G.log.write(enterMessage);
-
-        return TryMoveResult.SUCCESFUL;
+        return new MoveAction(this, destCoords);
     }
 
-    melee(npc: _Actor) {
-        npc.kill();
 
-    }
 }

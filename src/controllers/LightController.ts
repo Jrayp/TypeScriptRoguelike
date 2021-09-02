@@ -47,6 +47,9 @@ export default class LightController {
         }
     }
 
+    // TODO: Just make the light not shine on the wall if the player cant see the neighboring
+    // floor tiles..
+
     applyLight(x: number, y: number, lightColor: Color) {
         if (!G.board.numbersWithinBounds(x, y))
             return;

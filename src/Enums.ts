@@ -28,3 +28,7 @@ export enum DrawDataType {
     FOREGROUND_COLOR,
     BACKGROUND_COLOR
 }
+
+export enum PlayerAction {
+
+}

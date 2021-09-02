@@ -1,3 +1,9 @@
-export default interface ITargetable{
-    
+import Coords from "./../util/Coords";
+
+export default interface ITargetable {
+
+
+    setTargetingIcons(start: Coords, end: Coords): void;
+
+
 }
