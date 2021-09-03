@@ -1,10 +1,18 @@
+import G from "../G";
+import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
 import { ActionState, GameState } from "./../Enums";
-import G from "../G";
+import ITargetable from "./../interfaces/ITargetable";
+import Coords from "./../util/Coords";
 
 export default class Input {
 
     static mouseOverCanvas: HTMLElement;
+
+    static mouseTileX: number = 0;
+    static mouseTileY: number = 0;
+
+    static mouseTileCoords: Coords;
 
     // Dom
     static logCanvas: HTMLElement;
@@ -13,20 +21,36 @@ export default class Input {
     static boardCanvas: HTMLElement;
     static boardCanvasRect: DOMRect;
 
+    static currentTargetedAction: (ITargetable & _Action) | undefined;
+
     static setInputHandlers(logCanvas: HTMLElement, boardCanvas: HTMLElement) {
-        Input.logCanvas = logCanvas;
-        Input.boardCanvas = boardCanvas;
+        this.logCanvas = logCanvas;
+        this.boardCanvas = boardCanvas;
 
-        Input.logCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.logCanvas });
+        this.recalculateCanvasRects();
 
-        Input.boardCanvas.setAttribute('tabindex', "1");
-        Input.boardCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.boardCanvas });
-        Input.boardCanvas.addEventListener('keydown', Input.handleKeyDown);
+        this.logCanvas.addEventListener('mouseover', () => { this.mouseOverCanvas = this.logCanvas });
 
-        window.onscroll = Input.recalculateCanvasRects;
-        window.onresize = Input.recalculateCanvasRects;
+        this.boardCanvas.setAttribute('tabindex', "1");
+        this.boardCanvas.addEventListener('mouseover', () => { this.mouseOverCanvas = this.boardCanvas; });
+        this.boardCanvas.addEventListener('mousemove', this.handleMouseMove);
+        this.boardCanvas.addEventListener('click', this.handleMouseClick);
+        this.boardCanvas.addEventListener('keydown', this.handleKeyDown);
 
-        Input.boardCanvas.focus();
+        window.onscroll = this.recalculateCanvasRects;
+        window.onresize = this.recalculateCanvasRects;
+
+        this.boardCanvas.focus();
+    }
+    static handleMouseClick(event: MouseEvent) {
+        if (G.state == GameState.TARGETING) {
+            let i =  Input.currentTargetedAction!;
+            Input.currentTargetedAction = undefined;
+            G.board.icons.clear();
+            let playerSeenCoords = G.player.computeFov();
+            G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+            i.perform();
+        }
     }
 
     private static recalculateCanvasRects() {
@@ -35,7 +59,22 @@ export default class Input {
     }
 
     static handleMouseMove(event: MouseEvent) {
-        // Input.mouseOverInput.handleMouseMove(event);
+        let x = event.clientX - Input.boardCanvasRect.left;
+        let y = event.clientY - Input.boardCanvasRect.top;
+
+        Input.mouseTileX = Math.floor(x / G.tileWidth);
+        Input.mouseTileY = Math.floor(y / G.tileHeight);
+
+        Input.mouseTileCoords = new Coords(Input.mouseTileX, Input.mouseTileY);
+
+
+        if (G.state == GameState.TARGETING) {
+            G.board.icons.clear();
+            Input.currentTargetedAction!.setTargetingIcons(G.player.coords!, Input.mouseTileCoords);
+            let playerSeenCoords = G.player.computeFov();
+            G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+            G.boardDisplay.drawUI();
+        }
     }
 
     static handleKeyDown(event: KeyboardEvent) {
@@ -45,9 +84,30 @@ export default class Input {
 
         switch (G.state) {
             case GameState.PLAYER_CONTROL:
-                action = G.player.getAction(event.code);
+                switch (event.code) {
+                    case "KeyF":
+                        Input.currentTargetedAction = new FireballAction();
+                        G.state = GameState.TARGETING;
+                        Input.currentTargetedAction.setTargetingIcons(G.player.coords!, Input.mouseTileCoords);
+                        let playerSeenCoords = G.player.computeFov();
+                        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+                        G.boardDisplay.drawUI();
+                        break;
+                    default:
+                        action = G.player.getAction(event.code);
+                }
+
                 break;
             case GameState.TARGETING:
+                switch (event.code) {
+                    case "Escape":
+                        Input.currentTargetedAction = undefined;
+                        G.board.icons.clear();
+                        let playerSeenCoords = G.player.computeFov();
+                        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+                        G.state = GameState.PLAYER_CONTROL;
+                        break;
+                }
                 break;
             case GameState.EFFECT_LOOP:
                 break;

@@ -15,14 +15,23 @@ export default class FireballEffect extends _Effect {
     light: Light;
 
     lastCoords: Coords;
+    path : Coords[];
+    step = 1;
 
-    constructor() {
+    constructor(path: Coords[]) {
         super();
+        this.path = path;
         this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
     }
 
     doStep() {
+        if(this.step == this.path.length)
+        {
+            this.explode();
+            return;
+        }
+        
         const coords = this.coords;
         const tile = G.board.tiles.getElementViaCoords(coords);
         if (!tile.passable || tile.occupant()) {
@@ -30,13 +39,14 @@ export default class FireballEffect extends _Effect {
         }
         else {
             this.lastCoords = coords;
-            let dest = Coords.addCoordsToCoords(coords, GMath.DIR_COORDS[Direction.N]);
+            let dest = this.path[this.step];
             let destTile = G.board.tiles.getElementViaCoords(dest);
             if (!destTile.passable)
                 this.explode();
             else
                 G.board.effects.moveElement(this, dest);
         }
+        this.step++;
     }
 
     explode() {

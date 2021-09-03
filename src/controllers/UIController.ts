@@ -19,7 +19,7 @@ export class Icon implements IDrawable {
         return this._bgColor;
     }
 
-    static readonly TARGET_ICON = new Icon('X', [255, 255, 255], null);
+    static readonly TARGET_ICON = new Icon('*', [255, 255, 0], null);
 
     constructor(glyph: string, fgColor: Color | null, bgColor: Color | null) {
         this._glyph = glyph;

@@ -41,8 +41,8 @@ export default class G {
         // G.boardCanvas = G.boardDisplay.getContainer()!;
         // G.boardCanvasRect = G.boardCanvas.getBoundingClientRect();
 
-        // G.tileWidth = G.boardCanvasRect.width / C.BOARD_WIDTH;
-        // G.tileHeight = G.boardCanvasRect.height / C.BOARD_HEIGHT;
+        G.tileWidth = G.boardDisplay.getContainer()!.getBoundingClientRect().width / C.BOARD_WIDTH;
+        G.tileHeight = G.boardDisplay.getContainer()!.getBoundingClientRect().height / C.BOARD_HEIGHT;
 
         G.log = new Log();
         G.board = new Board()

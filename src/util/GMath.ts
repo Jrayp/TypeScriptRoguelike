@@ -1,3 +1,4 @@
+import { setMaxListeners } from "process";
 import { Z_ASCII } from "zlib";
 import Coords from "./Coords";
 
@@ -71,6 +72,26 @@ export default class GMath {
                 yield new Coords(x, y);
             }
         }
+    }
+
+    static coordsWithinCircleMap(center: Coords, radius: number) {
+        let map = new Map<string, Coords>();
+
+        let top = Math.floor(center.y - radius);
+        let bottom = Math.floor(center.y + radius);
+
+        for (let y = top; y <= bottom; y++) {
+            let dy = y - center.y;
+            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
+            let left = Math.ceil(center.x - dx);
+            let right = Math.floor(center.x + dx);
+            for (let x = left; x <= right; x++) {
+                let c = new Coords(x, y);
+                map.set(c.key, c);
+            }
+        }
+
+        return map;
     }
 
     private static dupeCoords = new Set<string>();
