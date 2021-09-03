@@ -1,3 +1,4 @@
+import { ActionState } from "./../Enums";
 import _Actor from "./../actors/_Actor";
 import _Action from "./_Action";
 
@@ -12,7 +13,10 @@ export default class AttackAction extends _Action {
     }
 
     perform() {
+        this.logAfter(`*Poof!* You kick the ${this._actor.name}.`);
         this._actor.kill();
+        return ActionState.SUCCESSFUL;
+        // return "*Poof!* You kick the Goomba"
     }
 
 }

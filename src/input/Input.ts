@@ -1,16 +1,10 @@
 import _Action from "./../actions/_Action";
-import { GameState } from "./../Enums";
+import { ActionState, GameState } from "./../Enums";
 import G from "../G";
-import BoardInput from "./BoardInput";
-import LogInput from "./LogInput";
 
 export default class Input {
 
-    // Inputs
-    static boardInput: BoardInput;
-    static logInput: LogInput;
-
-    static mouseOverInput: Input;
+    static mouseOverCanvas: HTMLElement;
 
     // Dom
     static logCanvas: HTMLElement;
@@ -22,12 +16,16 @@ export default class Input {
     static setInputHandlers(logCanvas: HTMLElement, boardCanvas: HTMLElement) {
         Input.logCanvas = logCanvas;
         Input.boardCanvas = boardCanvas;
-        Input.logCanvas.addEventListener('mouseover', () => { Input.mouseOverInput = Input.logInput });
+
+        Input.logCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.logCanvas });
+
         Input.boardCanvas.setAttribute('tabindex', "1");
-        Input.boardCanvas.addEventListener('mouseover', () => { Input.mouseOverInput = Input.boardInput });
+        Input.boardCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.boardCanvas });
         Input.boardCanvas.addEventListener('keydown', Input.handleKeyDown);
+
         window.onscroll = Input.recalculateCanvasRects;
         window.onresize = Input.recalculateCanvasRects;
+
         Input.boardCanvas.focus();
     }
 
@@ -57,62 +55,16 @@ export default class Input {
 
         if (action) {
             event.preventDefault();
-            action.perform();
+            // TODO: Probably should pass action to something and perform there to handle logging etc
+            if (action.beforeLogCallback)
+                G.log.write(action.beforeLogCallback());
+            action.state = ActionState.PERFORMING;
+            action.state = action.perform();
+            if (action.afterLogCallback)
+                G.log.write(action.afterLogCallback());
             G.update();
         }
     }
-
-
-
-
-    // setInputHandlers() {
-    //     const instructions = document.getElementById('focus-instructions');
-    //     G.boardCanvas.setAttribute('tabindex', "1");
-    //     G.boardCanvas.addEventListener('keydown', G.handleKeyDown);
-    //     G.boardCanvas.addEventListener('mousemove', G.handleMouseOver);
-    //     // canvas.addEventListener('blur', () => { instructions!.classList.add('visible'); });
-    //     // canvas.addEventListener('focus', () => { instructions!.classList.remove('visible'); });
-    //     window.onscroll = G.recalculateOffset;
-    //     window.onresize = G.recalculateOffset;
-    //     G.boardCanvas.focus();
-    // }
-
-
-
-
-
-    // handleKeyDown(event: KeyboardEvent) {
-    //     if (event.altKey || event.ctrlKey || event.metaKey) return;
-    //     let playerAction = G.determinePlayerAction(event.code);
-    //     if (playerAction != undefined) {
-    //         event.preventDefault();
-    //         G.performPlayerAction(playerAction);
-    //     }
-    // }
-
-
-    // determinePlayerAction(key: string): [string, number, number] | undefined {
-    //     if (G.state != GameState.PLAYER_CONTROL)
-    //         return undefined;
-
-    //     switch (key) {
-    //         case 'Numpad8': return ['move', 0, -1];
-    //         case 'Numpad9': return ['move', +1, -1];
-    //         case 'Numpad6': return ['move', +1, 0];
-    //         case 'Numpad3': return ['move', +1, +1];
-    //         case 'Numpad2': return ['move', 0, +1];
-    //         case 'Numpad1': return ['move', -1, +1];
-    //         case 'Numpad4': return ['move', -1, 0];
-    //         case 'Numpad7': return ['move', -1, -1];
-    //         case 'Numpad5': return ['wait', 0, 0];
-    //         case 'KeyA': return ['write', 0, 0];
-    //         case 'KeyL': return ['light', 0, 0];
-    //         case 'KeyC': return ['crystal', 0, 0];
-    //         case 'KeyF': return ['fireball', 0, 0];
-    //         case 'KeyO': return ['circle', 0, 0];
-    //         default: return undefined;
-    //     }
-    // }
 
     // performPlayerAction(action: [string, number, number]) {
     //     switch (action[0]) {

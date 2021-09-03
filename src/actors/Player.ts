@@ -1,16 +1,22 @@
 import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
+import WaitAction from './../actions/WaitAction';
 import G from "../G";
 import { isDiggable } from '../interfaces/IDiggable';
 import ISight from '../interfaces/ISight';
 import AttackAction from './../actions/AttackAction';
 import DigAction from './../actions/DigAction';
 import MoveAction from './../actions/MoveAction';
-import { Direction } from './../Enums';
+import { ActionState, Direction, SwitchSetting } from './../Enums';
 import SightHelper from './../interfaceHelpers/SightHelper';
 import Light from './../lights/Light';
 import Coords from "./../util/Coords";
 import _Actor from "./_Actor";
+import _Action from './../actions/_Action';
+import SwitchAction from './../actions/SwitchAction';
+import DebugAction from '../actions/DebugAction';
+import { GlowingCrystalTile } from './../boardTiles/GlowingCrystalTile';
+import Action from 'rot-js/lib/scheduler/action';
 
 
 export default class Player extends _Actor implements ISight {
@@ -79,7 +85,7 @@ export default class Player extends _Actor implements ISight {
         return this.seenCoords;
     }
 
-    getAction(keyCode: string) {
+    getAction(keyCode: string): _Action | undefined {
         switch (keyCode) {
             case 'Numpad8': return this.tryMove(this.coords!.neighbor(Direction.N));
             case 'Numpad9': return this.tryMove(this.coords!.neighbor(Direction.NE));
@@ -89,10 +95,20 @@ export default class Player extends _Actor implements ISight {
             case 'Numpad1': return this.tryMove(this.coords!.neighbor(Direction.SW));
             case 'Numpad4': return this.tryMove(this.coords!.neighbor(Direction.W));
             case 'Numpad7': return this.tryMove(this.coords!.neighbor(Direction.NW));
-            // case 'Numpad5': return; // Wait
-            // case 'KeyA': return ['write', 0, 0];
-            // case 'KeyL': return ['light', 0, 0];
-            // case 'KeyC': return ['crystal', 0, 0];
+            case 'Numpad5': return new WaitAction();
+            case 'KeyL': return new SwitchAction(this.light, SwitchSetting.TOGGLE).logAfterConditional(() => {
+                return this.light.active ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
+            });
+            case 'KeyC':
+                let da = new DebugAction(() => {
+                    let tile = G.board.tiles.getElementViaCoords(this.coords!);
+                    if (tile.name != "Glowing Crystal") {
+                        G.board.tiles.replace(this.coords!, new GlowingCrystalTile());
+                        return ActionState.SUCCESSFUL;
+                    }
+                    else return ActionState.UNSUCCESSFUL;
+                }).logAfterConditional(() => { return da.state === ActionState.SUCCESSFUL ? "You place a glowing crystal." : "There is already a crystal here." });
+                return da;
             // case 'KeyF': return ['fireball', 0, 0];
             // case 'KeyO': return ['circle', 0, 0];
             default: return undefined;

@@ -1,3 +1,4 @@
+import { ActionState } from "./../Enums";
 import _Actor from "./../actors/_Actor";
 import G from "./../G";
 import Coords from "./../util/Coords";
@@ -17,6 +18,11 @@ export default class MoveAction extends _Action {
 
     perform() {
         G.board.actors.moveElement(this._actor, this._dest);
+        let tile = this._actor.tile!;
+        let log = tile.onEnter(this._actor);
+        if (log)
+            this.logAfter(log);
+        return ActionState.SUCCESSFUL;
     }
 
 }

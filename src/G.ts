@@ -12,7 +12,7 @@ import LogDisplay from "./displays/LogDisplay";
 import { Direction, GameState, TryMoveResult } from "./Enums";
 import Input from "./input/Input";
 import ITargetable from "./interfaces/ITargetable";
-import Log from "./Log";
+import Log from "./logging/Log";
 import Coords from "./util/Coords";
 import GMath from "./util/GMath";
 

@@ -1,10 +1,10 @@
 import { Color as ColorHelper, RNG } from "rot-js";
-import UniqueCoordsMap from "../util/UniqueCoordsMap";
-import { _BoardTile } from "./../boardTiles/_BoardTile";
+import _Action from "./../actions/_Action";
+import MoveAction from "./../actions/MoveAction";
 import G from "./../G";
 import Coords from "./../util/Coords";
-import _Actor from "./_Actor";
 import _Npc from "./_Npc";
+import AttackAction from "./../actions/AttackAction";
 
 export default class Goomba extends _Npc {
     name = "Goomba";
@@ -18,30 +18,30 @@ export default class Goomba extends _Npc {
         super();
     }
 
+    // Make this return actions (like player) and perform them via the npcController
     act() {
+        let action: _Action | undefined;
+
         let freeCoords: Coords[] = [];
         let generator = G.board.tiles.iterateSurrounding(this.coords!);
         for (let coordsAndTile of generator) {
             const tile = coordsAndTile[1]!;
             if (tile.occupant() == G.player) {
-                return this.meleeAttack();
+                action = new AttackAction(tile.occupant()!);
+                break;
             }
             else if (tile.passable && !tile.occupant())
                 freeCoords.push(coordsAndTile[0]);
         }
-        let selection = RNG.getItem(freeCoords);
 
-        if (selection)
-            this.move(selection);
-    }
+        if (!action) {
+            let selection = RNG.getItem(freeCoords);
+            if (selection)
+                action = new MoveAction(this, selection);
+        }
 
-    meleeAttack() {
-        G.log.write(`The Goomba nudges up against you.. aggressively`);
-    }
-
-    move(newCoords: Coords) {
-        G.board.actors.moveElement(this, newCoords);
-        return true;
+        if (action)
+            action.perform();
     }
 
     kill() {
@@ -49,3 +49,4 @@ export default class Goomba extends _Npc {
     }
 
 }
+

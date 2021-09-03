@@ -32,3 +32,16 @@ export enum DrawDataType {
 export enum PlayerAction {
 
 }
+
+export enum SwitchSetting {
+    ACTIVATE,
+    DEACTIVATE,
+    TOGGLE
+}
+
+export enum ActionState {
+    PENDING = 'pending',
+    PERFORMING = 'performing',
+    SUCCESSFUL = 'successful',
+    UNSUCCESSFUL = 'unsuccessful'
+}
