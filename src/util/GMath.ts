@@ -1,3 +1,4 @@
+import { setMaxListeners } from "process";
 import { Z_ASCII } from "zlib";
 import Coords from "./Coords";
 
@@ -23,6 +24,34 @@ export default class GMath {
         return Math.min(Math.max(x, min), max);
     };
 
+    static lerp(start: number, end: number, t: number) {
+        return start + t * (end - start);
+    }
+
+    static lerpCoords(c0: Coords, c1: Coords, t: number) {
+        return new Coords(this.lerp(c0.x, c1.x, t), this.lerp(c0.y, c1.y, t));
+    }
+
+    static line(c0: Coords, c1: Coords) {
+        let coords: Coords[] = [];
+        let N = this.diagonalDistance(c0, c1);
+        for (let step = 0; step <= N; step++) {
+            let t = N === 0 ? 0.0 : step / N;
+            coords.push(this.roundCoords(this.lerpCoords(c0, c1, t)));
+        }
+        return coords;
+    }
+
+    static roundCoords(c: Coords) {
+        return new Coords(Math.round(c.x), Math.round(c.y));
+    }
+
+    static diagonalDistance(c0: Coords, c1: Coords) {
+        let dx = c1.x - c0.x;
+        let dy = c1.y - c0.y;
+        return Math.max(Math.abs(dx), Math.abs(dy));
+    }
+
     static insideCircle(center: Coords, x: number, y: number, radius: number) {
         let dx = center.x - x;
         let dy = center.y - y;
@@ -30,7 +59,7 @@ export default class GMath {
         return distanceSquared <= radius * radius;
     }
 
-    static *iterateCoordsWithinCircle(center: Coords, radius: number) {
+    static * iterateCoordsWithinCircle(center: Coords, radius: number) {
         let top = Math.floor(center.y - radius);
         let bottom = Math.floor(center.y + radius);
 
@@ -43,6 +72,26 @@ export default class GMath {
                 yield new Coords(x, y);
             }
         }
+    }
+
+    static coordsWithinCircleMap(center: Coords, radius: number) {
+        let map = new Map<string, Coords>();
+
+        let top = Math.floor(center.y - radius);
+        let bottom = Math.floor(center.y + radius);
+
+        for (let y = top; y <= bottom; y++) {
+            let dy = y - center.y;
+            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
+            let left = Math.ceil(center.x - dx);
+            let right = Math.floor(center.x + dx);
+            for (let x = left; x <= right; x++) {
+                let c = new Coords(x, y);
+                map.set(c.key, c);
+            }
+        }
+
+        return map;
     }
 
     private static dupeCoords = new Set<string>();

@@ -1,10 +1,10 @@
 import Coords from "./../util/Coords";
-import Sight from "./../interfaces/Sight";
+import ISight from "../interfaces/ISight";
 import G from "./../G";
 
 export default class SightHelper {
 
-    static computeFovNpc(sight: Sight) {
+    static computeFovNpc(sight: ISight) {
         const sightImplmenterCoords = sight.coords;
         sight.seenCoords.clear();
         if (sightImplmenterCoords) {

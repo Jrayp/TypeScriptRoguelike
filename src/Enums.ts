@@ -1,7 +1,8 @@
 
 export enum GameState {
     PLAYER_CONTROL,
-    ACTION
+    EFFECT_LOOP,
+    TARGETING
 }
 
 export enum Direction {
@@ -26,4 +27,21 @@ export enum DrawDataType {
     GLYPH,
     FOREGROUND_COLOR,
     BACKGROUND_COLOR
+}
+
+export enum PlayerAction {
+
+}
+
+export enum SwitchSetting {
+    ACTIVATE,
+    DEACTIVATE,
+    TOGGLE
+}
+
+export enum ActionState {
+    PENDING = 'pending',
+    PERFORMING = 'performing',
+    SUCCESSFUL = 'successful',
+    UNSUCCESSFUL = 'unsuccessful'
 }

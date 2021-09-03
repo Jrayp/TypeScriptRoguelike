@@ -1,6 +1,6 @@
-import C from "./C";
-import G from "./G";
-import { assertTrue } from "./util/Assertions";
+import C from "../C";
+import G from "../G";
+import { assertTrue } from "../util/Assertions";
 
 
 export default class Log {

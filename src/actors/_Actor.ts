@@ -1,14 +1,13 @@
 import { Color } from 'rot-js/lib/color';
-import BoardDisplay from './../displays/BoardDisplay';
-import Drawable from './../interfaces/Drawable';
-import Named from './../interfaces/named';
-import Positional from './../interfaces/Positional';
 import G from '../G';
+import IDrawable from '../interfaces/IDrawable';
+import INamed from '../interfaces/INamed';
+import IPositional from '../interfaces/IPositional';
+import { _BoardTile } from './../boardTiles/_BoardTile';
+import BoardDisplay from './../displays/BoardDisplay';
 import Coords from './../util/Coords';
-import Destroyable from 'src/interfaces/Destroyable';
-import { EventEmitter } from 'stream';
 
-export default abstract class _Actor implements Named, Drawable, Positional {
+export default abstract class _Actor implements INamed, IDrawable, IPositional {
 
     abstract name: string;
 
@@ -28,6 +27,12 @@ export default abstract class _Actor implements Named, Drawable, Positional {
 
     get coords(): Coords | undefined {
         return G.board.actors.getCoordsViaElement(this);
+    }
+
+    get tile(): _BoardTile | undefined {
+        if (this.coords)
+            return G.board.tiles.getElementViaCoords(this.coords);
+        else return undefined;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {

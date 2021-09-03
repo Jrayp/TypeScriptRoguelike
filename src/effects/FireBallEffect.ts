@@ -4,33 +4,49 @@ import G from "../G";
 import Light from "../lights/Light";
 import Coords from "../util/Coords";
 import GMath from "../util/GMath";
-import ExplosionEffect from "./ExplosionEffect";
 import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
 export default class FireballEffect extends _Effect {
     _glyph = '*';
-    _fgColor = [244, 105, 22] as Color;
+    _fgColor = [244, 135, 22] as Color;
     _bgColor = null
 
     light: Light;
 
-    constructor() {
+    lastCoords: Coords;
+    path : Coords[];
+    step = 1;
+
+    constructor(path: Coords[]) {
         super();
-        this.light = new Light(this, 5, this._fgColor);
+        this.path = path;
+        this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
     }
 
     doStep() {
+        if(this.step == this.path.length)
+        {
+            this.explode();
+            return;
+        }
+        
         const coords = this.coords;
         const tile = G.board.tiles.getElementViaCoords(coords);
         if (!tile.passable || tile.occupant()) {
             this.explode();
         }
         else {
-            let dest = Coords.addCoordsToCoords(coords, GMath.DIR_COORDS[Direction.N])
-            G.board.effects.moveElement(this, dest);
+            this.lastCoords = coords;
+            let dest = this.path[this.step];
+            let destTile = G.board.tiles.getElementViaCoords(dest);
+            if (!destTile.passable)
+                this.explode();
+            else
+                G.board.effects.moveElement(this, dest);
         }
+        this.step++;
     }
 
     explode() {
@@ -38,7 +54,10 @@ export default class FireballEffect extends _Effect {
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
-        G.board.effects.gens.add(new ExplosionGenerator(coords, 2));
+
+        let explosionGenerator = new ExplosionGenerator(coords, 2);
+        G.board.effects.addGenerator(explosionGenerator, true);
+
     }
 }
 

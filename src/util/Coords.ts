@@ -1,3 +1,6 @@
+import { Direction } from "./../Enums";
+import { assertTrue } from "./Assertions";
+import GMath from "./GMath";
 
 export default class Coords {
 
@@ -9,13 +12,23 @@ export default class Coords {
         this.x = x;
         this.y = y;
         this.key = Coords.makeKey(x, y);
-
     }
 
+    addCoords(coords: Coords) {
+        return Coords.addCoordsToCoords(this, coords);
+    }
+
+    neighbor(dir: Direction) {
+        return this.addCoords(GMath.DIR_COORDS[dir]);
+    }
 
     ///////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////
+
+    static makeKey(x: number, y: number) {
+        return x + ',' + y;
+    }
 
     static addCoordsToCoords(coordsA: Coords, coordsB: Coords) {
         return new Coords(coordsA.x + coordsB.x, coordsA.y + coordsB.y);
@@ -24,11 +37,5 @@ export default class Coords {
     static addCoordsToNumbers(coords: Coords, x: number, y: number) {
         return new Coords(coords.x + x, coords.y + y);
     }
-
-    static makeKey(x: number, y: number) {
-        return x + ',' + y;
-    }
-
-
 
 }

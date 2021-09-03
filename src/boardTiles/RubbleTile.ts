@@ -9,6 +9,7 @@ export class RubbleTile extends _BoardTile {
     _bgColor = null;
     passable = true;
     transparent = true;
+    destroyable = false;
 
     static possibleGlyphs: [string, string, string, string, string, string] = ['%', ',', ';', '`', ':', '.']
 

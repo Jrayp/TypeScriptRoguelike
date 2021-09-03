@@ -1,13 +1,14 @@
 import { Color as ColorHelper, FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import Positional from "src/interfaces/Positional";
+import IActivatable from "./../interfaces/IActivatable";
+import IPositional from "./../interfaces/IPositional";
 import C from "../C";
 import G from "../G";
 import Coords from "../util/Coords";
 
-export default class Light {
-    attachedTo: Positional;
+export default class Light implements IActivatable {
+    attachedTo: IPositional;
     active = true;
 
     private _color: Color;
@@ -16,7 +17,7 @@ export default class Light {
     private _lighting: Lighting;
     private _oldCoordsKey: string;
 
-    constructor(attachedTo: Positional, intensity: number, color: Color) {
+    constructor(attachedTo: IPositional, intensity: number, color: Color) {
         this.attachedTo = attachedTo;
         this._intensity = intensity;
         this._color = color;
@@ -25,6 +26,18 @@ export default class Light {
         this._lighting = new Lighting(this.reflectivityCallback, { range: this._intensity, passes: 2 })
             .setFOV(this._lightCone);
     }
+
+
+    // TODO: Could probably be made into helper functions
+    // activate(): void {
+    //     this.active = true;
+    // }
+    // deactivate(): void {
+    //     this.active = false;
+    // }
+    // toggleActive(): boolean {
+    //     return this.active = !this.active;
+    // }
 
     update() {
         if (this.active) {

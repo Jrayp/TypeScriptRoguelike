@@ -14,6 +14,7 @@ import ActorController from './controllers/ActorController';
 import EffectsController from './controllers/EffectsController';
 import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
+import UIController from './controllers/UIController';
 import G from './G';
 import Coords from './util/Coords';
 
@@ -21,14 +22,21 @@ export default class Board {
     tiles = new TileController();
     actors = new ActorController();
     effects = new EffectsController();
+    icons = new UIController();
 
     lights = new LightController();
-    
+
 
     constructor() {
         // this.generate();
     }
 
+
+    getTopLayerElement(coords: Coords){
+        if(this.icons.has(coords))
+            return 
+
+    }
 
 
     draw(seenCells: Set<string>, percievedOpaqueColors: Map<string, Color>) {

@@ -1,6 +1,6 @@
 import { Color } from "rot-js/lib/color";
 
-export default interface Drawable {
+export default interface IDrawable {
 
     _glyph: string;
     _fgColor: Color | null;

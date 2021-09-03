@@ -1,14 +1,14 @@
 import { Color } from 'rot-js/lib/color';
 import _Actor from './../actors/_Actor';
-import Positional from './../interfaces/Positional';
-import Named from './../interfaces/named';
+import IPositional from '../interfaces/IPositional';
+import INamed from '../interfaces/INamed';
 import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
-import Drawable from '../interfaces/Drawable';
+import IDrawable from '../interfaces/IDrawable';
 import Coords from './../util/Coords';
 
 // Maybe concept of limbo by reversing coorinate signs??
-export abstract class _BoardTile implements Named, Drawable, Positional {
+export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract name: string;
 
     abstract _glyph: string;
