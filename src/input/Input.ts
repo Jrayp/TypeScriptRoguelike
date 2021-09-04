@@ -112,13 +112,7 @@ export default class Input {
     static handleBoardControlKeyDown(keycode: string): _Action | undefined {
         switch (keycode) {
             case "KeyF":
-                Input.currentTargetedAction = new FireballAction();
-                Input.currentTargetedAction.target(G.player.coords!, Input.mouseBoardCoords);
-                
-                Input.state = InputState.TARGETING;
-                
-                G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
-                G.boardDisplay.drawUI();
+                Input.startTargeting();
                 break;
             default:
                 return G.player.getAction(keycode);
@@ -139,6 +133,21 @@ export default class Input {
         }
 
         return undefined;
+    }
+
+
+    ///////////////////////////////////////////////////////
+    // Targeting
+    ///////////////////////////////////////////////////////
+
+    static startTargeting() {
+        Input.currentTargetedAction = new FireballAction();
+        Input.currentTargetedAction.target(G.player.coords!, Input.mouseBoardCoords);
+        
+        Input.state = InputState.TARGETING;
+        
+        G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
+        G.boardDisplay.drawUI();
     }
 
 }

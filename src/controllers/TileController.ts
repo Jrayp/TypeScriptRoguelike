@@ -4,7 +4,7 @@ import UniqueCoordsMap from "./../util/UniqueCoordsMap";
 
 export default class TileController extends UniqueCoordsMap<_BoardTile> {
 
-    removeViaKey(key: string) {
+    removeViaKey(key: number) {
         this._remove(this.getElementViaKey(key));
         super.removeViaKey(key);
     }

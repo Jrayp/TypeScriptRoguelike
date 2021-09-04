@@ -31,7 +31,7 @@ export class Icon implements IDrawable {
 
 export default class UIController {
 
-    _keyToIconMap = new Map<string, Icon>();
+    _keyToIconMap = new Map<number, Icon>();
 
 
     addIcon(coords: Coords, icon: Icon) {
@@ -50,5 +50,9 @@ export default class UIController {
         this._keyToIconMap.clear();
     }
 
+    *iterate(){
+        for(let i of this._keyToIconMap)
+            yield i;
+    }
 
 }

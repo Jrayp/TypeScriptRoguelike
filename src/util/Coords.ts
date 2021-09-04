@@ -1,3 +1,4 @@
+import C from "./../C";
 import { Direction } from "../Enums";
 
 export default class Coords {
@@ -15,13 +16,14 @@ export default class Coords {
 
     readonly x: number;
     readonly y: number;
-    readonly key: string;
+    readonly key: number;
 
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.key = Coords.makeKey(x, y);
+        this.key = Coords.toInt(x, y);
     }
+
 
     addCoords(coords: Coords) {
         return Coords.addCoordsToCoords(this, coords);
@@ -41,9 +43,9 @@ export default class Coords {
     // STATIC
     ///////////////////////////////////////////////////////
 
-    static makeKey(x: number, y: number) {
-        return x + ',' + y;
-    }
+    // static toInt(x: number, y: number) {
+    //     return x + ',' + y;
+    // }
 
     static addCoordsToCoords(coordsA: Coords, coordsB: Coords) {
         return new Coords(coordsA.x + coordsB.x, coordsA.y + coordsB.y);
@@ -52,5 +54,16 @@ export default class Coords {
     static addCoordsToNumbers(coords: Coords, x: number, y: number) {
         return new Coords(coords.x + x, coords.y + y);
     }
+
+    static fromInt(i: number, width: number = C.BOARD_WIDTH) {
+        let x = i % width;
+        let y = Math.trunc(i / width);
+        return new Coords(x, y);
+    }
+
+    static toInt(x: number, y: number, width: number = C.BOARD_WIDTH) {
+        return x + width * y;
+    }
+
 
 }
