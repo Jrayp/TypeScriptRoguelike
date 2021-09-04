@@ -12,14 +12,14 @@ export default class LightController {
     ambientLight: Color = [0, 0, 0];
 
     private _lights = new Set<Light>();
-    private _colorMap = new Map<string, Color>();
-    private _brightnessMap = new Map<string, number>();
+    private _colorMap = new Map<number, Color>();
+    private _brightnessMap = new Map<number, number>();
 
-    getColor(key: string) {
+    getColor(key: number) {
         return this._colorMap.get(key);
     }
 
-    getBrightness(key: string) {
+    getBrightness(key: number) {
         return this._brightnessMap.get(key);
     }
 

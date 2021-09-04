@@ -39,7 +39,7 @@ export default class Board {
     }
 
 
-    draw(seenCells: Set<string>, percievedOpaqueColors: Map<string, Color>) {
+    draw(seenCells: Set<number>, percievedOpaqueColors: Map<number, Color>) {
         G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
     }
 
@@ -75,7 +75,7 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Coords.makeKey(x, y)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Coords.toInt(x, y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
                 this.tiles.replace(new Coords(x, y), newTile);
             }
@@ -97,7 +97,7 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tiles.getElementViaKey(Coords.makeKey(x, y)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaKey(Coords.toInt(x, y)).name == "Floor") {
                 newTile = new CavernGrassTile();
                 this.tiles.replace(new Coords(x, y), newTile);
             }

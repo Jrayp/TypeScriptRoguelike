@@ -5,7 +5,7 @@ import GMath from "./GMath";
 
 export default class UniqueCoordsMap<T>{
     private _elementToCoords: Map<T, Coords> = new Map();
-    private _keyToElement: Map<string, T> = new Map();
+    private _keyToElement: Map<number, T> = new Map();
 
 
     get count() {
@@ -24,7 +24,7 @@ export default class UniqueCoordsMap<T>{
         this._elementToCoords.set(element, coords);
     }
 
-    removeViaKey(key: string) {
+    removeViaKey(key: number) {
         let element = this._keyToElement.get(key)!;
         this._keyToElement.delete(key);
         this._elementToCoords.delete(element);
@@ -52,7 +52,7 @@ export default class UniqueCoordsMap<T>{
     // Existance
     ///////////////////////////////////////////////////////
 
-    hasKey(key: string) {
+    hasKey(key: number) {
         return this._keyToElement.has(key);
     }
 
@@ -68,7 +68,7 @@ export default class UniqueCoordsMap<T>{
     // Retrieval
     ///////////////////////////////////////////////////////
 
-    getElementViaKey(key: string): T {
+    getElementViaKey(key: number): T {
         assertTrue(this._keyToElement.has(key), `No element found at ${key}.`);
         return this._keyToElement.get(key)!;
     }

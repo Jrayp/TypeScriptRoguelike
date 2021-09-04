@@ -35,8 +35,8 @@ export default class Player extends _Actor implements ISight {
 
     // Sight properties
     sightRange = 30;
-    seenCoords = new Set<string>();
-    percievedOpaqueColors = new Map<string, Color>();
+    seenCoords = new Set<number>();
+    percievedOpaqueColors = new Map<number, Color>();
     fovAlgo = new FOV.PreciseShadowcasting(SightHelper.sightPassesCallback);
 
     constructor() {
@@ -46,7 +46,7 @@ export default class Player extends _Actor implements ISight {
         G.board.lights.addLight(this.light);
     }
 
-    computeFov(): Set<string> {
+    computeFov(): Set<number> {
         const thisCoords = this.coords!;
         this.seenCoords.clear();
         this.percievedOpaqueColors.clear();
@@ -58,7 +58,7 @@ export default class Player extends _Actor implements ISight {
         // Get all the coords in the players FOV and add opaque coords to a map
         this.fovAlgo.compute(thisCoords.x, thisCoords.y, this.sightRange,
             (x: number, y: number, r: number, visibility: number) => {
-                let coordsKey = Coords.makeKey(x, y);
+                let coordsKey = Coords.toInt(x, y);
                 if (G.board.lights.getBrightness(coordsKey)) {
                     let tile = G.board.tiles.getElementViaKey(coordsKey);
                     if (tile.transparent) {

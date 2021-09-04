@@ -15,7 +15,7 @@ export default class Light implements IActivatable {
     private _intensity: number;
     private _lightCone: PreciseShadowcasting;
     private _lighting: Lighting;
-    private _oldCoordsKey: string;
+    private _oldCoordsKey: number;
 
     constructor(attachedTo: IPositional, intensity: number, color: Color) {
         this.attachedTo = attachedTo;
@@ -68,11 +68,11 @@ export default class Light implements IActivatable {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tiles.getElementViaKey(Coords.makeKey(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Coords.toInt(x, y)).transparent;
     }
 
     private reflectivityCallback(x: number, y: number) {
-        const key = Coords.makeKey(x, y);
+        const key = Coords.toInt(x, y);
         if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).passable)
             return 0;
         else

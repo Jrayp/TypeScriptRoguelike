@@ -63,7 +63,7 @@ export default class GMath {
     }
 
     static coordsWithinCircleMap(center: Coords, radius: number) {
-        let map = new Map<string, Coords>();
+        let map = new Map<number, Coords>();
 
         let top = Math.floor(center.y - radius);
         let bottom = Math.floor(center.y + radius);
@@ -82,7 +82,7 @@ export default class GMath {
         return map;
     }
 
-    private static dupeCoords = new Set<string>();
+    private static dupeCoords = new Set<number>();
     static coordsOnCircumferenceSet(center: Coords, radius: number) {
         this.dupeCoords.clear();
         let coordsSet = new Set<Coords>();
