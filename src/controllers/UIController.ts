@@ -50,5 +50,9 @@ export default class UIController {
         this._keyToIconMap.clear();
     }
 
+    *iterate(){
+        for(let i of this._keyToIconMap)
+            yield i;
+    }
 
 }

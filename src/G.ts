@@ -69,14 +69,19 @@ export default class G {
         G.logDisplay.rect = G.logDisplay.getContainer()!.getBoundingClientRect();
     }
 
+    static draw() {
+        G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
+        G.boardDisplay.drawUI();
+    }
+
 
     static update() {
         // Uh oh.. whaty about light so npc and thier vision??? 
         // Maybe doesnt matter they just have to see what they see before moving?
         G.board.actors.update();
         G.board.lights.update();
-        let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+        G.player.computeFov();
+        G.draw();
     }
 
 }
