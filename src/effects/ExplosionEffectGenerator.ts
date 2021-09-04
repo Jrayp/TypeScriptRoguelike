@@ -29,7 +29,7 @@ export default class ExplosionGenerator extends _EffectGenerator {
             for (let c of G.board.tiles.iterateCircumference(this.center, this.step +.45)) {
                 if (G.board.tiles.hasCoords(c[0])) {
                     let ee = new ExplosionEffect();
-                    G.board.effects.addEffect(c[0], ee, true);
+                    G.board.effects.addEffect(c[0], ee, false);
                 }
             }
         }

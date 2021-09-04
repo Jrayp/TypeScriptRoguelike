@@ -32,11 +32,11 @@ export default class Board {
     }
 
 
-    getTopLayerElement(coords: Coords){
-        if(this.icons.has(coords))
-            return 
+    // getTopLayerElement(coords: Coords){
+    //     if(this.icons.has(coords))
+    //         return 
 
-    }
+    // }
 
 
     draw(seenCells: Set<number>, percievedOpaqueColors: Map<number, Color>) {

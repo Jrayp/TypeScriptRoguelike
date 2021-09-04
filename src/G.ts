@@ -1,10 +1,12 @@
 import { RNG } from "rot-js";
+import _Action from "./actions/_Action";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import Board from "./Board";
 import C from "./C";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
+import { ActionState } from "./Enums";
 import Input from "./input/Input";
 import Log from "./logging/Log";
 
@@ -63,7 +65,6 @@ export default class G {
         G.log.write("Welcome to TypeScript Roguelike!");
     }
 
-
     private static recalculateCanvasRects() {
         G.boardDisplay.rect = G.boardDisplay.getContainer()!.getBoundingClientRect();
         G.logDisplay.rect = G.logDisplay.getContainer()!.getBoundingClientRect();
@@ -71,9 +72,20 @@ export default class G {
 
     static draw() {
         G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
-        G.boardDisplay.drawUI();
     }
 
+    static handleAction(action: _Action) {
+        if (action.beforeLogCallback)
+            G.log.write(action.beforeLogCallback());
+
+        action.state = ActionState.PERFORMING;
+        action.state = action.perform();
+
+        if (action.afterLogCallback)
+            G.log.write(action.afterLogCallback());
+
+        G.update();
+    }
 
     static update() {
         // Uh oh.. whaty about light so npc and thier vision??? 

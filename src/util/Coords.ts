@@ -24,7 +24,6 @@ export default class Coords {
         this.key = Coords.toInt(x, y);
     }
 
-
     addCoords(coords: Coords) {
         return Coords.addCoordsToCoords(this, coords);
     }
@@ -42,10 +41,6 @@ export default class Coords {
     ///////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////
-
-    // static toInt(x: number, y: number) {
-    //     return x + ',' + y;
-    // }
 
     static addCoordsToCoords(coordsA: Coords, coordsB: Coords) {
         return new Coords(coordsA.x + coordsB.x, coordsA.y + coordsB.y);

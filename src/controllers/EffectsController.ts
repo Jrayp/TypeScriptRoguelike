@@ -11,6 +11,8 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
 
     private _generators = new Set<_EffectGenerator>();
 
+    currentLoop: Loop;
+
     addEffect(coords: Coords, effect: _Effect, doStepImmediatly: boolean) {
         this.set(coords, effect);
         if (doStepImmediatly)
@@ -29,8 +31,8 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
 
     handleEffects() {
         Input.state = InputState.EFFECT_LOOP;
-        let loop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
-        loop.start();
+        this.currentLoop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
+        this.currentLoop.start();
     }
 
     finalize() {

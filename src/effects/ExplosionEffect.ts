@@ -19,8 +19,8 @@ export default class ExplosionEffect extends _Effect {
 
     constructor() {
         super();
-        this._fgColor = ColorHelper.randomize([255, 100, 22], 40) as Color;
-        this._bgColor = ColorHelper.randomize([235, 155, 15], 40) as Color;
+        this._fgColor = ColorHelper.randomize([255, 100, 22], 25) as Color;
+        this._bgColor = ColorHelper.randomize([235, 155, 15], 25) as Color;
         this.light = new Light(this, 12, ColorHelper.interpolate(this._fgColor, this._bgColor, .5));
         G.board.lights.addLight(this.light);
     }

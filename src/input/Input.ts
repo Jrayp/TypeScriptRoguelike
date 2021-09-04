@@ -1,9 +1,9 @@
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
+import Coords from "../util/Coords";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { ActionState, InputState } from "./../Enums";
-import Coords from "../util/Coords";
+import { InputState } from "./../Enums";
 
 export default class Input {
 
@@ -23,7 +23,7 @@ export default class Input {
 
         Input.boardCanvas.setAttribute('tabindex', "1");
         Input.boardCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.boardCanvas; });
-        Input.boardCanvas.addEventListener('mousemove', Input.handleMouseMove);
+        Input.boardCanvas.addEventListener('mousemove', Input.handleMouseMoveOverBoard);
         Input.boardCanvas.addEventListener('click', Input.handleMouseClick);
         Input.boardCanvas.addEventListener('keydown', Input.handleKeyDown);
 
@@ -34,7 +34,7 @@ export default class Input {
     // Mouse
     ///////////////////////////////////////////////////////
 
-    static handleMouseMove(event: MouseEvent) {
+    static handleMouseMoveOverBoard(event: MouseEvent) {
         let x = event.clientX - G.boardDisplay.rect.left;
         let y = event.clientY - G.boardDisplay.rect.top;
 
@@ -48,30 +48,26 @@ export default class Input {
                 break;
 
             case InputState.TARGETING:
+                Input.updateTargeting();
                 break;
 
             case InputState.EFFECT_LOOP:
                 break;
         }
-
-
-        if (Input.state == InputState.TARGETING) {
-            G.board.icons.clear();
-            Input.currentTargetedAction!.target(G.player.coords!, Input.mouseBoardCoords);
-            let playerSeenCoords = G.player.computeFov();
-            G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
-            G.boardDisplay.drawUI();
-        }
     }
 
     static handleMouseClick(event: MouseEvent) {
-        if (Input.state == InputState.TARGETING) {
-            let i = Input.currentTargetedAction!;
-            Input.currentTargetedAction = undefined;
-            G.board.icons.clear();
-            let playerSeenCoords = G.player.computeFov();
-            G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
-            i.perform();
+        switch (Input.state) {
+            case InputState.BOARD_CONTROL:
+                break;
+
+            case InputState.TARGETING:
+                Input.performTargetedAction();
+                break;
+
+            case InputState.EFFECT_LOOP:
+                G.board.effects.currentLoop.fps = 60;
+                break;
         }
     }
 
@@ -98,14 +94,7 @@ export default class Input {
 
         if (action) {
             event.preventDefault();
-            // TODO: Probably should pass action to something and perform there to handle logging etc
-            if (action.beforeLogCallback)
-                G.log.write(action.beforeLogCallback());
-            action.state = ActionState.PERFORMING;
-            action.state = action.perform();
-            if (action.afterLogCallback)
-                G.log.write(action.afterLogCallback());
-            G.update();
+            G.handleAction(action);
         }
     }
 
@@ -124,10 +113,7 @@ export default class Input {
     static handleTargetingKeyDown(keycode: string): _Action | undefined {
         switch (keycode) {
             case "Escape":
-                Input.currentTargetedAction = undefined;
-                G.board.icons.clear();
-                let playerSeenCoords = G.player.computeFov();
-                G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+                Input.endTargeting();
                 Input.state = InputState.BOARD_CONTROL;
                 break;
         }
@@ -142,12 +128,28 @@ export default class Input {
 
     static startTargeting() {
         Input.currentTargetedAction = new FireballAction();
-        Input.currentTargetedAction.target(G.player.coords!, Input.mouseBoardCoords);
-        
         Input.state = InputState.TARGETING;
-        
-        G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
-        G.boardDisplay.drawUI();
+
+        Input.updateTargeting();
+    }
+
+    static updateTargeting() {
+        G.board.icons.clear();
+        Input.currentTargetedAction!.target(G.player.coords!, Input.mouseBoardCoords);
+        G.draw();
+    }
+
+    static endTargeting() {
+        Input.currentTargetedAction = undefined;
+        G.board.icons.clear();
+        G.draw();
+    }
+
+    //TODO: Could created targetedAction class which returns an action on finuished target call
+    static performTargetedAction() {
+        let action = Input.currentTargetedAction!;
+        this.endTargeting();
+        G.handleAction(action);
     }
 
 }

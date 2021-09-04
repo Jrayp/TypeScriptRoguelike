@@ -1,7 +1,6 @@
 import { Color } from "rot-js/lib/color";
-import Coords from "../util/Coords";
 import IDrawable from "../interfaces/IDrawable";
-import UniqueCoordsMap from "./../util/UniqueCoordsMap";
+import Coords from "../util/Coords";
 
 
 export class Icon implements IDrawable {
@@ -31,27 +30,25 @@ export class Icon implements IDrawable {
 
 export default class UIController {
 
-    _keyToIconMap = new Map<number, Icon>();
-
+    private _coordsToIconMap = new Map<Coords, Icon>();
+    private _keys = new Set<number>();
 
     addIcon(coords: Coords, icon: Icon) {
-        this._keyToIconMap.set(coords.key, icon);
+        this._coordsToIconMap.set(coords, icon);
+        this._keys.add(coords.key);
     }
 
-    has(coords: Coords) {
-        return this._keyToIconMap.has(coords.key);
-    }
-
-    get(coords: Coords) {
-        return this._keyToIconMap.get(coords.key);
+    hasKey(key: number) {
+        return this._keys.has(key);
     }
 
     clear() {
-        this._keyToIconMap.clear();
+        this._coordsToIconMap.clear();
+        this._keys.clear();
     }
 
-    *iterate(){
-        for(let i of this._keyToIconMap)
+    *iterate() {
+        for (let i of this._coordsToIconMap)
             yield i;
     }
 

@@ -4,8 +4,8 @@ import Coords from "./Coords";
 import GMath from "./GMath";
 
 export default class UniqueCoordsMap<T>{
-    private _elementToCoords: Map<T, Coords> = new Map();
-    private _keyToElement: Map<number, T> = new Map();
+    protected _elementToCoords: Map<T, Coords> = new Map();
+    protected _keyToElement: Map<number, T> = new Map();
 
 
     get count() {

@@ -1,3 +1,4 @@
+import { IncomingMessage } from 'http';
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import _Actor from 'src/actors/_Actor';
@@ -26,6 +27,7 @@ export default class BoardDisplay extends Display {
         const actorLayer = board.actors;
         const lightManager = G.board.lights;
         const actionLayer = G.board.effects;
+        const icons = G.board.icons;
 
         this.clear();
 
@@ -34,6 +36,9 @@ export default class BoardDisplay extends Display {
         let bgDrawColor: string | null;
 
         for (let seenKey of seenTileKeys) {
+            if (icons.hasKey(seenKey))
+                continue;
+
             tile = tileLayer.getElementViaKey(seenKey);
             const coords = tile.coords;
 
@@ -62,20 +67,13 @@ export default class BoardDisplay extends Display {
                 this.draw(coords.x, coords.y, tile._glyph, fgDrawColor, bgDrawColor);
             }
         }
-    }
 
-    drawUI() {
-        const icons = G.board.icons;
-        const tileLayer = G.board.tiles;
-
-        for (let t of tileLayer.iterateElements()) {
-            let coords = t[1];
-            if (icons.has(coords)) {
-                let icon = icons.get(coords)!;
-                let fgDrawColor = this.convertColor(icon.fgColor);
-                let bgDrawColor = this.convertColor(icon.bgColor);
-                this.draw(coords.x, coords.y, icon.glyph, fgDrawColor, bgDrawColor);
-            }
+        for (let iconAndCoords of icons.iterate()) {
+            let icon = iconAndCoords[1];
+            let coords = iconAndCoords[0];
+            let fgDrawColor = this.convertColor(icon.fgColor);
+            let bgDrawColor = this.convertColor(icon.bgColor);
+            this.draw(coords.x, coords.y, icon.glyph, fgDrawColor, bgDrawColor);
         }
     }
 
