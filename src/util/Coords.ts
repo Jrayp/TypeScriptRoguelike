@@ -1,8 +1,17 @@
-import { Direction } from "./../Enums";
-import { assertTrue } from "./Assertions";
-import GMath from "./GMath";
+import { Direction } from "../Enums";
 
 export default class Coords {
+
+    private static readonly _OFFSETS = [
+        [0, -1],
+        [1, -1],
+        [1, 0],
+        [1, 1],
+        [0, 1],
+        [-1, 1],
+        [-1, 0],
+        [-1, -1]
+    ]
 
     readonly x: number;
     readonly y: number;
@@ -19,7 +28,13 @@ export default class Coords {
     }
 
     neighbor(dir: Direction) {
-        return this.addCoords(GMath.DIR_COORDS[dir]);
+        let a = Coords._OFFSETS[dir];
+        return Coords.addCoordsToNumbers(this, a[0], a[1]);
+    }
+
+    *iterateNeighbors() {
+        for (let a of Coords._OFFSETS)
+            yield Coords.addCoordsToNumbers(this, a[0], a[1]);
     }
 
     ///////////////////////////////////////////////////////

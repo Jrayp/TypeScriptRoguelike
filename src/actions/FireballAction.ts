@@ -1,19 +1,19 @@
 import { Icon } from "./../controllers/UIController";
 import G from "./../G";
-import ITargetable from "../interfaces/ITargetable";
-import Coords from "./../util/Coords";
+import ITargetableAction from "../interfaces/ITargetableAction";
+import Coords from "../util/Coords";
 import GMath from "./../util/GMath";
 import _Action from "./_Action";
 import { ActionState } from "./../Enums";
 import FireballEffect from "./../effects/FireBallEffect";
 
-export default class FireballAction extends _Action implements ITargetable {
+export default class FireballAction extends _Action implements ITargetableAction {
 
     radius = 2.45;
 
     path: Coords[];
 
-    setTargetingIcons(start: Coords, end: Coords) {
+    target(start: Coords, end: Coords) {
         let circleIcon = new Icon(' ', null, [0, 255, 0]);
         let lineIcon = new Icon('*', [255, 255, 255], null);
         let combinedIcon = new Icon('*', [255, 255, 255], [0, 255, 0]);

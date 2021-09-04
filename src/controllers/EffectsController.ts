@@ -1,10 +1,11 @@
 import _EffectGenerator from "./../effects/_EffectGenerator";
 import _Effect from "../effects/_Effect";
 import UniqueCoordsMap from "../util/UniqueCoordsMap";
-import { GameState } from "./../Enums";
+import { InputState } from "./../Enums";
 import G from "./../G";
 import Loop from "./../Loop";
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
+import Input from "./../input/Input";
 
 export default class EffectsController extends UniqueCoordsMap<_Effect>{
 
@@ -27,7 +28,7 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
     }
 
     handleEffects() {
-        G.state = GameState.EFFECT_LOOP;
+        Input.state = InputState.EFFECT_LOOP;
         let loop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
         loop.start();
     }
@@ -37,7 +38,7 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
         G.board.lights.update();
         let playerSeenCoords = G.player.computeFov();
         G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
-        G.state = GameState.PLAYER_CONTROL;
+        Input.state = InputState.BOARD_CONTROL;
     }
 
     updateAndDraw = () => {

@@ -1,4 +1,4 @@
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import ISight from "../interfaces/ISight";
 import G from "./../G";
 

@@ -10,7 +10,7 @@ import MoveAction from './../actions/MoveAction';
 import { ActionState, Direction, SwitchSetting } from './../Enums';
 import SightHelper from './../interfaceHelpers/SightHelper';
 import Light from './../lights/Light';
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import _Actor from "./_Actor";
 import _Action from './../actions/_Action';
 import SwitchAction from './../actions/SwitchAction';

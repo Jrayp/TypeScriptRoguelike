@@ -1,5 +1,5 @@
 import { _BoardTile } from "./../boardTiles/_BoardTile";
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import UniqueCoordsMap from "./../util/UniqueCoordsMap";
 
 export default class TileController extends UniqueCoordsMap<_BoardTile> {

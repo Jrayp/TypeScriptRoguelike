@@ -5,7 +5,7 @@ import INamed from '../interfaces/INamed';
 import IPositional from '../interfaces/IPositional';
 import { _BoardTile } from './../boardTiles/_BoardTile';
 import BoardDisplay from './../displays/BoardDisplay';
-import Coords from './../util/Coords';
+import Coords from '../util/Coords';
 
 export default abstract class _Actor implements INamed, IDrawable, IPositional {
 

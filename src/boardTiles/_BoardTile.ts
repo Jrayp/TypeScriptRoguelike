@@ -5,7 +5,7 @@ import INamed from '../interfaces/INamed';
 import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
 import IDrawable from '../interfaces/IDrawable';
-import Coords from './../util/Coords';
+import Coords from '../util/Coords';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements INamed, IDrawable, IPositional {

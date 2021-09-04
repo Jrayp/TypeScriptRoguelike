@@ -1,7 +1,7 @@
 import { ActionState } from "./../Enums";
 import _Actor from "./../actors/_Actor";
 import G from "./../G";
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import _Action from "./_Action";
 
 export default class MoveAction extends _Action {

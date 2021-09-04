@@ -8,6 +8,15 @@ import G from './../G';
 
 
 export default class BoardDisplay extends Display {
+
+    width: number;
+    height: number;
+
+    tileWidth: number;
+    tileHeight: number;
+
+    rect: DOMRect;
+
     constructor() {
         super(C.BOARD_DISPLAY_OPTIONS);
     }
@@ -27,7 +36,6 @@ export default class BoardDisplay extends Display {
         for (let seenKey of seenTileKeys) {
             tile = tileLayer.getElementViaKey(seenKey);
             const coords = tile.coords;
-
 
             if (actionLayer.hasCoords(coords)) {
                 let action = actionLayer.getElementViaCoords(coords);
@@ -54,10 +62,7 @@ export default class BoardDisplay extends Display {
                 this.draw(coords.x, coords.y, tile._glyph, fgDrawColor, bgDrawColor);
             }
         }
-
-
     }
-
 
     drawUI() {
         const icons = G.board.icons;

@@ -1,3 +1,4 @@
+import { Direction } from "./../Enums";
 import { assertTrue } from "./Assertions";
 import Coords from "./Coords";
 import GMath from "./GMath";
@@ -108,8 +109,7 @@ export default class UniqueCoordsMap<T>{
     }
 
     * iterateSurrounding(coords: Coords): Generator<[Coords, T | undefined]> {
-        for (let d of GMath.DIR_COORDS) {
-            const c = Coords.addCoordsToCoords(coords, d);
+        for (let c of coords.iterateNeighbors()) {
             const e = this._keyToElement.get(c.key);
             yield [c, e];
         }

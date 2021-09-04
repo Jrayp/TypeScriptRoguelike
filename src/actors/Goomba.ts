@@ -2,7 +2,7 @@ import { Color as ColorHelper, RNG } from "rot-js";
 import _Action from "./../actions/_Action";
 import MoveAction from "./../actions/MoveAction";
 import G from "./../G";
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import _Npc from "./_Npc";
 import AttackAction from "./../actions/AttackAction";
 

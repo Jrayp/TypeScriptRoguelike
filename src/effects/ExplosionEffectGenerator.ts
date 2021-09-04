@@ -1,4 +1,4 @@
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import G from "./../G";
 import _EffectGenerator from "./_EffectGenerator";
 import ExplosionEffect from "./ExplosionEffect";

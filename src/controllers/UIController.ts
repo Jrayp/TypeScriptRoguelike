@@ -1,5 +1,5 @@
 import { Color } from "rot-js/lib/color";
-import Coords from "./../util/Coords";
+import Coords from "../util/Coords";
 import IDrawable from "../interfaces/IDrawable";
 import UniqueCoordsMap from "./../util/UniqueCoordsMap";
 

@@ -9,6 +9,8 @@ export default class LogDisplay extends Display {
 
     private readonly _colorCache: string[] = [];
 
+    rect: DOMRect;
+
     constructor() {
         super(C.LOG_DISPLAY_OPTIONS);
         this.initColorCache();
