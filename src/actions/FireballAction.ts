@@ -23,7 +23,7 @@ export default class FireballAction extends _Action implements ITargetableAction
         this.path = GMath.lineList(start, end);
         this.path.shift();
 
-        let circle = GMath.PointWithinCircleMap(end, this.radius);
+        let circle = GMath.pointWithinCircleMap(end, this.radius);
         for (let kAndC of circle) {
             {
                 if (!G.board.tiles.hasKey(kAndC[0]))
