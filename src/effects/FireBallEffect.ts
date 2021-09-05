@@ -32,7 +32,7 @@ export default class FireballEffect extends _Effect {
             return;
         }
         
-        const point = this.Point;
+        const point = this.position;
         const tile = G.board.tiles.getElementViaPoint(point);
         if (!tile.passable || tile.occupant) {
             this.explode();
@@ -50,7 +50,7 @@ export default class FireballEffect extends _Effect {
     }
 
     explode() {
-        const point = this.Point;
+        const point = this.position;
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");

@@ -25,18 +25,18 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
         return this._bgColor;
     }
 
-    get Point(): Point | undefined {
+    get position(): Point | undefined {
         return G.board.actors.getPointViaElement(this);
     }
 
     get tile(): _BoardTile | undefined {
-        if (this.Point)
-            return G.board.tiles.getElementViaPoint(this.Point);
+        if (this.position)
+            return G.board.tiles.getElementViaPoint(this.position);
         else return undefined;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
-        let Point = this.Point;
+        let Point = this.position;
         // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, null);
     }
 

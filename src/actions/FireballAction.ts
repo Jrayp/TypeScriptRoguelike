@@ -20,8 +20,8 @@ export default class FireballAction extends _Action implements ITargetableAction
         let Unseen = new Icon('?', [200, 200, 175], null);
         let UnseenAndAoe = new Icon('?', [200, 200, 175], [0, 150, 30]);
 
-        this.path = GMath.lineList(start, end);
-        this.path.shift();
+        this.path = GMath.lineList(start, end, 1);
+        // this.path.shift();
 
         let circle = GMath.pointWithinCircleMap(end, this.radius);
         for (let kAndC of circle) {
@@ -62,7 +62,7 @@ export default class FireballAction extends _Action implements ITargetableAction
     }
 
     perform() {
-        G.board.effects.set(this.path[0], new FireballEffect(this.path));
+        G.board.effects.set(this.path[0] ?? G.player.position, new FireballEffect(this.path));
         return ActionState.START_EFFECT;
     }
 

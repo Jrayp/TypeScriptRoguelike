@@ -25,7 +25,7 @@ export default class Player extends _Actor implements ISight {
     _bgColor = null;
 
     get bgColor() {
-        if (!G.board.lights.getBrightness(this.Point!.key))
+        if (!G.board.lights.getBrightness(this.position!.key))
             return [75, 0, 130];
         else return this._bgColor;
     }
@@ -46,7 +46,7 @@ export default class Player extends _Actor implements ISight {
     }
 
     computeFov(): Set<number> {
-        const thisPoint = this.Point!;
+        const thisPoint = this.position!;
         this.seenPoint.clear();
         this.percievedOpaqueColors.clear();
         let placeHolderColor: Color = [0, 0, 0];
@@ -86,23 +86,23 @@ export default class Player extends _Actor implements ISight {
 
     getAction(keyCode: string): _Action | undefined {
         switch (keyCode) {
-            case 'Numpad8': return this.tryMove(this.Point!.neighbor(Direction.N));
-            case 'Numpad9': return this.tryMove(this.Point!.neighbor(Direction.NE));
-            case 'Numpad6': return this.tryMove(this.Point!.neighbor(Direction.E));
-            case 'Numpad3': return this.tryMove(this.Point!.neighbor(Direction.SE));
-            case 'Numpad2': return this.tryMove(this.Point!.neighbor(Direction.S));
-            case 'Numpad1': return this.tryMove(this.Point!.neighbor(Direction.SW));
-            case 'Numpad4': return this.tryMove(this.Point!.neighbor(Direction.W));
-            case 'Numpad7': return this.tryMove(this.Point!.neighbor(Direction.NW));
+            case 'Numpad8': return this.tryMove(this.position!.neighbor(Direction.N));
+            case 'Numpad9': return this.tryMove(this.position!.neighbor(Direction.NE));
+            case 'Numpad6': return this.tryMove(this.position!.neighbor(Direction.E));
+            case 'Numpad3': return this.tryMove(this.position!.neighbor(Direction.SE));
+            case 'Numpad2': return this.tryMove(this.position!.neighbor(Direction.S));
+            case 'Numpad1': return this.tryMove(this.position!.neighbor(Direction.SW));
+            case 'Numpad4': return this.tryMove(this.position!.neighbor(Direction.W));
+            case 'Numpad7': return this.tryMove(this.position!.neighbor(Direction.NW));
             case 'Numpad5': return new WaitAction();
             case 'KeyL': return new SwitchAction(this.light, SwitchSetting.TOGGLE).logAfterConditional(() => {
                 return this.light.active ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
             });
             case 'KeyC':
                 let da = new DebugAction(() => {
-                    let tile = G.board.tiles.getElementViaPoint(this.Point!);
+                    let tile = G.board.tiles.getElementViaPoint(this.position!);
                     if (tile.name != "Glowing Crystal") {
-                        G.board.tiles.replace(this.Point!, new GlowingCrystalTile());
+                        G.board.tiles.replace(this.position!, new GlowingCrystalTile());
                         return ActionState.SUCCESSFUL;
                     }
                     else return ActionState.UNSUCCESSFUL;

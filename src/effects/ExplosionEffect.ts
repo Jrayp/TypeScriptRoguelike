@@ -28,12 +28,16 @@ export default class ExplosionEffect extends _Effect {
 
     doStep() {
         if (this.counter == 1) {
-            let tile = G.board.tiles.getElementViaPoint(this.Point);
+            let tile = G.board.tiles.getElementViaPoint(this.position);
             if (tile.destroyable)
                 if (tile.passable)
-                    G.board.tiles.replace(this.Point, new RubbleTile(ColorHelper.randomize([30, 30, 30], 8)));
+                    G.board.tiles.replace(this.position, new RubbleTile(ColorHelper.randomize([30, 30, 30], 8)));
                 else if (RNG.getUniform() < .75)
-                    G.board.tiles.replace(this.Point, new RubbleTile(ColorHelper.randomize([30, 30, 30], 8)));
+                    G.board.tiles.replace(this.position, new RubbleTile(ColorHelper.randomize([30, 30, 30], 8)));
+            if (G.board.actors.hasPoint(this.position)) {
+                let actor = G.board.actors.getElementViaPoint(this.position);
+                actor.kill();
+            }
 
         }
         else if (this.counter == 2) {
@@ -45,12 +49,6 @@ export default class ExplosionEffect extends _Effect {
 
         }
         else if (this.counter == 4) {
-            if (G.board.actors.hasPoint(this.Point)) {
-                let actor = G.board.actors.getElementViaPoint(this.Point);
-
-                actor.kill();
-                G.log.write("Sorry Goomba, Hero Clash hates you..");
-            }
             G.board.effects.removeViaElement(this);
 
         }

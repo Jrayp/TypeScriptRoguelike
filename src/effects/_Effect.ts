@@ -19,7 +19,7 @@ export default abstract class _Effect implements IDrawable, IPositional {
         return this._bgColor;
     }
 
-    get Point(): Point {
+    get position(): Point {
         return G.board.effects.getPointViaElement(this)!;
     }
 

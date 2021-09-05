@@ -41,7 +41,7 @@ export default class Light implements IActivatable {
 
     update() {
         if (this.active) {
-            const point = this.attachedTo.Point;
+            const point = this.attachedTo.position;
             if (point && point.key != this._oldPointKey)
                 this.move(point)
             this._lighting.compute(this.lightingCallback);

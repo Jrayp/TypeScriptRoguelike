@@ -33,12 +33,12 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     constructor() {
     }
 
-    get Point(): Point {
+    get position(): Point {
         return G.board.tiles.getPointViaElement(this)!;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
-        let Point = this.Point;
+        let Point = this.position;
         // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, this.bgColor);
     }
 
@@ -47,7 +47,7 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     }
 
     get occupant() {
-        const point = this.Point;
+        const point = this.position;
         return G.board.actors.hasPoint(point) ? G.board.actors.getElementViaPoint(point) : undefined;
     }
 

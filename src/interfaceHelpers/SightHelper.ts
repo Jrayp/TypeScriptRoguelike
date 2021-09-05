@@ -5,7 +5,7 @@ import G from "./../G";
 export default class SightHelper {
 
     static computeFovNpc(sight: ISight) {
-        const sightImplmenterPoint = sight.Point;
+        const sightImplmenterPoint = sight.position;
         sight.seenPoint.clear();
         if (sightImplmenterPoint) {
             sight.fovAlgo.compute(sightImplmenterPoint.x, sightImplmenterPoint.y, sight.sightRange,

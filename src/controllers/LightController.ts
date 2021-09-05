@@ -81,7 +81,7 @@ export default class LightController {
     }
 
     percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: ISight) {
-        let tilePoint = opaqueTile.Point;
+        let tilePoint = opaqueTile.position;
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;
         let generator = G.board.tiles.iterateSurrounding(tilePoint);

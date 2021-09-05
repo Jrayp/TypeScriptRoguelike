@@ -40,7 +40,7 @@ export default class BoardDisplay extends Display {
                 continue;
 
             tile = tileLayer.getElementViaKey(seenKey);
-            const point = tile.Point;
+            const point = tile.position;
 
             if (actionLayer.hasPoint(point)) {
                 let action = actionLayer.getElementViaPoint(point);

@@ -40,25 +40,25 @@ export default class GMath {
     // Lines
     ///////////////////////////////////////////////////////
 
-    static * iterateLinePoints(p0: Point, p1: Point) {
+    static * iterateLinePoints(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
         let N = GMath.diagonalDistance(p0, p1);
-        for (let step = 0; step <= N; step++) {
+        for (let step = skipStart; step <= N - skipEnd; step++) {
             let t = N === 0 ? 0.0 : step / N;
             yield GMath.roundPoint(GMath.lerpPoint(p0, p1, t));
         }
     }
 
-    static lineList(p0: Point, p1: Point) {
+    static lineList(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
         let points: Point[] = [];
-        for (let c of GMath.iterateLinePoints(p0, p1)) {
+        for (let c of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
             points.push(c);
         }
         return points;
     }
 
-    static lineSet(p0: Point, p1: Point) {
+    static lineSet(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
         let Point = new Set<Point>();
-        for (let c of GMath.iterateLinePoints(p0, p1)) {
+        for (let c of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
             Point.add(c);
         }
         return Point;

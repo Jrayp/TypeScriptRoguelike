@@ -135,7 +135,7 @@ export default class Input {
 
     static updateTargeting() {
         G.board.icons.clear();
-        Input.currentTargetedAction!.target(G.player.Point!, Input.mouseBoardPoint);
+        Input.currentTargetedAction!.target(G.player.position!, Input.mouseBoardPoint);
         G.draw();
     }
 
