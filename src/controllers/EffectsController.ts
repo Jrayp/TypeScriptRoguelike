@@ -36,11 +36,8 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
     }
 
     finalize() {
-        G.board.actors.update();
-        G.board.lights.update();
-        let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
         Input.state = InputState.BOARD_CONTROL;
+        G.update();
     }
 
     updateAndDraw = () => {

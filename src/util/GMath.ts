@@ -20,19 +20,39 @@ export default class GMath {
         return new Coords(this.lerp(c0.x, c1.x, t), this.lerp(c0.y, c1.y, t));
     }
 
-    static line(c0: Coords, c1: Coords) {
-        let coords: Coords[] = [];
+    static roundCoords(c: Coords) {
+        return new Coords(Math.round(c.x), Math.round(c.y));
+    }
+
+    ///////////////////////////////////////////////////////
+    // Geometry
+    ///////////////////////////////////////////////////////
+
+    static * iterateLineCoords(c0: Coords, c1: Coords) {
         let N = this.diagonalDistance(c0, c1);
         for (let step = 0; step <= N; step++) {
             let t = N === 0 ? 0.0 : step / N;
-            coords.push(this.roundCoords(this.lerpCoords(c0, c1, t)));
+            yield this.roundCoords(this.lerpCoords(c0, c1, t));
+        }
+    }
+
+    static lineList(c0: Coords, c1: Coords) {
+        let coords: Coords[] = [];
+        for (let c of GMath.iterateLineCoords(c0, c1)) {
+            coords.push(c);
         }
         return coords;
     }
 
-    static roundCoords(c: Coords) {
-        return new Coords(Math.round(c.x), Math.round(c.y));
+    static lineSet(c0: Coords, c1: Coords) {
+        let coords = new Set<Coords>();
+        for (let c of GMath.iterateLineCoords(c0, c1)) {
+            coords.add(c);
+        }
+        return coords;
     }
+
+
 
     static diagonalDistance(c0: Coords, c1: Coords) {
         let dx = c1.x - c0.x;

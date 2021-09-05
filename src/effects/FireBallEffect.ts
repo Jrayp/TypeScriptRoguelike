@@ -34,7 +34,7 @@ export default class FireballEffect extends _Effect {
         
         const coords = this.coords;
         const tile = G.board.tiles.getElementViaCoords(coords);
-        if (!tile.passable || tile.occupant()) {
+        if (!tile.passable || tile.occupant) {
             this.explode();
         }
         else {

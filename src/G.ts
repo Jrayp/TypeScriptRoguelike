@@ -46,7 +46,7 @@ export default class G {
         }
 
         for (let tileAndCoords of G.board.tiles.iterateElements()) {
-            if (tileAndCoords[0].passable && !tileAndCoords[0].occupant() && RNG.getUniform() < .025) {
+            if (tileAndCoords[0].passable && !tileAndCoords[0].occupant && RNG.getUniform() < .025) {
                 let g = new Goomba();
                 G.board.actors.set(tileAndCoords[1], g);
             }
@@ -84,7 +84,10 @@ export default class G {
         if (action.afterLogCallback)
             G.log.write(action.afterLogCallback());
 
-        G.update();
+        if (action.state == ActionState.START_EFFECT)
+            G.board.effects.handleEffects();
+        else
+            G.update();
     }
 
     static update() {

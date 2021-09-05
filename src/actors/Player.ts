@@ -118,7 +118,7 @@ export default class Player extends _Actor implements ISight {
     tryMove(destCoords: Coords) {
         const destinationTile = G.board.tiles.getElementViaCoords(destCoords);
 
-        const occupant = destinationTile.occupant();
+        const occupant = destinationTile.occupant;
         if (occupant) { // For now always enemy
             return new AttackAction(occupant);
         }

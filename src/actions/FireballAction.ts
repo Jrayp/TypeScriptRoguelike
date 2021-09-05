@@ -14,29 +14,56 @@ export default class FireballAction extends _Action implements ITargetableAction
     path: Coords[];
 
     target(start: Coords, end: Coords) {
-        let circleIcon = new Icon(' ', null, [0, 255, 0]);
+        let aoeIcon = new Icon(' ', null, [0, 150, 30]);
         let lineIcon = new Icon('*', [255, 255, 255], null);
-        let combinedIcon = new Icon('*', [255, 255, 255], [0, 255, 0]);
+        let combinedIcon = new Icon('*', [255, 255, 255], [0, 150, 30]);
+        let Unseen = new Icon('?', [200, 200, 175], null);
+        let UnseenAndAoe = new Icon('?', [200, 200, 175], [0, 150, 30]);
 
-        this.path = GMath.line(start, end);
+        this.path = GMath.lineList(start, end);
         this.path.shift();
 
         let circle = GMath.coordsWithinCircleMap(end, this.radius);
         for (let kAndC of circle) {
-            G.board.icons.addIcon(kAndC[1], circleIcon);
+            {
+                if (!G.board.tiles.hasKey(kAndC[0]))
+                    continue;
+                let tile = G.board.tiles.getElementViaKey(kAndC[0]);
+                if (tile.occupant && G.player.seenCoords.has(kAndC[0]))
+                    G.board.icons.addIcon(kAndC[1], new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                else if (G.player.seenCoords.has(kAndC[0]))
+                    G.board.icons.addIcon(kAndC[1], aoeIcon);
+                else
+                    G.board.icons.addIcon(kAndC[1], new Icon(' ', null, [0, 100, 25]));
+            }
         }
         for (let c of this.path) {
-            if (circle.has(c.key))
-                G.board.icons.addIcon(c, combinedIcon);
-            else
-                G.board.icons.addIcon(c, lineIcon);
+            let tile = G.board.tiles.getElementViaCoords(c);
+            switch (G.player.seenCoords.has(c.key)) {
+                case true:
+                    if (tile.occupant)
+                        G.board.icons.addIcon(c, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                    else if (circle.has(c.key))
+                        G.board.icons.addIcon(c, combinedIcon);
+                    else
+                        G.board.icons.addIcon(c, lineIcon);
+                    break;
+
+                case false:
+                    if (circle.has(c.key))
+                        G.board.icons.addIcon(c, new Icon('?', null, [0, 100, 25]));
+                    else
+                        G.board.icons.addIcon(c, Unseen);
+                    break;
+            }
+
+
         }
     }
 
     perform() {
         G.board.effects.set(this.path[0], new FireballEffect(this.path));
-        G.board.effects.handleEffects();
-        return ActionState.SUCCESSFUL;
+        return ActionState.START_EFFECT;
     }
 
 

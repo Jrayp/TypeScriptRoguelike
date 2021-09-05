@@ -26,11 +26,11 @@ export default class Goomba extends _Npc {
         let generator = G.board.tiles.iterateSurrounding(this.coords!);
         for (let coordsAndTile of generator) {
             const tile = coordsAndTile[1]!;
-            if (tile.occupant() == G.player) {
-                action = new AttackAction(tile.occupant()!);
+            if (tile.occupant == G.player) {
+                action = new AttackAction(tile.occupant!);
                 break;
             }
-            else if (tile.passable && !tile.occupant())
+            else if (tile.passable && !tile.occupant)
                 freeCoords.push(coordsAndTile[0]);
         }
 

@@ -46,7 +46,7 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
         return undefined;
     }
 
-    occupant() {
+    get occupant() {
         const coords = this.coords;
         return G.board.actors.hasCoords(coords) ? G.board.actors.getElementViaCoords(coords) : undefined;
     }

@@ -6,6 +6,7 @@ import G from "../G";
 import Light from "../lights/Light";
 import _Effect from "./_Effect";
 import { _BoardTile } from "src/boardTiles/_BoardTile";
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 
 export default class ExplosionEffect extends _Effect {
     _glyph = '#'
@@ -44,7 +45,14 @@ export default class ExplosionEffect extends _Effect {
 
         }
         else if (this.counter == 4) {
+            if (G.board.actors.hasCoords(this.coords)) {
+                let actor = G.board.actors.getElementViaCoords(this.coords);
+
+                actor.kill();
+                G.log.write("Sorry Goomba, Hero Clash hates you..");
+            }
             G.board.effects.removeViaElement(this);
+
         }
         this.counter++;
     }

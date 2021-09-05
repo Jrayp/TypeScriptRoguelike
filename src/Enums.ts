@@ -29,10 +29,6 @@ export enum DrawDataType {
     BACKGROUND_COLOR
 }
 
-export enum PlayerAction {
-
-}
-
 export enum SwitchSetting {
     ACTIVATE,
     DEACTIVATE,
@@ -43,5 +39,6 @@ export enum ActionState {
     PENDING = 'pending',
     PERFORMING = 'performing',
     SUCCESSFUL = 'successful',
-    UNSUCCESSFUL = 'unsuccessful'
+    UNSUCCESSFUL = 'unsuccessful',
+    START_EFFECT = 'start effect'
 }

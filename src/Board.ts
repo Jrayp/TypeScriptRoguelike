@@ -26,18 +26,8 @@ export default class Board {
 
     lights = new LightController();
 
-
     constructor() {
-        // this.generate();
     }
-
-
-    // getTopLayerElement(coords: Coords){
-    //     if(this.icons.has(coords))
-    //         return 
-
-    // }
-
 
     draw(seenCells: Set<number>, percievedOpaqueColors: Map<number, Color>) {
         G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
