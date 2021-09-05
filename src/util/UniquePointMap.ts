@@ -16,9 +16,9 @@ export default class UniquePointMap<T>{
     ///////////////////////////////////////////////////////
 
     set(point: Point, element: T) {
-        assertTrue(Number.isInteger(point.x) && Number.isInteger(point.y), `x and y must be Integers. Passed: (${point.key})`);
-        assertTrue(this._keyToElement.has(point.key) === false, `There is already an element at ${point.key}`);
-        assertTrue(this._elementToPoint.has(element) === false, `There is already a point at ${this._elementToPoint.get(element)}`);
+        assertTrue(Number.isInteger(point.x) && Number.isInteger(point.y), `x and y must be Integers. Passed: (${point.x}, ${point.y})`);
+        assertTrue(this._keyToElement.has(point.key) === false, `There is already an element at (${point.x}, ${point.y})`);
+        assertTrue(this._elementToPoint.has(element) === false, `There is already a point at (${point.x}, ${point.y})`);
         this._keyToElement.set(point.key, element);
         this._elementToPoint.set(element, point);
     }
@@ -68,12 +68,12 @@ export default class UniquePointMap<T>{
     ///////////////////////////////////////////////////////
 
     getElementViaKey(key: number): T {
-        assertTrue(this._keyToElement.has(key), `No element found at ${key}.`);
+        assertTrue(this._keyToElement.has(key), `No element found at key value ${key}.`);
         return this._keyToElement.get(key)!;
     }
 
     getElementViaPoint(point: Point): T {
-        assertTrue(this._keyToElement.has(point.key), `No element found at ${point.key}.`);
+        assertTrue(this._keyToElement.has(point.key), `No element found at (${point.x}, ${point.y}).`);
         return this._keyToElement.get(point.key)!;
     }
 
@@ -91,11 +91,11 @@ export default class UniquePointMap<T>{
         this.set(point, element);
     }
 
-    moveElement(element: T, destCoord: Point) {
+    moveElement(element: T, destPoint: Point) {
         assertTrue(this._elementToPoint.has(element),);
-        assertTrue(this._keyToElement.has(destCoord.key) === false, `Can't move element to ${destCoord.key} as there is already an element at the destination.`);
+        assertTrue(this._keyToElement.has(destPoint.key) === false, `Can't move element to (${destPoint.x}, ${destPoint.y}) as there is already an element at the destination.`);
         this.removeViaElement(element);
-        this.set(destCoord, element);
+        this.set(destPoint, element);
     }
 
     ///////////////////////////////////////////////////////
@@ -119,13 +119,9 @@ export default class UniquePointMap<T>{
     }
 
     * iterateCircumference(center: Point, radius: number): Generator<[Point, T | undefined]> {
-        for (let c of GMath.pointsOnCircumferenceSet(center, radius))
+        for (let c of GMath.iteratePointsOnCircumference(center, radius))
             yield [c, this._keyToElement.get(c.key)];
     }
-
-
-
-
 }
 
 
