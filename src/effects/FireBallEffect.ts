@@ -1,9 +1,7 @@
 import { Color } from "rot-js/lib/color";
-import { Direction } from "../Enums";
 import G from "../G";
 import Light from "../lights/Light";
-import Coords from "../util/Coords";
-import GMath from "../util/GMath";
+import Point from "../util/Point";
 import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
@@ -14,11 +12,11 @@ export default class FireballEffect extends _Effect {
 
     light: Light;
 
-    lastCoords: Coords;
-    path : Coords[];
+    lastPoint: Point;
+    path : Point[];
     step = 1;
 
-    constructor(path: Coords[]) {
+    constructor(path: Point[]) {
         super();
         this.path = path;
         this.light = new Light(this, 8, this._fgColor);
@@ -32,15 +30,15 @@ export default class FireballEffect extends _Effect {
             return;
         }
         
-        const coords = this.coords;
-        const tile = G.board.tiles.getElementViaCoords(coords);
-        if (!tile.passable || tile.occupant()) {
+        const point = this.position;
+        const tile = G.board.tiles.getElementViaPoint(point);
+        if (!tile.passable || tile.occupant) {
             this.explode();
         }
         else {
-            this.lastCoords = coords;
+            this.lastPoint = point;
             let dest = this.path[this.step];
-            let destTile = G.board.tiles.getElementViaCoords(dest);
+            let destTile = G.board.tiles.getElementViaPoint(dest);
             if (!destTile.passable)
                 this.explode();
             else
@@ -50,12 +48,12 @@ export default class FireballEffect extends _Effect {
     }
 
     explode() {
-        const coords = this.coords;
+        const point = this.position;
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
 
-        let explosionGenerator = new ExplosionGenerator(coords, 2);
+        let explosionGenerator = new ExplosionGenerator(point, 2);
         G.board.effects.addGenerator(explosionGenerator, true);
 
     }

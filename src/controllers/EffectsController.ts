@@ -1,17 +1,20 @@
 import _EffectGenerator from "./../effects/_EffectGenerator";
 import _Effect from "../effects/_Effect";
-import UniqueCoordsMap from "../util/UniqueCoordsMap";
-import { GameState } from "./../Enums";
+import UniquePointMap from "../util/UniquePointMap";
+import { InputState } from "./../Enums";
 import G from "./../G";
 import Loop from "./../Loop";
-import Coords from "./../util/Coords";
+import Point from "../util/Point";
+import Input from "./../input/Input";
 
-export default class EffectsController extends UniqueCoordsMap<_Effect>{
+export default class EffectsController extends UniquePointMap<_Effect>{
 
     private _generators = new Set<_EffectGenerator>();
 
-    addEffect(coords: Coords, effect: _Effect, doStepImmediatly: boolean) {
-        this.set(coords, effect);
+    currentLoop: Loop;
+
+    addEffect(point: Point, effect: _Effect, doStepImmediatly: boolean) {
+        this.set(point, effect);
         if (doStepImmediatly)
             effect.doStep();
     }
@@ -27,28 +30,23 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
     }
 
     handleEffects() {
-        G.state = GameState.EFFECT_LOOP;
-        let loop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
-        loop.start();
+        Input.state = InputState.EFFECT_LOOP;
+        this.currentLoop = new Loop(this.loopCallback, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
+        this.currentLoop.start();
     }
 
     finalize() {
-        G.board.actors.update();
-        G.board.lights.update();
-        let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
-        G.state = GameState.PLAYER_CONTROL;
+        Input.state = InputState.BOARD_CONTROL;
+        G.update();
     }
 
-    updateAndDraw = () => {
+    loopCallback = () => {
         for (let gen of this._generators)
             gen.generate();
-        for (let actionAndCoords of G.board.effects.iterateElements()) {
-            const action = actionAndCoords[0];
+        for (let actionAndPoint of G.board.effects.iterateElements()) {
+            const action = actionAndPoint[0];
             action.doStep();
         }
-        G.board.lights.update();
-        let seenCells = G.player.computeFov();
-        G.board.draw(seenCells, G.player.percievedOpaqueColors);
+        G.update();
     }
 }

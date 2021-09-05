@@ -1,123 +1,182 @@
-import { setMaxListeners } from "process";
-import { Z_ASCII } from "zlib";
-import Coords from "./Coords";
+import Point from "./Point";
+
 
 export default class GMath {
-
-    static readonly DIR_COORDS = [
-        new Coords(0, -1),
-        new Coords(1, -1),
-        new Coords(1, 0),
-        new Coords(1, 1),
-        new Coords(0, 1),
-        new Coords(-1, 1),
-        new Coords(-1, 0),
-        new Coords(-1, -1),
-    ]
-
-    static normalize(x: number, minX: number, maxX: number, betweenA: number = 0, betweenB: number = 1) {
-        return (betweenB - betweenA) * (x - minX) / (maxX - minX) + betweenA;
-    };
-
+    ///////////////////////////////////////////////////////
+    // Basic
+    ///////////////////////////////////////////////////////
 
     static clamp(x: number, min: number, max: number) {
         return Math.min(Math.max(x, min), max);
+    };
+
+    static normalize(x: number, minX: number, maxX: number, betweenA: number = 0, betweenB: number = 1) {
+        return (betweenB - betweenA) * (x - minX) / (maxX - minX) + betweenA;
     };
 
     static lerp(start: number, end: number, t: number) {
         return start + t * (end - start);
     }
 
-    static lerpCoords(c0: Coords, c1: Coords, t: number) {
-        return new Coords(this.lerp(c0.x, c1.x, t), this.lerp(c0.y, c1.y, t));
+    static lerpPoint(p0: Point, p1: Point, t: number) {
+        return new Point(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t));
     }
 
-    static line(c0: Coords, c1: Coords) {
-        let coords: Coords[] = [];
-        let N = this.diagonalDistance(c0, c1);
-        for (let step = 0; step <= N; step++) {
-            let t = N === 0 ? 0.0 : step / N;
-            coords.push(this.roundCoords(this.lerpCoords(c0, c1, t)));
-        }
-        return coords;
+    static roundPoint(c: Point) {
+        return new Point(Math.round(c.x), Math.round(c.y));
     }
 
-    static roundCoords(c: Coords) {
-        return new Coords(Math.round(c.x), Math.round(c.y));
-    }
+    ///////////////////////////////////////////////////////
+    // Distance
+    ///////////////////////////////////////////////////////
 
-    static diagonalDistance(c0: Coords, c1: Coords) {
-        let dx = c1.x - c0.x;
-        let dy = c1.y - c0.y;
+    static diagonalDistance(p0: Point, p1: Point) {
+        let dx = p1.x - p0.x;
+        let dy = p1.y - p0.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    static insideCircle(center: Coords, x: number, y: number, radius: number) {
+    ///////////////////////////////////////////////////////
+    // Lines
+    ///////////////////////////////////////////////////////
+
+    static * iterateLinePoints(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
+        let N = GMath.diagonalDistance(p0, p1);
+        for (let step = skipStart; step <= N - skipEnd; step++) {
+            let t = N === 0 ? 0.0 : step / N;
+            yield GMath.roundPoint(GMath.lerpPoint(p0, p1, t));
+        }
+    }
+
+    static lineList(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
+        let points: Point[] = [];
+        for (let c of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
+            points.push(c);
+        }
+        return points;
+    }
+
+    static lineSet(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
+        let Point = new Set<Point>();
+        for (let c of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
+            Point.add(c);
+        }
+        return Point;
+    }
+
+    ///////////////////////////////////////////////////////
+    // Circles
+    ///////////////////////////////////////////////////////
+
+    static * iteratePointsWithinCircle(center: Point, radius: number) {
+        let top = Math.floor(center.y - radius);
+        let bottom = Math.floor(center.y + radius);
+
+        for (let y = top; y <= bottom; y++) {
+            let dy = y - center.y;
+            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
+            let left = Math.ceil(center.x - dx);
+            let right = Math.floor(center.x + dx);
+            for (let x = left; x <= right; x++) {
+                yield new Point(x, y);
+            }
+        }
+    }
+
+    static pointWithinCircleSet(center: Point, radius: number) {
+        let set = new Set<Point>();
+        for (let p of GMath.iteratePointsWithinCircle(center, radius))
+            set.add(p);
+
+        return set;
+    }
+
+    static pointWithinCircleMap(center: Point, radius: number) {
+        let map = new Map<number, Point>();
+        for (let p of GMath.iteratePointsWithinCircle(center, radius))
+            map.set(p.key, p);
+
+        return map;
+    }
+
+    static pointIsInsideCircle(center: Point, x: number, y: number, radius: number) {
         let dx = center.x - x;
         let dy = center.y - y;
         let distanceSquared = dx * dx + dy * dy;
         return distanceSquared <= radius * radius;
     }
 
-    static * iterateCoordsWithinCircle(center: Coords, radius: number) {
-        let top = Math.floor(center.y - radius);
-        let bottom = Math.floor(center.y + radius);
+    ///////////////////////////////////////////////////////
+    // Circumference
+    ///////////////////////////////////////////////////////
 
-        for (let y = top; y <= bottom; y++) {
-            let dy = y - center.y;
-            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
-            let left = Math.ceil(center.x - dx);
-            let right = Math.floor(center.x + dx);
-            for (let x = left; x <= right; x++) {
-                yield new Coords(x, y);
-            }
-        }
-    }
-
-    static coordsWithinCircleMap(center: Coords, radius: number) {
-        let map = new Map<string, Coords>();
-
-        let top = Math.floor(center.y - radius);
-        let bottom = Math.floor(center.y + radius);
-
-        for (let y = top; y <= bottom; y++) {
-            let dy = y - center.y;
-            let dx = Math.sqrt(radius * radius - dy * dy); // Can be precomputed if its a problem: See below
-            let left = Math.ceil(center.x - dx);
-            let right = Math.floor(center.x + dx);
-            for (let x = left; x <= right; x++) {
-                let c = new Coords(x, y);
-                map.set(c.key, c);
-            }
-        }
-
-        return map;
-    }
-
-    private static dupeCoords = new Set<string>();
-    static coordsOnCircumferenceSet(center: Coords, radius: number) {
-        this.dupeCoords.clear();
-        let coordsSet = new Set<Coords>();
+    static * iteratePointsOnCircumference(center: Point, radius: number) {
+        let dupes = new Set<number>();
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
-            this.addIfNotDupe(new Coords(center.x - d, center.y + r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + d, center.y + r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - d, center.y - r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + d, center.y - r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + r, center.y - d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + r, center.y + d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - r, center.y - d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - r, center.y + d), coordsSet);
+            if (r == 0 || r == d) {
+                let p0 = new Point(center.x - d, center.y + r);
+                let p1 = new Point(center.x + d, center.y + r);
+                let p2 = new Point(center.x - d, center.y - r);
+                let p3 = new Point(center.x + d, center.y - r);
+                let p4 = new Point(center.x + r, center.y - d);
+                let p5 = new Point(center.x + r, center.y + d);
+                let p6 = new Point(center.x - r, center.y - d);
+                let p7 = new Point(center.x - r, center.y + d);
+
+                if (!dupes.has(p0.key)) {
+                    dupes.add(p0.key)
+                    yield p0;
+                }
+                if (!dupes.has(p1.key)) {
+                    dupes.add(p1.key)
+                    yield p1;
+                }
+                if (!dupes.has(p2.key)) {
+                    dupes.add(p2.key)
+                    yield p2;
+                }
+                if (!dupes.has(p3.key)) {
+                    dupes.add(p3.key)
+                    yield p3;
+                }
+                if (!dupes.has(p4.key)) {
+                    dupes.add(p4.key)
+                    yield p4;
+                }
+                if (!dupes.has(p5.key)) {
+                    dupes.add(p5.key)
+                    yield p5;
+                }
+                if (!dupes.has(p6.key)) {
+                    dupes.add(p6.key)
+                    yield p6;
+                }
+                if (!dupes.has(p7.key)) {
+                    dupes.add(p7.key)
+                    yield p7;
+                }
+            }
+            else {
+                yield new Point(center.x - d, center.y + r);
+                yield new Point(center.x + d, center.y + r);
+                yield new Point(center.x - d, center.y - r);
+                yield new Point(center.x + d, center.y - r);
+                yield new Point(center.x + r, center.y - d);
+                yield new Point(center.x + r, center.y + d);
+                yield new Point(center.x - r, center.y - d);
+                yield new Point(center.x - r, center.y + d);
+            }
         }
-        return coordsSet;
     }
 
-    private static addIfNotDupe(coords: Coords, set: Set<Coords>) {
-        if (!this.dupeCoords.has(coords.key)) {
-            set.add(coords);
-            this.dupeCoords.add(coords.key);
-        }
+    static pointsOnCircumferenceSet(center: Point, radius: number) {
+        let pointSet = new Set<Point>();
+        for (let p of GMath.iteratePointsOnCircumference(center, radius))
+            pointSet.add(p);
+        return pointSet;
     }
+
 }
 
 // Could precompute sqrt as such:

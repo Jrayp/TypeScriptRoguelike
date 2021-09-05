@@ -1,11 +1,11 @@
 import _Actor from "./../actors/_Actor";
-import UniqueCoordsMap from "./../util/UniqueCoordsMap"
+import UniquePointMap from "./../util/UniquePointMap"
 
-export default class ActorController extends UniqueCoordsMap<_Actor>{
+export default class ActorController extends UniquePointMap<_Actor>{
 
     update() {
-        for (let actorAndCoords of this.iterateElements())
-            actorAndCoords[0].act();
+        for (let actorAndPoint of this.iterateElements())
+            actorAndPoint[0].act();
     }
 
 }

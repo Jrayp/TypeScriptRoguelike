@@ -1,6 +1,6 @@
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 
 export default interface IPositional {
 
-    get coords(): Coords | undefined;
+    get position(): Point | undefined;
 }

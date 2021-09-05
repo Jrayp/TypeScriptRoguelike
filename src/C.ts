@@ -1,4 +1,4 @@
-import Coords from "./util/Coords";
+import Point from "./util/Point";
 
 export default class C {
     static readonly BOARD_WIDTH = 60;

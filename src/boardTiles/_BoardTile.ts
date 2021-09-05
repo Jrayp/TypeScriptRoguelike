@@ -5,7 +5,7 @@ import INamed from '../interfaces/INamed';
 import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
 import IDrawable from '../interfaces/IDrawable';
-import Coords from './../util/Coords';
+import Point from '../util/Point';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements INamed, IDrawable, IPositional {
@@ -33,22 +33,22 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     constructor() {
     }
 
-    get coords(): Coords {
-        return G.board.tiles.getCoordsViaElement(this)!;
+    get position(): Point {
+        return G.board.tiles.getPointViaElement(this)!;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
-        let coords = this.coords;
-        // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, this.bgColor);
+        let Point = this.position;
+        // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, this.bgColor);
     }
 
     onEnter(actor: _Actor): string | undefined {
         return undefined;
     }
 
-    occupant() {
-        const coords = this.coords;
-        return G.board.actors.hasCoords(coords) ? G.board.actors.getElementViaCoords(coords) : undefined;
+    get occupant() {
+        const point = this.position;
+        return G.board.actors.hasPoint(point) ? G.board.actors.getElementViaPoint(point) : undefined;
     }
 
     onRemove(){

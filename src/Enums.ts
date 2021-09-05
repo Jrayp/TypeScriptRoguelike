@@ -1,19 +1,19 @@
 
-export enum GameState {
-    PLAYER_CONTROL,
+export enum InputState {
+    BOARD_CONTROL,
     EFFECT_LOOP,
     TARGETING
 }
 
 export enum Direction {
-    N,
-    NE,
-    E,
-    SE,
-    S,
-    SW,
-    W,
-    NW
+    N = 0,
+    NE = 1,
+    E = 2,
+    SE = 3,
+    S = 4,
+    SW = 5,
+    W = 6,
+    NW = 7
 }
 
 export enum TryMoveResult {
@@ -29,10 +29,6 @@ export enum DrawDataType {
     BACKGROUND_COLOR
 }
 
-export enum PlayerAction {
-
-}
-
 export enum SwitchSetting {
     ACTIVATE,
     DEACTIVATE,
@@ -43,5 +39,6 @@ export enum ActionState {
     PENDING = 'pending',
     PERFORMING = 'performing',
     SUCCESSFUL = 'successful',
-    UNSUCCESSFUL = 'unsuccessful'
+    UNSUCCESSFUL = 'unsuccessful',
+    START_EFFECT = 'start effect'
 }

@@ -1,9 +1,14 @@
 export default class Loop {
 
-    private _fps = 12;
+    private _fps = 14;
     private _changeEvery = 1000 / this._fps;
     private _elapsed = this._changeEvery;
     private _startStamp: number | null = null;
+
+    set fps(fps: number) {
+        this._fps = fps;
+        this._changeEvery = 1000 / this._fps;
+    }
 
     callback: () => void;
     stopCondition: () => boolean;

@@ -3,6 +3,7 @@ import IDiggable from "../interfaces/IDiggable";
 import { FloorTile } from "./FloorTile";
 import { RubbleTile } from "./RubbleTile";
 import { _BoardTile } from "./_BoardTile";
+import { RNG } from "rot-js";
 
 export default abstract class _DiggableTile extends _BoardTile implements IDiggable {
     abstract digStrength: number;
@@ -12,13 +13,13 @@ export default abstract class _DiggableTile extends _BoardTile implements IDigga
 
         switch (this.digStrength) {
             case 2:
-                this._glyph = ':';
+                this._glyph = RNG.getItem([',', '`', '.'])!;
                 break;
             case 1:
-                this._glyph = ';';
+                this._glyph = RNG.getItem(['%', ';', ':'])!;
                 break;
             case 0:
-                G.board.tiles.replace(this.coords, new RubbleTile(this._bgColor!));
+                G.board.tiles.replace(this.position, new RubbleTile(this._bgColor!));
                 G.board.lights.updateFov();
         }
     }
