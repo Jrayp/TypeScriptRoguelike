@@ -1,12 +1,10 @@
 import { Color as ColorHelper, RNG } from "rot-js";
 import { Color } from "rot-js/lib/color";
-import { RubbleTile } from "./../boardTiles/RubbleTile";
-import _EffectGenerator from "./../effects/_EffectGenerator";
+import { _BoardTile } from "src/boardTiles/_BoardTile";
 import G from "../G";
 import Light from "../lights/Light";
+import { RubbleTile } from "./../boardTiles/RubbleTile";
 import _Effect from "./_Effect";
-import { _BoardTile } from "src/boardTiles/_BoardTile";
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 
 export default class ExplosionEffect extends _Effect {
     _glyph = '#'

@@ -1,9 +1,7 @@
 import { Color } from "rot-js/lib/color";
-import { Direction } from "../Enums";
 import G from "../G";
 import Light from "../lights/Light";
 import Point from "../util/Point";
-import GMath from "../util/GMath";
 import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 

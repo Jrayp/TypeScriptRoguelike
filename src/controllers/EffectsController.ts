@@ -31,7 +31,7 @@ export default class EffectsController extends UniquePointMap<_Effect>{
 
     handleEffects() {
         Input.state = InputState.EFFECT_LOOP;
-        this.currentLoop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
+        this.currentLoop = new Loop(this.loopCallback, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
         this.currentLoop.start();
     }
 
@@ -40,15 +40,13 @@ export default class EffectsController extends UniquePointMap<_Effect>{
         G.update();
     }
 
-    updateAndDraw = () => {
+    loopCallback = () => {
         for (let gen of this._generators)
             gen.generate();
         for (let actionAndPoint of G.board.effects.iterateElements()) {
             const action = actionAndPoint[0];
             action.doStep();
         }
-        G.board.lights.update();
-        let seenCells = G.player.computeFov();
-        G.board.draw(seenCells, G.player.percievedOpaqueColors);
+        G.update();
     }
 }

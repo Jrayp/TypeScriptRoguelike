@@ -34,7 +34,7 @@ export default class Player extends _Actor implements ISight {
 
     // Sight properties
     sightRange = 30;
-    seenPoint = new Set<number>();
+    seenPoints = new Set<number>();
     percievedOpaqueColors = new Map<number, Color>();
     fovAlgo = new FOV.PreciseShadowcasting(SightHelper.sightPassesCallback);
 
@@ -47,7 +47,7 @@ export default class Player extends _Actor implements ISight {
 
     computeFov(): Set<number> {
         const thisPoint = this.position!;
-        this.seenPoint.clear();
+        this.seenPoints.clear();
         this.percievedOpaqueColors.clear();
         let placeHolderColor: Color = [0, 0, 0];
 
@@ -61,7 +61,7 @@ export default class Player extends _Actor implements ISight {
                 if (G.board.lights.getBrightness(pointKey)) {
                     let tile = G.board.tiles.getElementViaKey(pointKey);
                     if (tile.transparent) {
-                        this.seenPoint.add(pointKey);
+                        this.seenPoints.add(pointKey);
                     } else {
                         this.percievedOpaqueColors.set(pointKey, placeHolderColor);
                     }
@@ -76,12 +76,12 @@ export default class Player extends _Actor implements ISight {
             let percievedColor = G.board.lights.percievedLightColorOfOpaque(tile, this)!;
             if (percievedColor) {
                 this.percievedOpaqueColors.set(pointKey, percievedColor);
-                this.seenPoint.add(pointKey);
+                this.seenPoints.add(pointKey);
             }
         }
 
-        this.seenPoint.add(thisPoint.key);
-        return this.seenPoint;
+        this.seenPoints.add(thisPoint.key);
+        return this.seenPoints;
     }
 
     getAction(keyCode: string): _Action | undefined {

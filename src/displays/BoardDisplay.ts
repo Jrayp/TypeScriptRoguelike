@@ -1,7 +1,5 @@
-import { IncomingMessage } from 'http';
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
-import _Actor from 'src/actors/_Actor';
 import { _BoardTile } from 'src/boardTiles/_BoardTile';
 import C from '../C';
 import Board from './../Board';

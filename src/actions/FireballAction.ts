@@ -21,7 +21,6 @@ export default class FireballAction extends _Action implements ITargetableAction
         let UnseenAndAoe = new Icon('?', [200, 200, 175], [0, 150, 30]);
 
         this.path = GMath.lineList(start, end, 1);
-        // this.path.shift();
 
         let circle = GMath.pointWithinCircleMap(end, this.radius);
         for (let kAndC of circle) {
@@ -29,9 +28,9 @@ export default class FireballAction extends _Action implements ITargetableAction
                 if (!G.board.tiles.hasKey(kAndC[0]))
                     continue;
                 let tile = G.board.tiles.getElementViaKey(kAndC[0]);
-                if (tile.occupant && G.player.seenPoint.has(kAndC[0]))
+                if (tile.occupant && G.player.seenPoints.has(kAndC[0]))
                     G.board.icons.addIcon(kAndC[1], new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
-                else if (G.player.seenPoint.has(kAndC[0]))
+                else if (G.player.seenPoints.has(kAndC[0]))
                     G.board.icons.addIcon(kAndC[1], aoeIcon);
                 else
                     G.board.icons.addIcon(kAndC[1], new Icon(' ', null, [0, 100, 25]));
@@ -39,7 +38,7 @@ export default class FireballAction extends _Action implements ITargetableAction
         }
         for (let c of this.path) {
             let tile = G.board.tiles.getElementViaPoint(c);
-            switch (G.player.seenPoint.has(c.key)) {
+            switch (G.player.seenPoints.has(c.key)) {
                 case true:
                     if (tile.occupant)
                         G.board.icons.addIcon(c, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));

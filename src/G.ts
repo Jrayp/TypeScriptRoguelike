@@ -71,7 +71,7 @@ export default class G {
     }
 
     static draw() {
-        G.board.draw(G.player.seenPoint, G.player.percievedOpaqueColors);
+        G.board.draw(G.player.seenPoints, G.player.percievedOpaqueColors);
     }
 
     static handleAction(action: _Action) {

@@ -1,11 +1,11 @@
-import { Color as ColorHelper, FOV, Lighting } from "rot-js";
+import { FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import IActivatable from "./../interfaces/IActivatable";
-import IPositional from "./../interfaces/IPositional";
 import C from "../C";
 import G from "../G";
 import Point from "../util/Point";
+import IActivatable from "./../interfaces/IActivatable";
+import IPositional from "./../interfaces/IPositional";
 
 export default class Light implements IActivatable {
     attachedTo: IPositional;
@@ -26,18 +26,6 @@ export default class Light implements IActivatable {
         this._lighting = new Lighting(this.reflectivityCallback, { range: this._intensity, passes: 2 })
             .setFOV(this._lightCone);
     }
-
-
-    // TODO: Could probably be made into helper functions
-    // activate(): void {
-    //     this.active = true;
-    // }
-    // deactivate(): void {
-    //     this.active = false;
-    // }
-    // toggleActive(): boolean {
-    //     return this.active = !this.active;
-    // }
 
     update() {
         if (this.active) {
@@ -60,6 +48,7 @@ export default class Light implements IActivatable {
         this._lighting.clearLights();
         this._lighting.setLight(point.x, point.y, this._color);
     }
+
     private lightingCallback(x: number, y: number, color: Color) {
         G.board.lights.applyLight(x, y, color);
     }

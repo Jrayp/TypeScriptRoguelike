@@ -88,7 +88,7 @@ export default class LightController {
         for (let neighborPointAndTile of generator) {
             if (neighborPointAndTile[1]?.transparent) {
                 let key = neighborPointAndTile[0].key;
-                let inFov = sight.seenPoint.has(key);
+                let inFov = sight.seenPoints.has(key);
                 if (inFov) {
                     let brightness = this._brightnessMap.get(key) || 0;
                     if (brightness > highestBrightness) {
