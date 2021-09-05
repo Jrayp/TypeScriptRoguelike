@@ -5,7 +5,7 @@ export default interface ISight extends IPositional {
 
     fovAlgo: PreciseShadowcasting;
     sightRange: number;
-    seenCoords: Set<number>;
+    seenPoint: Set<number>;
 
     computeFov(): Set<number>;
 

@@ -1,6 +1,6 @@
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
 import { InputState } from "./../Enums";
@@ -10,7 +10,7 @@ export default class Input {
     static logCanvas: HTMLElement;
     static boardCanvas: HTMLElement;
     static mouseOverCanvas: HTMLElement;
-    static mouseBoardCoords: Coords;
+    static mouseBoardPoint: Point;
     static currentTargetedAction: ITargetableAction | undefined;
 
     static state = InputState.BOARD_CONTROL;
@@ -41,7 +41,7 @@ export default class Input {
         let mouseTileX = Math.floor(x / G.boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / G.boardDisplay.tileHeight);
 
-        Input.mouseBoardCoords = new Coords(mouseTileX, mouseTileY);
+        Input.mouseBoardPoint = new Point(mouseTileX, mouseTileY);
 
         switch (Input.state) {
             case InputState.BOARD_CONTROL:
@@ -135,7 +135,7 @@ export default class Input {
 
     static updateTargeting() {
         G.board.icons.clear();
-        Input.currentTargetedAction!.target(G.player.coords!, Input.mouseBoardCoords);
+        Input.currentTargetedAction!.target(G.player.Point!, Input.mouseBoardPoint);
         G.draw();
     }
 

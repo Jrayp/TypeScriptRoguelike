@@ -38,24 +38,24 @@ export default class G {
         G.board.generate();
 
         G.player = new Player();
-        for (let tileAndCoords of G.board.tiles.iterateElements()) {
-            if (tileAndCoords[0].name === "Floor") {
-                G.board.actors.set(tileAndCoords[1], G.player);
+        for (let tileAndPoint of G.board.tiles.iterateElements()) {
+            if (tileAndPoint[0].name === "Floor") {
+                G.board.actors.set(tileAndPoint[1], G.player);
                 break;
             }
         }
 
-        for (let tileAndCoords of G.board.tiles.iterateElements()) {
-            if (tileAndCoords[0].passable && !tileAndCoords[0].occupant && RNG.getUniform() < .025) {
+        for (let tileAndPoint of G.board.tiles.iterateElements()) {
+            if (tileAndPoint[0].passable && !tileAndPoint[0].occupant && RNG.getUniform() < .025) {
                 let g = new Goomba();
-                G.board.actors.set(tileAndCoords[1], g);
+                G.board.actors.set(tileAndPoint[1], g);
             }
         }
 
         G.board.lights.update();
 
-        let playerSeenCoords = G.player.computeFov();
-        G.board.draw(playerSeenCoords, G.player.percievedOpaqueColors);
+        let playerSeenPoint = G.player.computeFov();
+        G.board.draw(playerSeenPoint, G.player.percievedOpaqueColors);
 
         Input.setInputHandlers(G.logDisplay.getContainer()!, G.boardDisplay.getContainer()!);
 
@@ -71,7 +71,7 @@ export default class G {
     }
 
     static draw() {
-        G.board.draw(G.player.seenCoords, G.player.percievedOpaqueColors);
+        G.board.draw(G.player.seenPoint, G.player.percievedOpaqueColors);
     }
 
     static handleAction(action: _Action) {

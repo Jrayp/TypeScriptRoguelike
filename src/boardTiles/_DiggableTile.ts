@@ -19,7 +19,7 @@ export default abstract class _DiggableTile extends _BoardTile implements IDigga
                 this._glyph = RNG.getItem(['%', ';', ':'])!;
                 break;
             case 0:
-                G.board.tiles.replace(this.coords, new RubbleTile(this._bgColor!));
+                G.board.tiles.replace(this.Point, new RubbleTile(this._bgColor!));
                 G.board.lights.updateFov();
         }
     }

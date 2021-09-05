@@ -1,20 +1,20 @@
 import _EffectGenerator from "./../effects/_EffectGenerator";
 import _Effect from "../effects/_Effect";
-import UniqueCoordsMap from "../util/UniqueCoordsMap";
+import UniquePointMap from "../util/UniquePointMap";
 import { InputState } from "./../Enums";
 import G from "./../G";
 import Loop from "./../Loop";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 import Input from "./../input/Input";
 
-export default class EffectsController extends UniqueCoordsMap<_Effect>{
+export default class EffectsController extends UniquePointMap<_Effect>{
 
     private _generators = new Set<_EffectGenerator>();
 
     currentLoop: Loop;
 
-    addEffect(coords: Coords, effect: _Effect, doStepImmediatly: boolean) {
-        this.set(coords, effect);
+    addEffect(point: Point, effect: _Effect, doStepImmediatly: boolean) {
+        this.set(point, effect);
         if (doStepImmediatly)
             effect.doStep();
     }
@@ -43,8 +43,8 @@ export default class EffectsController extends UniqueCoordsMap<_Effect>{
     updateAndDraw = () => {
         for (let gen of this._generators)
             gen.generate();
-        for (let actionAndCoords of G.board.effects.iterateElements()) {
-            const action = actionAndCoords[0];
+        for (let actionAndPoint of G.board.effects.iterateElements()) {
+            const action = actionAndPoint[0];
             action.doStep();
         }
         G.board.lights.update();

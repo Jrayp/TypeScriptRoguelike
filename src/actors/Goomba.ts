@@ -2,7 +2,7 @@ import { Color as ColorHelper, RNG } from "rot-js";
 import _Action from "./../actions/_Action";
 import MoveAction from "./../actions/MoveAction";
 import G from "./../G";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 import _Npc from "./_Npc";
 import AttackAction from "./../actions/AttackAction";
 
@@ -22,20 +22,20 @@ export default class Goomba extends _Npc {
     act() {
         let action: _Action | undefined;
 
-        let freeCoords: Coords[] = [];
-        let generator = G.board.tiles.iterateSurrounding(this.coords!);
-        for (let coordsAndTile of generator) {
-            const tile = coordsAndTile[1]!;
+        let freePoint: Point[] = [];
+        let generator = G.board.tiles.iterateSurrounding(this.Point!);
+        for (let pointAndTile of generator) {
+            const tile = pointAndTile[1]!;
             if (tile.occupant == G.player) {
                 action = new AttackAction(tile.occupant!);
                 break;
             }
             else if (tile.passable && !tile.occupant)
-                freeCoords.push(coordsAndTile[0]);
+                freePoint.push(pointAndTile[0]);
         }
 
         if (!action) {
-            let selection = RNG.getItem(freeCoords);
+            let selection = RNG.getItem(freePoint);
             if (selection)
                 action = new MoveAction(this, selection);
         }

@@ -1,8 +1,8 @@
 import { _BoardTile } from "./../boardTiles/_BoardTile";
-import Coords from "../util/Coords";
-import UniqueCoordsMap from "./../util/UniqueCoordsMap";
+import Point from "../util/Point";
+import UniquePointMap from "./../util/UniquePointMap";
 
-export default class TileController extends UniqueCoordsMap<_BoardTile> {
+export default class TileController extends UniquePointMap<_BoardTile> {
 
     removeViaKey(key: number) {
         this._remove(this.getElementViaKey(key));
@@ -14,9 +14,9 @@ export default class TileController extends UniqueCoordsMap<_BoardTile> {
         super.removeViaElement(element);
     }
 
-    removeViaCoords(coords: Coords) {
-        this._remove(this.getElementViaCoords(coords));
-        super.removeViaCoords(coords);
+    removeViaPoint(point: Point) {
+        this._remove(this.getElementViaPoint(point));
+        super.removeViaPoint(point);
     }
 
     private _remove(tile: _BoardTile) {

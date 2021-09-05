@@ -3,7 +3,7 @@ import { Color } from "rot-js/lib/color";
 import { _BoardTile } from "./../boardTiles/_BoardTile";
 import G from "./../G";
 import ISight from "../interfaces/ISight";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 import GMath from "./../util/GMath";
 import Light from "./../lights/Light";
 
@@ -54,7 +54,7 @@ export default class LightController {
         if (!G.board.numbersWithinBounds(x, y))
             return;
 
-        const key = new Coords(x, y).key;
+        const key = new Point(x, y).key;
         let tile = G.board.tiles.getElementViaKey(key);
         // Wall tiles don't really need brightness given the way we currently draw them, 
         // but we need a value here so that the tile is picked up by the players FOV alg. 
@@ -81,14 +81,14 @@ export default class LightController {
     }
 
     percievedLightColorOfOpaque(opaqueTile: _BoardTile, sight: ISight) {
-        let tileCoords = opaqueTile.coords;
+        let tilePoint = opaqueTile.Point;
         let brightestNeighborColor: Color | undefined = undefined;
         let highestBrightness = 0;
-        let generator = G.board.tiles.iterateSurrounding(tileCoords);
-        for (let neighborCoordsAndTile of generator) {
-            if (neighborCoordsAndTile[1]?.transparent) {
-                let key = neighborCoordsAndTile[0].key;
-                let inFov = sight.seenCoords.has(key);
+        let generator = G.board.tiles.iterateSurrounding(tilePoint);
+        for (let neighborPointAndTile of generator) {
+            if (neighborPointAndTile[1]?.transparent) {
+                let key = neighborPointAndTile[0].key;
+                let inFov = sight.seenPoint.has(key);
                 if (inFov) {
                     let brightness = this._brightnessMap.get(key) || 0;
                     if (brightness > highestBrightness) {

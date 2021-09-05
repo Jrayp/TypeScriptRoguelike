@@ -5,7 +5,7 @@ import INamed from '../interfaces/INamed';
 import IPositional from '../interfaces/IPositional';
 import { _BoardTile } from './../boardTiles/_BoardTile';
 import BoardDisplay from './../displays/BoardDisplay';
-import Coords from '../util/Coords';
+import Point from '../util/Point';
 
 export default abstract class _Actor implements INamed, IDrawable, IPositional {
 
@@ -25,19 +25,19 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
         return this._bgColor;
     }
 
-    get coords(): Coords | undefined {
-        return G.board.actors.getCoordsViaElement(this);
+    get Point(): Point | undefined {
+        return G.board.actors.getPointViaElement(this);
     }
 
     get tile(): _BoardTile | undefined {
-        if (this.coords)
-            return G.board.tiles.getElementViaCoords(this.coords);
+        if (this.Point)
+            return G.board.tiles.getElementViaPoint(this.Point);
         else return undefined;
     }
 
     getDrawData(boardDisplay: BoardDisplay): void {
-        let coords = this.coords;
-        // boardDisplay.draw(coords.x, coords.y, this.glyph, this.fgColor, null);
+        let Point = this.Point;
+        // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, null);
     }
 
     kill() {
@@ -48,11 +48,11 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
 
     }
 
-    // move(newCoords: Coords) {
-    //     let destinationTile = G.board.tileLayer.getElementViaCoords(newCoords);
+    // move(newpoint: Point) {
+    //     let destinationTile = G.board.tileLayer.getElementViaPoint(newPoint);
 
-    //     if (G.board.tileLayer.getElementViaCoords(newCoords).passable) {
-    //         G.board.actorLayer.moveViaElement(this, newCoords);
+    //     if (G.board.tileLayer.getElementViaPoint(newPoint).passable) {
+    //         G.board.actorLayer.moveViaElement(this, newPoint);
     //         destinationTile.onEnter(this)
     //         return true;
     //     }

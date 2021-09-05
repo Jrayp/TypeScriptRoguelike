@@ -1,7 +1,7 @@
-import C from "./../C";
+import C from "../C";
 import { Direction } from "../Enums";
 
-export default class Coords {
+export default class Point {
 
     private static readonly _OFFSETS = [
         [0, -1],
@@ -21,39 +21,39 @@ export default class Coords {
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.key = Coords.toInt(x, y);
+        this.key = Point.toInt(x, y);
     }
 
-    addCoords(coords: Coords) {
-        return Coords.addCoordsToCoords(this, coords);
+    addPoint(point: Point) {
+        return Point.addPointToPoint(this, point);
     }
 
     neighbor(dir: Direction) {
-        let a = Coords._OFFSETS[dir];
-        return Coords.addCoordsToNumbers(this, a[0], a[1]);
+        let a = Point._OFFSETS[dir];
+        return Point.addPointToNumbers(this, a[0], a[1]);
     }
 
     *iterateNeighbors() {
-        for (let a of Coords._OFFSETS)
-            yield Coords.addCoordsToNumbers(this, a[0], a[1]);
+        for (let a of Point._OFFSETS)
+            yield Point.addPointToNumbers(this, a[0], a[1]);
     }
 
     ///////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////
 
-    static addCoordsToCoords(coordsA: Coords, coordsB: Coords) {
-        return new Coords(coordsA.x + coordsB.x, coordsA.y + coordsB.y);
+    static addPointToPoint(pointA: Point, pointB: Point) {
+        return new Point(pointA.x + pointB.x, pointA.y + pointB.y);
     }
 
-    static addCoordsToNumbers(coords: Coords, x: number, y: number) {
-        return new Coords(coords.x + x, coords.y + y);
+    static addPointToNumbers(point: Point, x: number, y: number) {
+        return new Point(point.x + x, point.y + y);
     }
 
     static fromInt(i: number, width: number = C.BOARD_WIDTH) {
         let x = i % width;
         let y = Math.trunc(i / width);
-        return new Coords(x, y);
+        return new Point(x, y);
     }
 
     static toInt(x: number, y: number, width: number = C.BOARD_WIDTH) {

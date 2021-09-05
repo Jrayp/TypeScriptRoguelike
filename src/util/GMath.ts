@@ -1,4 +1,4 @@
-import Coords from "./Coords";
+import Point from "./Point";
 
 
 export default class GMath {
@@ -16,58 +16,58 @@ export default class GMath {
         return start + t * (end - start);
     }
 
-    static lerpCoords(c0: Coords, c1: Coords, t: number) {
-        return new Coords(this.lerp(c0.x, c1.x, t), this.lerp(c0.y, c1.y, t));
+    static lerpPoint(p0: Point, p1: Point, t: number) {
+        return new Point(this.lerp(p0.x, p1.x, t), this.lerp(p0.y, p1.y, t));
     }
 
-    static roundCoords(c: Coords) {
-        return new Coords(Math.round(c.x), Math.round(c.y));
+    static roundPoint(c: Point) {
+        return new Point(Math.round(c.x), Math.round(c.y));
     }
 
     ///////////////////////////////////////////////////////
     // Geometry
     ///////////////////////////////////////////////////////
 
-    static * iterateLineCoords(c0: Coords, c1: Coords) {
-        let N = this.diagonalDistance(c0, c1);
+    static * iterateLinePoints(p0: Point, p1: Point) {
+        let N = this.diagonalDistance(p0, p1);
         for (let step = 0; step <= N; step++) {
             let t = N === 0 ? 0.0 : step / N;
-            yield this.roundCoords(this.lerpCoords(c0, c1, t));
+            yield this.roundPoint(this.lerpPoint(p0, p1, t));
         }
     }
 
-    static lineList(c0: Coords, c1: Coords) {
-        let coords: Coords[] = [];
-        for (let c of GMath.iterateLineCoords(c0, c1)) {
-            coords.push(c);
+    static lineList(p0: Point, p1: Point) {
+        let points: Point[] = [];
+        for (let c of GMath.iterateLinePoints(p0, p1)) {
+            points.push(c);
         }
-        return coords;
+        return points;
     }
 
-    static lineSet(c0: Coords, c1: Coords) {
-        let coords = new Set<Coords>();
-        for (let c of GMath.iterateLineCoords(c0, c1)) {
-            coords.add(c);
+    static lineSet(p0: Point, p1: Point) {
+        let Point = new Set<Point>();
+        for (let c of GMath.iterateLinePoints(p0, p1)) {
+            Point.add(c);
         }
-        return coords;
+        return Point;
     }
 
 
 
-    static diagonalDistance(c0: Coords, c1: Coords) {
-        let dx = c1.x - c0.x;
-        let dy = c1.y - c0.y;
+    static diagonalDistance(p0: Point, p1: Point) {
+        let dx = p1.x - p0.x;
+        let dy = p1.y - p0.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    static insideCircle(center: Coords, x: number, y: number, radius: number) {
+    static insideCircle(center: Point, x: number, y: number, radius: number) {
         let dx = center.x - x;
         let dy = center.y - y;
         let distanceSquared = dx * dx + dy * dy;
         return distanceSquared <= radius * radius;
     }
 
-    static * iterateCoordsWithinCircle(center: Coords, radius: number) {
+    static * iteratePointWithinCircle(center: Point, radius: number) {
         let top = Math.floor(center.y - radius);
         let bottom = Math.floor(center.y + radius);
 
@@ -77,13 +77,13 @@ export default class GMath {
             let left = Math.ceil(center.x - dx);
             let right = Math.floor(center.x + dx);
             for (let x = left; x <= right; x++) {
-                yield new Coords(x, y);
+                yield new Point(x, y);
             }
         }
     }
 
-    static coordsWithinCircleMap(center: Coords, radius: number) {
-        let map = new Map<number, Coords>();
+    static PointWithinCircleMap(center: Point, radius: number) {
+        let map = new Map<number, Point>();
 
         let top = Math.floor(center.y - radius);
         let bottom = Math.floor(center.y + radius);
@@ -94,7 +94,7 @@ export default class GMath {
             let left = Math.ceil(center.x - dx);
             let right = Math.floor(center.x + dx);
             for (let x = left; x <= right; x++) {
-                let c = new Coords(x, y);
+                let c = new Point(x, y);
                 map.set(c.key, c);
             }
         }
@@ -102,28 +102,28 @@ export default class GMath {
         return map;
     }
 
-    private static dupeCoords = new Set<number>();
-    static coordsOnCircumferenceSet(center: Coords, radius: number) {
-        this.dupeCoords.clear();
-        let coordsSet = new Set<Coords>();
+    private static dupePoint = new Set<number>();
+    static PointOnCircumferenceSet(center: Point, radius: number) {
+        this.dupePoint.clear();
+        let pointSet = new Set<Point>();
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
-            this.addIfNotDupe(new Coords(center.x - d, center.y + r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + d, center.y + r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - d, center.y - r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + d, center.y - r), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + r, center.y - d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x + r, center.y + d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - r, center.y - d), coordsSet);
-            this.addIfNotDupe(new Coords(center.x - r, center.y + d), coordsSet);
+            this.addIfNotDupe(new Point(center.x - d, center.y + r), pointSet);
+            this.addIfNotDupe(new Point(center.x + d, center.y + r), pointSet);
+            this.addIfNotDupe(new Point(center.x - d, center.y - r), pointSet);
+            this.addIfNotDupe(new Point(center.x + d, center.y - r), pointSet);
+            this.addIfNotDupe(new Point(center.x + r, center.y - d), pointSet);
+            this.addIfNotDupe(new Point(center.x + r, center.y + d), pointSet);
+            this.addIfNotDupe(new Point(center.x - r, center.y - d), pointSet);
+            this.addIfNotDupe(new Point(center.x - r, center.y + d), pointSet);
         }
-        return coordsSet;
+        return pointSet;
     }
 
-    private static addIfNotDupe(coords: Coords, set: Set<Coords>) {
-        if (!this.dupeCoords.has(coords.key)) {
-            set.add(coords);
-            this.dupeCoords.add(coords.key);
+    private static addIfNotDupe(point: Point, set: Set<Point>) {
+        if (!this.dupePoint.has(point.key)) {
+            set.add(point);
+            this.dupePoint.add(point.key);
         }
     }
 }

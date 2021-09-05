@@ -16,7 +16,7 @@ import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
 import G from './G';
-import Coords from './util/Coords';
+import point from './util/Point';
 
 export default class Board {
     tiles = new TileController();
@@ -47,7 +47,7 @@ export default class Board {
                     newTile = new WaterTile();
 
 
-            this.tiles.set(new Coords(x, y), newTile!);
+            this.tiles.set(new point(x, y), newTile!);
         }
 
 
@@ -65,9 +65,9 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Coords.toInt(x, y)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(point.toInt(x, y)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
-                this.tiles.replace(new Coords(x, y), newTile);
+                this.tiles.replace(new point(x, y), newTile);
             }
 
         }
@@ -87,9 +87,9 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tiles.getElementViaKey(Coords.toInt(x, y)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaKey(point.toInt(x, y)).name == "Floor") {
                 newTile = new CavernGrassTile();
-                this.tiles.replace(new Coords(x, y), newTile);
+                this.tiles.replace(new point(x, y), newTile);
             }
 
         }
@@ -111,16 +111,16 @@ export default class Board {
     // Static
     ///////////////////////////////////////////////////////
 
-    coordsOnEdge(coords: Coords) {
-        return coords.x == 0 || coords.x == C.BOARD_WIDTH - 1 || coords.y == 0 || coords.y == C.BOARD_HEIGHT - 1;
+    PointOnEdge(point: point) {
+        return point.x == 0 || point.x == C.BOARD_WIDTH - 1 || point.y == 0 || point.y == C.BOARD_HEIGHT - 1;
     }
 
     numbersOnEdge(x: number, y: number) {
         return x == 0 || x == C.BOARD_WIDTH - 1 || y == 0 || y == C.BOARD_HEIGHT - 1;
     }
 
-    coordsWithinBounds(coords: Coords) {
-        return coords.x >= 0 && coords.x < C.BOARD_WIDTH && coords.y >= 0 && coords.y < C.BOARD_HEIGHT;
+    PointWithinBounds(point: point) {
+        return point.x >= 0 && point.x < C.BOARD_WIDTH && point.y >= 0 && point.y < C.BOARD_HEIGHT;
     }
 
     numbersWithinBounds(x: number, y: number) {

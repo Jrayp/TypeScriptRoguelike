@@ -1,15 +1,15 @@
 import { ActionState } from "./../Enums";
 import _Actor from "./../actors/_Actor";
 import G from "./../G";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 import _Action from "./_Action";
 
 export default class MoveAction extends _Action {
 
     private _actor: _Actor;
-    private _dest: Coords;
+    private _dest: Point;
 
-    constructor(actor: _Actor, dest: Coords) {
+    constructor(actor: _Actor, dest: Point) {
         super();
         this._actor = actor;
         this._dest = dest;

@@ -1,10 +1,10 @@
 import _Action from "../actions/_Action";
-import Coords from "../util/Coords";
+import Point from "../util/Point";
 
 export default interface ITargetableAction extends _Action {
 
 
-    target(start: Coords, end: Coords): void;
+    target(start: Point, end: Point): void;
 
 
 }

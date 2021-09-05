@@ -40,40 +40,40 @@ export default class BoardDisplay extends Display {
                 continue;
 
             tile = tileLayer.getElementViaKey(seenKey);
-            const coords = tile.coords;
+            const point = tile.Point;
 
-            if (actionLayer.hasCoords(coords)) {
-                let action = actionLayer.getElementViaCoords(coords);
+            if (actionLayer.hasPoint(point)) {
+                let action = actionLayer.getElementViaPoint(point);
                 fgDrawColor = this.convertColor(action.fgColor);
                 bgDrawColor = this.convertColor(action.bgColor);
-                this.draw(coords.x, coords.y, action.glyph, fgDrawColor, bgDrawColor);
+                this.draw(point.x, point.y, action.glyph, fgDrawColor, bgDrawColor);
             }
-            else if (actorLayer.hasCoords(coords)) {
-                let actor = actorLayer.getElementViaCoords(coords);
+            else if (actorLayer.hasPoint(point)) {
+                let actor = actorLayer.getElementViaPoint(point);
                 fgDrawColor = this.convertColor(actor.fgColor);
                 bgDrawColor = this.convertColor(actor.bgColor);
-                this.draw(coords.x, coords.y, actor.glyph, fgDrawColor, bgDrawColor);
+                this.draw(point.x, point.y, actor.glyph, fgDrawColor, bgDrawColor);
             }
             else if (!tile.transparent) { // Walls etc 
                 let percievedLightColor = percievedOpaqueColors.get(seenKey)!;
                 fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor);
                 bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor);
-                this.draw(coords.x, coords.y, tile.glyph, fgDrawColor, bgDrawColor);
+                this.draw(point.x, point.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
             else { // Transparent Tiles 
-                let lightColor: Color = lightManager.getColor(coords.key)!;
+                let lightColor: Color = lightManager.getColor(point.key)!;
                 fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
                 bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor);
-                this.draw(coords.x, coords.y, tile._glyph, fgDrawColor, bgDrawColor);
+                this.draw(point.x, point.y, tile._glyph, fgDrawColor, bgDrawColor);
             }
         }
 
-        for (let iconAndCoords of icons.iterate()) {
-            let icon = iconAndCoords[1];
-            let coords = iconAndCoords[0];
+        for (let iconAndPoint of icons.iterate()) {
+            let icon = iconAndPoint[1];
+            let point = iconAndPoint[0];
             let fgDrawColor = this.convertColor(icon.fgColor);
             let bgDrawColor = this.convertColor(icon.bgColor);
-            this.draw(coords.x, coords.y, icon.glyph, fgDrawColor, bgDrawColor);
+            this.draw(point.x, point.y, icon.glyph, fgDrawColor, bgDrawColor);
         }
     }
 
