@@ -62,7 +62,7 @@ export default class BoardDisplay extends Display {
                 let lightColor: Color = lightManager.getColor(point.key)!;
                 fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
                 bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor);
-                this.draw(point.x, point.y, tile._glyph, fgDrawColor, bgDrawColor);
+                this.draw(point.x, point.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
         }
 

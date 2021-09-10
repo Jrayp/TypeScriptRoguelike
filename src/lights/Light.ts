@@ -49,19 +49,19 @@ export default class Light implements IActivatable {
         this._lighting.setLight(point.x, point.y, this._color);
     }
 
-    private lightingCallback(x: number, y: number, color: Color) {
-        G.board.lights.applyLight(x, y, color);
+    private lightingCallback = (x: number, y: number, color: Color) => {
+        G.board.lights.applyLight(x, y, this.attachedTo.position!.z, color);
     }
 
-    private lightPassingCallback(x: number, y: number) {
+    private lightPassingCallback = (x: number, y: number) => {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tiles.getElementViaKey(Point.toInt(x, y)).transparent;
+            return G.board.tiles.getElementViaKey(Point.toInt(x, y, this.attachedTo.position!.z)).transparent;
     }
 
-    private reflectivityCallback(x: number, y: number) {
-        const key = Point.toInt(x, y);
+    private reflectivityCallback = (x: number, y: number) => {
+        const key = Point.toInt(x, y, this.attachedTo.position!.z);
         if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).passable)
             return 0;
         else

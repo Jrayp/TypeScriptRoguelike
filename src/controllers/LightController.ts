@@ -50,11 +50,11 @@ export default class LightController {
     // TODO: Just make the light not shine on the wall if the player cant see the neighboring
     // floor tiles..
 
-    applyLight(x: number, y: number, lightColor: Color) {
+    applyLight(x: number, y: number, z: number, lightColor: Color) {
         if (!G.board.numbersWithinBounds(x, y))
             return;
 
-        const key = new Point(x, y).key;
+        const key = new Point(x, y, z).key;
         let tile = G.board.tiles.getElementViaKey(key);
         // Wall tiles don't really need brightness given the way we currently draw them, 
         // but we need a value here so that the tile is picked up by the players FOV alg. 

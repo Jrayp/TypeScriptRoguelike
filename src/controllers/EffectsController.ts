@@ -37,7 +37,7 @@ export default class EffectsController extends UniquePointMap<_Effect>{
 
     finalize() {
         Input.state = InputState.BOARD_CONTROL;
-        G.update();
+        G.updateAndDraw();
     }
 
     updateAndDraw = () => {

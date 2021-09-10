@@ -16,6 +16,7 @@ import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
 import G from './G';
+import Point from './util/Point';
 import point from './util/Point';
 
 export default class Board {
@@ -36,18 +37,28 @@ export default class Board {
     generate() {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (this.numbersOnEdge(x, y))
+            let newWaterTile: _BoardTile;
+            if (this.numbersOnEdge(x, y)) {
                 newTile = new BorderTile();
-            else if (value == 0)
+                newWaterTile = new BorderTile();
+            }
+            else if (value == 0) {
                 newTile = new WallTile();
+                newWaterTile = new WallTile();
+            }
             else if (value == 1)
-                if (RNG.getUniform() < .025)
+                if (RNG.getUniform() < .025) {
                     newTile = new GlowingCrystalTile();
-                else
+                    newWaterTile = new GlowingCrystalTile();
+                }
+                else {
                     newTile = new WaterTile();
+                    newWaterTile = new WaterTile();
+                }
 
 
-            this.tiles.set(new point(x, y), newTile!);
+            this.tiles.set(new point(x, y, 0), newTile!);
+            this.tiles.set(new point(x, y, 1), newWaterTile!);
         }
 
 
@@ -65,9 +76,9 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(point.toInt(x, y)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(point.toInt(x, y, 0)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
-                this.tiles.replace(new point(x, y), newTile);
+                this.tiles.replace(new point(x, y, 0), newTile);
             }
 
         }
@@ -87,9 +98,9 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tiles.getElementViaKey(point.toInt(x, y)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaKey(point.toInt(x, y, 0)).name == "Floor") {
                 newTile = new CavernGrassTile();
-                this.tiles.replace(new point(x, y), newTile);
+                this.tiles.replace(new point(x, y, 0), newTile);
             }
 
         }

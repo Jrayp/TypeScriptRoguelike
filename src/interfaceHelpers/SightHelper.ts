@@ -10,7 +10,7 @@ export default class SightHelper {
         if (sightImplmenterPoint) {
             sight.fovAlgo.compute(sightImplmenterPoint.x, sightImplmenterPoint.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
-                    let pointKey = Point.toInt(x, y);
+                    let pointKey = Point.toInt(x, y, sight.position!.z);
                     if (G.board.tiles.getElementViaKey(pointKey).transparent && G.board.lights.getBrightness(pointKey))
                         sight.seenPoints.add(pointKey); // Npc's only care about seeing transparent tiles
                 });
@@ -19,11 +19,11 @@ export default class SightHelper {
         return sight.seenPoints;
     }
 
-    static sightPassesCallback(x: number, y: number) {
-        if (!G.board.numbersWithinBounds(x, y))
-            return false;
-        else
-            return G.board.tiles.getElementViaKey(Point.toInt(x, y)).transparent;
-    }
+    // static sightPassesCallback(x: number, y: number) {
+    //     if (!G.board.numbersWithinBounds(x, y))
+    //         return false;
+    //     else
+    //         return G.board.tiles.getElementViaKey(Point.toInt(x, y)).transparent;
+    // }
 
 }

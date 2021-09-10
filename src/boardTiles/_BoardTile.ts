@@ -15,13 +15,13 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract _fgColor: Color | null;
     abstract _bgColor: Color | null;
 
-    get glyph(): any {
+    get glyph(): string {
         return this._glyph;
     }
-    get fgColor(): any {
+    get fgColor(): Color | null {
         return this._fgColor;
     }
-    get bgColor(): any {
+    get bgColor(): Color | null {
         return this._bgColor;
     }
 

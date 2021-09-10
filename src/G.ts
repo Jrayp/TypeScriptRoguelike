@@ -87,10 +87,10 @@ export default class G {
         if (action.state == ActionState.START_EFFECT)
             G.board.effects.handleEffects();
         else
-            G.update();
+            G.updateAndDraw();
     }
 
-    static update() {
+    static updateAndDraw() {
         // Uh oh.. whaty about light so npc and thier vision??? 
         // Maybe doesnt matter they just have to see what they see before moving?
         G.board.actors.update();

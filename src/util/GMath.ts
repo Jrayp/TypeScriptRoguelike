@@ -19,11 +19,11 @@ export default class GMath {
     }
 
     static lerpPoint(p0: Point, p1: Point, t: number) {
-        return new Point(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t));
+        return new Point(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t), GMath.lerp(p0.z, p1.z, t));
     }
 
     static roundPoint(c: Point) {
-        return new Point(Math.round(c.x), Math.round(c.y));
+        return new Point(Math.round(c.x), Math.round(c.y), Math.round(c.z));
     }
 
     ///////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ export default class GMath {
             let left = Math.ceil(center.x - dx);
             let right = Math.floor(center.x + dx);
             for (let x = left; x <= right; x++) {
-                yield new Point(x, y);
+                yield new Point(x, y, center.z);
             }
         }
     }
@@ -115,14 +115,14 @@ export default class GMath {
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
             if (r == 0 || r == d) {
-                let p0 = new Point(center.x - d, center.y + r);
-                let p1 = new Point(center.x + d, center.y + r);
-                let p2 = new Point(center.x - d, center.y - r);
-                let p3 = new Point(center.x + d, center.y - r);
-                let p4 = new Point(center.x + r, center.y - d);
-                let p5 = new Point(center.x + r, center.y + d);
-                let p6 = new Point(center.x - r, center.y - d);
-                let p7 = new Point(center.x - r, center.y + d);
+                let p0 = new Point(center.x - d, center.y + r, center.z);
+                let p1 = new Point(center.x + d, center.y + r, center.z);
+                let p2 = new Point(center.x - d, center.y - r, center.z);
+                let p3 = new Point(center.x + d, center.y - r, center.z);
+                let p4 = new Point(center.x + r, center.y - d, center.z);
+                let p5 = new Point(center.x + r, center.y + d, center.z);
+                let p6 = new Point(center.x - r, center.y - d, center.z);
+                let p7 = new Point(center.x - r, center.y + d, center.z);
 
                 if (!dupes.has(p0.key)) {
                     dupes.add(p0.key)
@@ -158,14 +158,14 @@ export default class GMath {
                 }
             }
             else {
-                yield new Point(center.x - d, center.y + r);
-                yield new Point(center.x + d, center.y + r);
-                yield new Point(center.x - d, center.y - r);
-                yield new Point(center.x + d, center.y - r);
-                yield new Point(center.x + r, center.y - d);
-                yield new Point(center.x + r, center.y + d);
-                yield new Point(center.x - r, center.y - d);
-                yield new Point(center.x - r, center.y + d);
+                yield new Point(center.x - d, center.y + r, center.z);
+                yield new Point(center.x + d, center.y + r, center.z);
+                yield new Point(center.x - d, center.y - r, center.z);
+                yield new Point(center.x + d, center.y - r, center.z);
+                yield new Point(center.x + r, center.y - d, center.z);
+                yield new Point(center.x + r, center.y + d, center.z);
+                yield new Point(center.x - r, center.y - d, center.z);
+                yield new Point(center.x - r, center.y + d, center.z);
             }
         }
     }
