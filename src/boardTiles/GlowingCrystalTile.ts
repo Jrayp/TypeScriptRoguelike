@@ -11,8 +11,10 @@ export class GlowingCrystalTile extends _BoardTile {
     _fgColor: Color;
     _bgColor = null;
     passable = true;
+    topPassable = true;
+    bottomPassable = false;
     transparent = true;
-
+    destroyable = true;
     glow: Light;
 
     constructor() {

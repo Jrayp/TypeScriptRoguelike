@@ -1,10 +1,9 @@
-import Player from "src/actors/Player";
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
 import Point from "../util/Point";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { InputState } from "./../Enums";
+import { InputState, Layer } from "./../Enums";
 
 export default class Input {
 
@@ -42,7 +41,7 @@ export default class Input {
         let mouseTileX = Math.floor(x / G.boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / G.boardDisplay.tileHeight);
 
-        Input.mouseBoardPoint = new Point(mouseTileX, mouseTileY, G.player.position!.z);
+        Input.mouseBoardPoint = new Point(mouseTileX, mouseTileY, G.player.position!.layer);
 
         switch (Input.state) {
             case InputState.BOARD_CONTROL:
@@ -106,16 +105,16 @@ export default class Input {
                 break;
             case "Period":
                 if (shift) {
-                    if (G.player.tile!.name === "Water" && G.player.position!.z === 0) {
-                        return G.player.tryMove(G.player.position!.addPoint(new Point(0, 0, 1)));
-                    }
+                    let playerTile = G.player.tile!;
+                    if (G.player.position!.layer === Layer.ABOVE && playerTile.downMovementValid)
+                        return G.player.tryMove(playerTile.opposite.position);
                 }
                 break;
             case "Comma":
                 if (shift) {
-                    if ( G.player.position!.z === 1 && G.board.tiles.getElementViaPoint(G.player.position!.addPoint(new Point(0,0,-1))).name == "Water") {
-                        return G.player.tryMove(G.player.position!.addPoint(new Point(0, 0, -1)));
-                    }
+                    let playerTile = G.player.tile!;
+                    if (G.player.position!.layer === Layer.BELOW && playerTile.upMovementValid)
+                        return G.player.tryMove(playerTile.opposite.position);
                 }
                 break;
             default:

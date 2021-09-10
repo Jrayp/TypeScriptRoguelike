@@ -12,7 +12,7 @@ import SwitchAction from './../actions/SwitchAction';
 import WaitAction from './../actions/WaitAction';
 import _Action from './../actions/_Action';
 import { GlowingCrystalTile } from './../boardTiles/GlowingCrystalTile';
-import { ActionState, Direction, SwitchSetting } from './../Enums';
+import { ActionState, Direction, Layer, SwitchSetting } from './../Enums';
 import SightHelper from './../interfaceHelpers/SightHelper';
 import Light from './../lights/Light';
 import _Actor from "./_Actor";
@@ -36,11 +36,13 @@ export default class Player extends _Actor implements ISight {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
         else
-            return G.board.tiles.getElementViaKey(Point.toInt(x, y, this.position!.z)).transparent;
+            return G.board.tiles.getElementViaKey(Point.toKey(x, y, this.position!.layer)).transparent;
     }
 
     // Sight properties
-    sightRange = 30;
+    get sightRange() {
+        return this.position!.layer == Layer.BELOW ? 4 : 30;
+    }
     seenPoints = new Set<number>();
     percievedOpaqueColors = new Map<number, Color>();
     fovAlgo = new FOV.PreciseShadowcasting(this.sightPassesCallback);
@@ -62,7 +64,7 @@ export default class Player extends _Actor implements ISight {
         this.percievedOpaqueColors.clear();
         let placeHolderColor: Color = [0, 0, 0];
         let tiles = G.board.tiles;
-        let playerZ = this.position!.z;
+        let playerZ = this.position!.layer;
 
         // TODO: Just make the light not shine on the wall if the player cant see the neighboring
         // floor tiles..
@@ -70,7 +72,7 @@ export default class Player extends _Actor implements ISight {
         // Get all the Point in the players FOV and add opaque Point to a map
         this.fovAlgo.compute(thisPoint.x, thisPoint.y, this.sightRange,
             (x: number, y: number, r: number, visibility: number) => {
-                let pointKey = Point.toInt(x, y, playerZ);
+                let pointKey = Point.toKey(x, y, playerZ);
                 if (G.board.lights.getBrightness(pointKey)) {
                     let tile = tiles.getElementViaKey(pointKey);
                     if (tile.transparent) {

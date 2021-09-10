@@ -28,7 +28,11 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract passable: boolean; // Should probably be handled via function
     abstract transparent: boolean;  // Consider making this applicable to actors 
     //as well (or anything really... really need to use ECS)
-    destroyable: boolean = true;
+
+
+    abstract topPassable: boolean;
+    abstract bottomPassable: boolean;
+    abstract destroyable: boolean;
 
     constructor() {
     }
@@ -51,7 +55,21 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
         return G.board.actors.hasPoint(point) ? G.board.actors.getElementViaPoint(point) : undefined;
     }
 
-    onRemove(){
+    get opposite(): _BoardTile {
+        let p = this.position.opposite();
+        return G.board.tiles.getElementViaPoint(p);
+    }
+
+    get upMovementValid() {
+        return this.topPassable && this.opposite.bottomPassable;
+    }
+
+    get downMovementValid() {
+        return this.bottomPassable && this.opposite.topPassable;
+    }
+
+
+    onRemove() {
 
     }
 }

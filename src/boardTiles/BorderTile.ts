@@ -8,6 +8,8 @@ export class BorderTile extends _BoardTile {
     _fgColor = null;
     _bgColor = [50, 50, 50] as Color;
     passable = false;
+    topPassable = false;
+    bottomPassable = false;
     transparent = false;
     destroyable = false;
 }

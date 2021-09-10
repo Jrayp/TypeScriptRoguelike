@@ -8,6 +8,8 @@ export class RubbleTile extends _BoardTile {
     _fgColor = [35, 60, 85] as Color;
     _bgColor = null;
     passable = true;
+    topPassable = true;
+    bottomPassable = false;
     transparent = true;
     destroyable = false;
 

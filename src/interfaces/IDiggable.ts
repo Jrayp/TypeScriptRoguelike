@@ -7,5 +7,5 @@ export default interface IDiggable {
 }
 
 export function isDiggable(tile: _BoardTile | IDiggable): tile is IDiggable {
-    return 'dig' in tile;
+    return ('dig' && 'digStrength') in tile;
 }
