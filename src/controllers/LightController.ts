@@ -6,6 +6,7 @@ import ISight from "../interfaces/ISight";
 import Point from "../util/Point";
 import GMath from "./../util/GMath";
 import Light from "./../lights/Light";
+import { Layer } from "./../Enums";
 
 export default class LightController {
 
@@ -37,24 +38,25 @@ export default class LightController {
         this._colorMap.clear();
         this._brightnessMap.clear();
         for (let light of this._lights) {
+            light.updateFov();
             light.update();
         }
     }
 
-    updateFov() {
-        for (let light of this._lights) {
-            light.updateFov();
-        }
-    }
+    // updateFov() {
+    //     for (let light of this._lights) {
+    //         light.updateFov();
+    //     }
+    // }
 
     // TODO: Just make the light not shine on the wall if the player cant see the neighboring
     // floor tiles..
 
-    applyLight(x: number, y: number, z: number, lightColor: Color) {
+    applyLight(x: number, y: number, layer: Layer, lightColor: Color) {
         if (!G.board.numbersWithinBounds(x, y))
             return;
 
-        const key = new Point(x, y, z).key;
+        const key = new Point(x, y, layer).key;
         let tile = G.board.tiles.getElementViaKey(key);
         // Wall tiles don't really need brightness given the way we currently draw them, 
         // but we need a value here so that the tile is picked up by the players FOV alg. 

@@ -15,9 +15,9 @@ import EffectsController from './controllers/EffectsController';
 import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
+import { Layer } from './Enums';
 import G from './G';
 import Point from './util/Point';
-import point from './util/Point';
 
 export default class Board {
     tiles = new TileController();
@@ -57,8 +57,8 @@ export default class Board {
                 }
 
 
-            this.tiles.set(new point(x, y, 0), newTile!);
-            this.tiles.set(new point(x, y, 1), newWaterTile!);
+            this.tiles.set(new Point(x, y, Layer.ABOVE), newTile!);
+            this.tiles.set(new Point(x, y, Layer.BELOW), newWaterTile!);
         }
 
 
@@ -78,7 +78,7 @@ export default class Board {
                     newWaterTile = new WaterTile();
                 }
 
-            this.tiles.replace(new point(x, y, 1), newWaterTile!);
+            this.tiles.replace(new Point(x, y, Layer.BELOW), newWaterTile!);
         }
 
         let cavernMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
@@ -104,9 +104,9 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(point.toKey(x, y, 0)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Point.toKey(x, y, Layer.ABOVE)).name != "Glowing Crystal") {
                 newTile = new FloorTile()
-                this.tiles.replace(new point(x, y, 0), newTile);
+                this.tiles.replace(new Point(x, y, Layer.ABOVE), newTile);
             }
 
         }
@@ -126,9 +126,9 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tiles.getElementViaKey(point.toKey(x, y, 0)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaKey(Point.toKey(x, y, Layer.ABOVE)).name == "Floor") {
                 newTile = new CavernGrassTile();
-                this.tiles.replace(new point(x, y, 0), newTile);
+                this.tiles.replace(new Point(x, y, Layer.ABOVE), newTile);
             }
 
         }
@@ -150,7 +150,7 @@ export default class Board {
     // Static
     ///////////////////////////////////////////////////////
 
-    PointOnEdge(point: point) {
+    pointOnEdge(point: Point) {
         return point.x == 0 || point.x == C.BOARD_WIDTH - 1 || point.y == 0 || point.y == C.BOARD_HEIGHT - 1;
     }
 
@@ -158,7 +158,7 @@ export default class Board {
         return x == 0 || x == C.BOARD_WIDTH - 1 || y == 0 || y == C.BOARD_HEIGHT - 1;
     }
 
-    PointWithinBounds(point: point) {
+    pointWithinBounds(point: Point) {
         return point.x >= 0 && point.x < C.BOARD_WIDTH && point.y >= 0 && point.y < C.BOARD_HEIGHT;
     }
 

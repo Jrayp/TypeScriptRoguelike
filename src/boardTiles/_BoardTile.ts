@@ -56,7 +56,7 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     }
 
     get opposite(): _BoardTile {
-        let p = this.position.opposite();
+        let p = this.position.oppositePoint();
         return G.board.tiles.getElementViaPoint(p);
     }
 

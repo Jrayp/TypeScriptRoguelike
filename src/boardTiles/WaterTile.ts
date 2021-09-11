@@ -18,10 +18,7 @@ export class WaterTile extends _BoardTile {
 
     constructor() {
         super();
-
-
     }
-
 
     get glyph() {
         if (this.position.layer === Layer.ABOVE || this.upMovementValid)
@@ -38,8 +35,6 @@ export class WaterTile extends _BoardTile {
     }
 
     onEnter(actor: _Actor) {
-        if (actor.name === "Player")
-            console.log(this.position.layer);
         if (actor === G.player)
             if (RNG.getUniform() < .98)
                 return "*Splash* You wade through some water...";

@@ -29,9 +29,9 @@ export default class Light implements IActivatable {
 
     update() {
         if (this.active) {
-            const point = this.attachedTo.position;
-            if (point && point.key != this._oldPointKey)
-                this.move(point)
+            const position = this.attachedTo.position;
+            if (position && position.key != this._oldPointKey)
+                this.move(position)
             this._lighting.compute(this.lightingCallback);
         }
     }
@@ -56,13 +56,15 @@ export default class Light implements IActivatable {
     private lightPassingCallback = (x: number, y: number) => {
         if (!G.board.numbersWithinBounds(x, y))
             return false;
-        else
-            return G.board.tiles.getElementViaKey(Point.toKey(x, y, this.attachedTo.position!.layer)).transparent;
+        else {
+            let t = G.board.tiles.getElementViaKey(Point.toKey(x, y, this.attachedTo.position!.layer));
+            return t.transparent;
+        }
     }
 
     private reflectivityCallback = (x: number, y: number) => {
         const key = Point.toKey(x, y, this.attachedTo.position!.layer);
-        if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).passable)
+        if (!G.board.numbersWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).transparent)
             return 0;
         else
             return C.LIGHT_DEFAULT_REFLECTIVITY;

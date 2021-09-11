@@ -13,7 +13,6 @@ import WaitAction from './../actions/WaitAction';
 import _Action from './../actions/_Action';
 import { GlowingCrystalTile } from './../boardTiles/GlowingCrystalTile';
 import { ActionState, Direction, Layer, SwitchSetting } from './../Enums';
-import SightHelper from './../interfaceHelpers/SightHelper';
 import Light from './../lights/Light';
 import _Actor from "./_Actor";
 
@@ -47,7 +46,7 @@ export default class Player extends _Actor implements ISight {
     percievedOpaqueColors = new Map<number, Color>();
     fovAlgo = new FOV.PreciseShadowcasting(this.sightPassesCallback);
 
-    submerged = false;
+    // submerged = false;
 
     constructor() {
         super();
@@ -146,12 +145,6 @@ export default class Player extends _Actor implements ISight {
         return new MoveAction(this, destPoint);
     }
 
-    tryEnter() {
-        // Make enterable tiles inherit from an appropriate interface
-        if (G.player.tile!.name === "Water" && this.submerged == false) {
-            this.submerged = true;
-            G.updateAndDraw();
-        }
-    }
+
 
 }

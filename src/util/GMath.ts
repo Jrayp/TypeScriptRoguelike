@@ -14,16 +14,16 @@ export default class GMath {
         return (betweenB - betweenA) * (x - minX) / (maxX - minX) + betweenA;
     };
 
+    static roundPoint(c: Point) {
+        return new Point(Math.round(c.x), Math.round(c.y), Math.round(c.layer));
+    }
+
     static lerp(start: number, end: number, t: number) {
         return start + t * (end - start);
     }
 
     static lerpPoint(p0: Point, p1: Point, t: number) {
         return new Point(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t), GMath.lerp(p0.layer, p1.layer, t));
-    }
-
-    static roundPoint(c: Point) {
-        return new Point(Math.round(c.x), Math.round(c.y), Math.round(c.layer));
     }
 
     ///////////////////////////////////////////////////////
