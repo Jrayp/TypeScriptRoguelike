@@ -34,6 +34,8 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract bottomPassable: boolean;
     abstract destroyable: boolean;
 
+    multiplyBelow : boolean = true;
+
     constructor() {
     }
 

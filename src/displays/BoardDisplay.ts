@@ -41,7 +41,7 @@ export default class BoardDisplay extends Display {
             tile = tileLayer.getElementViaKey(seenKey);
             const position = tile.position;
             const belowLayer = position.layer == Layer.BELOW;
-            const belowBLend : Color = [0, 100, 255];
+            const belowBlend: Color = [0, 100, 255];
 
             if (actionLayer.hasPoint(position)) {
                 let action = actionLayer.getElementViaPoint(position);
@@ -57,9 +57,9 @@ export default class BoardDisplay extends Display {
             }
             else if (!tile.transparent) { // Walls etc 
                 let percievedLightColor = percievedOpaqueColors.get(seenKey)!;
-                if (belowLayer) {
-                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor, belowBLend);
-                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor, belowBLend);
+                if (belowLayer && tile.multiplyBelow) {
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor, belowBlend);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor, belowBlend);
                 }
                 else { // Currently still not perfect. probably add blue not multiply
                     fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor);
@@ -69,9 +69,9 @@ export default class BoardDisplay extends Display {
             }
             else { // Transparent Tiles 
                 let lightColor: Color = lightManager.getColor(position.key)!;
-                if (belowLayer) {
-                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor, belowBLend);
-                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor, belowBLend);
+                if (belowLayer && tile.multiplyBelow) {
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor, belowBlend);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor, belowBlend);
                 }
                 else {
                     fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
@@ -96,5 +96,9 @@ export default class BoardDisplay extends Display {
 
     private multiplyAndConvertColor(color: Color | null, ...multipliers: Color[]) {
         return !color ? null : ColorHelper.toRGB(ColorHelper.multiply(color, ...multipliers));
+    }
+
+    private multiplyAndAddAndConvertColor(color: Color | null, multiplier: Color, adder: Color) {
+        return !color ? null : ColorHelper.toRGB(ColorHelper.interpolate(ColorHelper.multiply(color, multiplier), adder, .75));
     }
 }

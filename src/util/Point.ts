@@ -27,7 +27,7 @@ export default class Point {
         return new Point(pointA.x + pointB.x, pointA.y + pointB.y, layer);
     }
 
-    static addPointToNumbers(point: Point, xOffset: number, yOffset: number, layer: Layer) {
+    static addPointToXY(point: Point, xOffset: number, yOffset: number, layer: Layer) {
         return new Point(point.x + xOffset, point.y + yOffset, layer);
     }
 
@@ -62,8 +62,8 @@ export default class Point {
         return Point.addPointToPoint(this, point, this.layer);
     }
 
-    addNumbers(xOffset: number, yOffset: number) {
-        return Point.addPointToNumbers(this, xOffset, yOffset, this.layer);
+    addXY(xOffset: number, yOffset: number) {
+        return Point.addPointToXY(this, xOffset, yOffset, this.layer);
     }
 
     ///////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ export default class Point {
 
     neighbor(dir: Direction) {
         let offset = _PLANE_OFFSETS[dir];
-        return Point.addPointToNumbers(this, offset[0], offset[1], this.layer);
+        return Point.addPointToXY(this, offset[0], offset[1], this.layer);
     }
 
     oppositePoint() {
@@ -89,7 +89,7 @@ export default class Point {
 
     *iterateNeighbors() {
         for (let a of _PLANE_OFFSETS)
-            yield Point.addPointToNumbers(this, a[0], a[1], this.layer);
+            yield Point.addPointToXY(this, a[0], a[1], this.layer);
     }
 
     ///////////////////////////////////////////////////////

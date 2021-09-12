@@ -4,6 +4,7 @@ import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
 import { BorderTile } from './boardTiles/BorderTile';
 import { CavernGrassTile } from './boardTiles/CavernGrassTile';
+import CoralTile from './boardTiles/CoralTile';
 import { FloorTile } from './boardTiles/FloorTile';
 import { GlowingCrystalTile } from './boardTiles/GlowingCrystalTile';
 import { WallTile } from './boardTiles/WallTile';
@@ -53,7 +54,9 @@ export default class Board {
                 }
                 else {
                     newTile = new WaterTile();
-                    newWaterTile = new WaterTile();
+                    if (RNG.getUniform() < .02)
+                        newWaterTile = new CoralTile();
+                    else newWaterTile = new WaterTile();
                 }
 
 
@@ -71,11 +74,13 @@ export default class Board {
                 return;
             }
             else if (value == 1)
-                if (RNG.getUniform() < .005) {
+                if (RNG.getUniform() < .001) {
                     newWaterTile = new GlowingCrystalTile();
                 }
                 else {
-                    newWaterTile = new WaterTile();
+                    if (RNG.getUniform() < .02)
+                        newWaterTile = new CoralTile();
+                    else newWaterTile = new WaterTile();
                 }
 
             this.tiles.replace(new Point(x, y, Layer.BELOW), newWaterTile!);
@@ -162,7 +167,7 @@ export default class Board {
         return point.x >= 0 && point.x < C.BOARD_WIDTH && point.y >= 0 && point.y < C.BOARD_HEIGHT;
     }
 
-    numbersWithinBounds(x: number, y: number) {
+    xyWithinBounds(x: number, y: number) {
         return x >= 0 && x < C.BOARD_WIDTH && y >= 0 && y < C.BOARD_HEIGHT;
     }
 

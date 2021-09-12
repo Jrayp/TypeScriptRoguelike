@@ -19,15 +19,15 @@ export default class SwitchAction extends _Action {
 
         switch (this._setting) {
             case SwitchSetting.ACTIVATE:
-                this._activatable.active = true;
+                this._activatable.activate();
                 break;
 
             case SwitchSetting.DEACTIVATE:
-                this._activatable.active = false;
+                this._activatable.deactivate();
                 break;
 
             case SwitchSetting.TOGGLE:
-                this._activatable.active = !this._activatable.active;
+                this._activatable.toggle();
                 break;
         }
 

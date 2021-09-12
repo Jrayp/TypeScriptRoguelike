@@ -1,5 +1,6 @@
 import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
+import PreciseShadowcasting from 'rot-js/lib/fov/precise-shadowcasting';
 import DebugAction from '../actions/DebugAction';
 import G from "../G";
 import { isDiggable } from '../interfaces/IDiggable';
@@ -19,6 +20,8 @@ import _Actor from "./_Actor";
 
 export default class Player extends _Actor implements ISight {
     name = "Player";
+
+    // IDrawable Properties
     _glyph = '@';
     _fgColor = [255, 0, 0] as Color;
     _bgColor = null;
@@ -29,33 +32,33 @@ export default class Player extends _Actor implements ISight {
         else return this._bgColor;
     }
 
-    light: Light;
-
-    sightPassesCallback = (x: number, y: number) => {
-        if (!G.board.numbersWithinBounds(x, y))
-            return false;
-        else
-            return G.board.tiles.getElementViaKey(Point.toKey(x, y, this.position!.layer)).transparent;
-    }
-
     // Sight properties
+    seenPoints = new Set<number>();
+    percievedOpaqueColors = new Map<number, Color>();
+    fovAlgo: PreciseShadowcasting;
     get sightRange() {
         return this.position!.layer == Layer.BELOW ? 4 : 30;
     }
-    seenPoints = new Set<number>();
-    percievedOpaqueColors = new Map<number, Color>();
-    fovAlgo = new FOV.PreciseShadowcasting(this.sightPassesCallback);
 
-    // submerged = false;
+    light: Light;
 
     constructor() {
         super();
+
+        this.fovAlgo = new FOV.PreciseShadowcasting(this.sightPassesCallback);
 
         this.light = new Light(this, 4, [175, 175, 175]);
         G.board.lights.addLight(this.light);
     }
 
-
+    sightPassesCallback = (x: number, y: number) => {
+        if (!G.board.xyWithinBounds(x, y)) {
+            return false;
+        }
+        else {
+            return G.board.tiles.getElementViaKey(Point.toKey(x, y, this.position!.layer)).transparent;
+        }
+    }
 
     computeFov(): Set<number> {
         const thisPoint = this.position!;
@@ -108,9 +111,9 @@ export default class Player extends _Actor implements ISight {
             case 'Numpad1': return this.tryMove(this.position!.neighbor(Direction.SW));
             case 'Numpad4': return this.tryMove(this.position!.neighbor(Direction.W));
             case 'Numpad7': return this.tryMove(this.position!.neighbor(Direction.NW));
-            case 'Numpad5': return new WaitAction();
+            case 'Numpad5': return new WaitAction().logAfter("You wait..");
             case 'KeyL': return new SwitchAction(this.light, SwitchSetting.TOGGLE).logAfterConditional(() => {
-                return this.light.active ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
+                return this.light.isActive() ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
             });
             case 'KeyC':
                 let da = new DebugAction(() => {

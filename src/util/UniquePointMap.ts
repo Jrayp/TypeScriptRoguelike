@@ -68,6 +68,7 @@ export default class UniquePointMap<T>{
     ///////////////////////////////////////////////////////
 
     getElementViaKey(key: number): T {
+        // TODO: The messages are super slow
         assertTrue(this._keyToElement.has(key), `No element found at key value ${key}. Point value: ${Point.fromKey(key).toString()}`);
         return this._keyToElement.get(key)!;
     }

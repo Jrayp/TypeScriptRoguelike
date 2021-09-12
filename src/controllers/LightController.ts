@@ -29,7 +29,6 @@ export default class LightController {
     }
 
     removeLight(light: Light) {
-        light.active = false;
         light.extinguish();
         this._lights.delete(light);
     }
@@ -38,7 +37,6 @@ export default class LightController {
         this._colorMap.clear();
         this._brightnessMap.clear();
         for (let light of this._lights) {
-            light.updateFov();
             light.update();
         }
     }
@@ -53,7 +51,7 @@ export default class LightController {
     // floor tiles..
 
     applyLight(x: number, y: number, layer: Layer, lightColor: Color) {
-        if (!G.board.numbersWithinBounds(x, y))
+        if (!G.board.xyWithinBounds(x, y))
             return;
 
         const key = new Point(x, y, layer).key;
