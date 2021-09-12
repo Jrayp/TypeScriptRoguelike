@@ -22,37 +22,37 @@ export default class FireballAction extends _Action implements ITargetableAction
 
         this.path = GMath.lineList(start, end, 1);
 
-        let circle = GMath.pointWithinCircleMap(end, this.radius);
-        for (let kAndC of circle) {
+        let circle = GMath.pointWithinCircleSet(end, this.radius);
+        for (let p of circle) {
             {
-                if (!G.board.tiles.hasKey(kAndC[0]))
+                if (!G.board.tiles.hasPoint(p))
                     continue;
-                let tile = G.board.tiles.getElementViaKey(kAndC[0]);
-                if (tile.occupant && G.player.seenPoints.has(kAndC[0]))
-                    G.board.icons.addIcon(kAndC[1], new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
-                else if (G.player.seenPoints.has(kAndC[0]))
-                    G.board.icons.addIcon(kAndC[1], aoeIcon);
+                let tile = G.board.tiles.getElementViaPoint(p);
+                if (tile.occupant && G.player.seenPoints.has(p))
+                    G.board.icons.addIcon(p, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                else if (G.player.seenPoints.has(p))
+                    G.board.icons.addIcon(p, aoeIcon);
                 else
-                    G.board.icons.addIcon(kAndC[1], new Icon(' ', null, [0, 100, 25]));
+                    G.board.icons.addIcon(p, new Icon(' ', null, [0, 100, 25]));
             }
         }
-        for (let c of this.path) {
-            let tile = G.board.tiles.getElementViaPoint(c);
-            switch (G.player.seenPoints.has(c.key)) {
+        for (let p of this.path) {
+            let tile = G.board.tiles.getElementViaPoint(p);
+            switch (G.player.seenPoints.has(p)) {
                 case true:
                     if (tile.occupant)
-                        G.board.icons.addIcon(c, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
-                    else if (circle.has(c.key))
-                        G.board.icons.addIcon(c, combinedIcon);
+                        G.board.icons.addIcon(p, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                    else if (circle.has(p))
+                        G.board.icons.addIcon(p, combinedIcon);
                     else
-                        G.board.icons.addIcon(c, lineIcon);
+                        G.board.icons.addIcon(p, lineIcon);
                     break;
 
                 case false:
-                    if (circle.has(c.key))
-                        G.board.icons.addIcon(c, new Icon('?', null, [0, 100, 25]));
+                    if (circle.has(p))
+                        G.board.icons.addIcon(p, new Icon('?', null, [0, 100, 25]));
                     else
-                        G.board.icons.addIcon(c, Unseen);
+                        G.board.icons.addIcon(p, Unseen);
                     break;
             }
 

@@ -20,7 +20,6 @@ export default abstract class _DiggableTile extends _BoardTile implements IDigga
                 break;
             case 0:
                 G.board.tiles.replace(this.position, new RubbleTile(this._bgColor!));
-                G.board.lights.updateFov();
         }
     }
 

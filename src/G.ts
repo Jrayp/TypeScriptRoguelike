@@ -1,5 +1,6 @@
 import { RNG } from "rot-js";
 import _Action from "./actions/_Action";
+import AnglerFish from "./actors/AnglerFish";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import Board from "./Board";
@@ -22,6 +23,8 @@ export default class G {
     static player: Player;
 
     static init() {
+        RNG.setSeed(-123);
+
         document.body.append(G.logDisplay.getContainer()!);
         document.body.append(G.boardDisplay.getContainer()!);
 
@@ -46,9 +49,16 @@ export default class G {
         }
 
         for (let tileAndPoint of G.board.tiles.iterateElements()) {
-            if (tileAndPoint[0].passable && !tileAndPoint[0].occupant && RNG.getUniform() < .025) {
+            if (tileAndPoint[0].passable && tileAndPoint[0].position!.layer == 0 && !tileAndPoint[0].occupant && RNG.getUniform() < .025) {
                 let g = new Goomba();
                 G.board.actors.set(tileAndPoint[1], g);
+            }
+        }
+
+        for (let tileAndPoint of G.board.tiles.iterateElements()) {
+            if (tileAndPoint[0].passable && tileAndPoint[0].position!.layer == 1 && !tileAndPoint[0].occupant && RNG.getUniform() < .01) {
+                let f = new AnglerFish();
+                G.board.actors.set(tileAndPoint[1], f);
             }
         }
 
@@ -87,10 +97,10 @@ export default class G {
         if (action.state == ActionState.START_EFFECT)
             G.board.effects.handleEffects();
         else
-            G.update();
+            G.updateAndDraw();
     }
 
-    static update() {
+    static updateAndDraw() {
         // Uh oh.. whaty about light so npc and thier vision??? 
         // Maybe doesnt matter they just have to see what they see before moving?
         G.board.actors.update();

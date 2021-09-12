@@ -11,9 +11,11 @@ export class GlowingCrystalTile extends _BoardTile {
     _fgColor: Color;
     _bgColor = null;
     passable = true;
+    topPassable = true;
+    bottomPassable = false;
     transparent = true;
-
-    glow: Light;
+    destroyable = true;
+    glow: Light | null;
 
     constructor() {
         super();
@@ -27,6 +29,7 @@ export class GlowingCrystalTile extends _BoardTile {
     }
 
     onRemove() {
-        G.board.lights.removeLight(this.glow);
+        G.board.lights.removeLight(this.glow!);
+        this.glow = null;
     }
 }

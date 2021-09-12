@@ -35,11 +35,6 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
         else return undefined;
     }
 
-    getDrawData(boardDisplay: BoardDisplay): void {
-        let Point = this.position;
-        // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, null);
-    }
-
     kill() {
 
     }

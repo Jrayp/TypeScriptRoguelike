@@ -1,64 +1,128 @@
 import C from "../C";
-import { Direction } from "../Enums";
+import { Direction, Layer } from "../Enums";
+import { assertTrue } from "./Assertions";
+
+const _PLANE_OFFSETS = [
+    [0, -1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1]
+]
 
 export default class Point {
 
-    private static readonly _OFFSETS = [
-        [0, -1],
-        [1, -1],
-        [1, 0],
-        [1, 1],
-        [0, 1],
-        [-1, 1],
-        [-1, 0],
-        [-1, -1]
-    ]
+    private static _pointCache: Point[][][];
 
     readonly x: number;
     readonly y: number;
-    readonly key: number;
+    readonly layer: Layer;
 
-    constructor(x: number, y: number) {
+    ///////////////////////////////////////////////////////
+    // Constructor & Factory
+    ///////////////////////////////////////////////////////
+
+    private constructor(x: number, y: number, layer: Layer) {
         this.x = x;
         this.y = y;
-        this.key = Point.toInt(x, y);
+        this.layer = layer;
     }
 
-    addPoint(point: Point) {
-        return Point.addPointToPoint(this, point);
+    static get(x: number, y: number, layer: Layer): Point | null {
+        if (Point.xylValidBoardPoint(x, y, layer))
+            return Point._pointCache[x][y][layer]!;
+        else
+            return null;
     }
+
+    ///////////////////////////////////////////////////////
+    // Math
+    ///////////////////////////////////////////////////////
+
+    addToPoint(point: Point) {
+        return Point.addPointToPoint(this, point, this.layer);
+    }
+
+    addToXY(xOffset: number, yOffset: number) {
+        return Point.addPointToXY(this, xOffset, yOffset, this.layer);
+    }
+
+    ///////////////////////////////////////////////////////
+    // Adjacency
+    ///////////////////////////////////////////////////////
 
     neighbor(dir: Direction) {
-        let a = Point._OFFSETS[dir];
-        return Point.addPointToNumbers(this, a[0], a[1]);
+        let offset = _PLANE_OFFSETS[dir];
+        return Point.addPointToXY(this, offset[0], offset[1], this.layer);
     }
 
+    oppositePoint() {
+        return Point._pointCache[this.x][this.y][this.oppositeLayer()];
+    }
+
+    oppositeLayer() {
+        return this.layer === Layer.ABOVE ? Layer.BELOW : Layer.ABOVE;
+    }
+
+    ///////////////////////////////////////////////////////
+    // Iterators
+    ///////////////////////////////////////////////////////
+
     *iterateNeighbors() {
-        for (let a of Point._OFFSETS)
-            yield Point.addPointToNumbers(this, a[0], a[1]);
+        for (let offset of _PLANE_OFFSETS) {
+            let n = Point.addPointToXY(this, offset[0], offset[1], this.layer);
+            if (n) {
+                yield n;
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////
+    // Misc
+    ///////////////////////////////////////////////////////
+
+    toString() {
+        return `(${this.x}, ${this.y}, ${this.layer})`;
     }
 
     ///////////////////////////////////////////////////////
     // STATIC
     ///////////////////////////////////////////////////////
 
-    static addPointToPoint(pointA: Point, pointB: Point) {
-        return new Point(pointA.x + pointB.x, pointA.y + pointB.y);
+    static addPointToPoint(pointA: Point, pointB: Point, layer: Layer) {
+        let newX = pointA.x + pointB.x;
+        let newY = pointA.y + pointB.y;
+        return Point.get(newX, newY, layer);
     }
 
-    static addPointToNumbers(point: Point, x: number, y: number) {
-        return new Point(point.x + x, point.y + y);
+    static addPointToXY(point: Point, xOffset: number, yOffset: number, layer: Layer) {
+        let newX = point.x + xOffset;
+        let newY = point.y + yOffset;
+        return Point.get(newX, newY, layer);
     }
 
-    static fromInt(i: number, width: number = C.BOARD_WIDTH) {
-        let x = i % width;
-        let y = Math.trunc(i / width);
-        return new Point(x, y);
+    static xylValidBoardPoint(x: number, y: number, layer: Layer) {
+        return x >= 0 && x < C.BOARD_WIDTH
+            && y >= 0 && y < C.BOARD_HEIGHT
+            && layer >= 0 && layer < C.BOARD_DEPTH;
     }
 
-    static toInt(x: number, y: number, width: number = C.BOARD_WIDTH) {
-        return x + width * y;
-    }
+    private static _initialize = (() => {
+        Point._pointCache = [];
+        for (let x = 0; x < C.BOARD_WIDTH; x++) {
+            Point._pointCache[x] = [];
+            for (let y = 0; y < C.BOARD_HEIGHT; y++) {
+                Point._pointCache[x][y] = [];
+                for (let z = 0; z < C.BOARD_DEPTH; z++) {
+                    let point = new Point(x, y, z);
+                    Point._pointCache[x][y][z] = point;
+                }
+            }
+        }
 
+    })();
 
 }

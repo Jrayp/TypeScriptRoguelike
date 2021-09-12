@@ -1,9 +1,11 @@
 import { Color as ColorHelper, Display } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
-import { _BoardTile } from 'src/boardTiles/_BoardTile';
+import { _BoardTile } from './../boardTiles/_BoardTile';
+import { Layer } from './../Enums';
 import C from '../C';
 import Board from './../Board';
 import G from './../G';
+import Point from './../util/Point';
 
 
 export default class BoardDisplay extends Display {
@@ -20,7 +22,7 @@ export default class BoardDisplay extends Display {
         super(C.BOARD_DISPLAY_OPTIONS);
     }
 
-    update(board: Board, seenTileKeys: Set<number>, percievedOpaqueColors: Map<number, Color>) {
+    update(board: Board, seenTilePoints: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
         const tileLayer = board.tiles;
         const actorLayer = board.actors;
         const lightManager = G.board.lights;
@@ -33,36 +35,50 @@ export default class BoardDisplay extends Display {
         let fgDrawColor: string | null;
         let bgDrawColor: string | null;
 
-        for (let seenKey of seenTileKeys) {
-            if (icons.hasKey(seenKey))
+        for (let seenPoint of seenTilePoints) {
+            if (icons.hasIconAt(seenPoint))
                 continue;
 
-            tile = tileLayer.getElementViaKey(seenKey);
-            const point = tile.position;
+            tile = tileLayer.getElementViaPoint(seenPoint);
+            const position = tile.position;
+            const belowLayer = position.layer == Layer.BELOW;
+            const belowBlend: Color = [0, 100, 255];
 
-            if (actionLayer.hasPoint(point)) {
-                let action = actionLayer.getElementViaPoint(point);
+            if (actionLayer.hasPoint(position)) {
+                let action = actionLayer.getElementViaPoint(position);
                 fgDrawColor = this.convertColor(action.fgColor);
                 bgDrawColor = this.convertColor(action.bgColor);
-                this.draw(point.x, point.y, action.glyph, fgDrawColor, bgDrawColor);
+                this.draw(position.x, position.y, action.glyph, fgDrawColor, bgDrawColor);
             }
-            else if (actorLayer.hasPoint(point)) {
-                let actor = actorLayer.getElementViaPoint(point);
+            else if (actorLayer.hasPoint(position)) {
+                let actor = actorLayer.getElementViaPoint(position);
                 fgDrawColor = this.convertColor(actor.fgColor);
                 bgDrawColor = this.convertColor(actor.bgColor);
-                this.draw(point.x, point.y, actor.glyph, fgDrawColor, bgDrawColor);
+                this.draw(position.x, position.y, actor.glyph, fgDrawColor, bgDrawColor);
             }
             else if (!tile.transparent) { // Walls etc 
-                let percievedLightColor = percievedOpaqueColors.get(seenKey)!;
-                fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor);
-                bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor);
-                this.draw(point.x, point.y, tile.glyph, fgDrawColor, bgDrawColor);
+                let percievedLightColor = percievedOpaqueColors.get(seenPoint)!;
+                if (belowLayer && tile.multiplyBelow) {
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor, belowBlend);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor, belowBlend);
+                }
+                else { // Currently still not perfect. probably add blue not multiply
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor);
+                }
+                this.draw(position.x, position.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
             else { // Transparent Tiles 
-                let lightColor: Color = lightManager.getColor(point.key)!;
-                fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
-                bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor);
-                this.draw(point.x, point.y, tile._glyph, fgDrawColor, bgDrawColor);
+                let lightColor: Color = lightManager.getColor(position)!;
+                if (belowLayer && tile.multiplyBelow) {
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor, belowBlend);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor, belowBlend);
+                }
+                else {
+                    fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor);
+                    bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor);
+                }
+                this.draw(position.x, position.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
         }
 
@@ -79,7 +95,11 @@ export default class BoardDisplay extends Display {
         return !color ? null : ColorHelper.toRGB(color);
     }
 
-    private multiplyAndConvertColor(color: Color | null, multipler: Color) {
-        return !color ? null : ColorHelper.toRGB(ColorHelper.multiply(color, multipler));
+    private multiplyAndConvertColor(color: Color | null, ...multipliers: Color[]) {
+        return !color ? null : ColorHelper.toRGB(ColorHelper.multiply(color, ...multipliers));
+    }
+
+    private multiplyAndAddAndConvertColor(color: Color | null, multiplier: Color, adder: Color) {
+        return !color ? null : ColorHelper.toRGB(ColorHelper.interpolate(ColorHelper.multiply(color, multiplier), adder, .75));
     }
 }

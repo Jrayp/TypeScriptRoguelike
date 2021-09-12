@@ -1,14 +1,14 @@
+import { NamedTupleMember } from "typescript";
 import { assertTrue } from "./Assertions";
 import GMath from "./GMath";
 import Point from "./Point";
 
 export default class UniquePointMap<T>{
     protected _elementToPoint: Map<T, Point> = new Map();
-    protected _keyToElement: Map<number, T> = new Map();
-
+    protected _pointToElement: Map<Point, T> = new Map();
 
     get count() {
-        return this._keyToElement.size;
+        return this._elementToPoint.size;
     }
 
     ///////////////////////////////////////////////////////
@@ -16,34 +16,29 @@ export default class UniquePointMap<T>{
     ///////////////////////////////////////////////////////
 
     set(point: Point, element: T) {
-        assertTrue(Number.isInteger(point.x) && Number.isInteger(point.y), `x and y must be Integers. Passed: (${point.x}, ${point.y})`);
-        assertTrue(this._keyToElement.has(point.key) === false, `There is already an element at (${point.x}, ${point.y})`);
-        assertTrue(this._elementToPoint.has(element) === false, `There is already a point at (${point.x}, ${point.y})`);
-        this._keyToElement.set(point.key, element);
+        assertTrue(this._pointToElement.has(point) === false);
+        assertTrue(this._elementToPoint.has(element) === false);
+        this._pointToElement.set(point, element);
         this._elementToPoint.set(element, point);
     }
 
-    removeViaKey(key: number) {
-        let element = this._keyToElement.get(key)!;
-        this._keyToElement.delete(key);
-        this._elementToPoint.delete(element);
-    }
-
     removeViaElement(element: T) {
+        assertTrue(this._elementToPoint.has(element))
         const point = this._elementToPoint.get(element)!;
         this._elementToPoint.delete(element);
-        this._keyToElement.delete(point.key);
+        this._pointToElement.delete(point);
     }
 
     removeViaPoint(point: Point) {
-        let element = this._keyToElement.get(point.key)!;
-        this._keyToElement.delete(point.key);
+        assertTrue(this._pointToElement.has(point));
+        let element = this._pointToElement.get(point)!;
+        this._pointToElement.delete(point);
         this._elementToPoint.delete(element);
     }
 
     clear() {
         this._elementToPoint.clear();
-        this._keyToElement.clear();
+        this._pointToElement.clear();
     }
 
 
@@ -51,36 +46,36 @@ export default class UniquePointMap<T>{
     // Existance
     ///////////////////////////////////////////////////////
 
-    hasKey(key: number) {
-        return this._keyToElement.has(key);
-    }
-
     hasElement(element: T) {
         return this._elementToPoint.has(element);
     }
 
     hasPoint(point: Point) {
-        return this._keyToElement.has(point.key);
+        return this._pointToElement.has(point);
+    }
+
+    hasXYZ(x: number, y: number, z: number) {
+        return this._pointToElement.has(Point.get(x, y, z)!);
     }
 
     ///////////////////////////////////////////////////////
     // Retrieval
     ///////////////////////////////////////////////////////
 
-    getElementViaKey(key: number): T {
-        assertTrue(this._keyToElement.has(key), `No element found at key value ${key}.`);
-        return this._keyToElement.get(key)!;
+    getElementViaPoint(point: Point): T {
+        assertTrue(this._pointToElement.has(point));
+        return this._pointToElement.get(point)!;
     }
 
-    getElementViaPoint(point: Point): T {
-        assertTrue(this._keyToElement.has(point.key), `No element found at (${point.x}, ${point.y}).`);
-        return this._keyToElement.get(point.key)!;
+    getElementViaXYZ(x: number, y: number, z: number): T {
+        const point = Point.get(x, y, z)!;
+        assertTrue(this._pointToElement.has(point));
+        return this._pointToElement.get(point)!;
     }
 
     getPointViaElement(element: T): Point | undefined {
         return this._elementToPoint.get(element);
     }
-
 
     ///////////////////////////////////////////////////////
     // Altering
@@ -91,9 +86,9 @@ export default class UniquePointMap<T>{
         this.set(point, element);
     }
 
-    moveElement(element: T, destPoint: Point) {
-        assertTrue(this._elementToPoint.has(element),);
-        assertTrue(this._keyToElement.has(destPoint.key) === false, `Can't move element to (${destPoint.x}, ${destPoint.y}) as there is already an element at the destination.`);
+    moveElementToPoint(element: T, destPoint: Point) {
+        // assertTrue(this._elementToPoint.has(element),);
+        // assertTrue(this._pointToElement.has(destPoint.key) === false, `Can't move element to ${destPoint.toString()} as there is already an element at the destination.`);
         this.removeViaElement(element);
         this.set(destPoint, element);
     }
@@ -106,21 +101,21 @@ export default class UniquePointMap<T>{
         return [...this._elementToPoint];
     }
 
-    * iterateSurrounding(point: Point): Generator<[Point, T | undefined]> {
-        for (let c of point.iterateNeighbors()) {
-            const e = this._keyToElement.get(c.key);
-            yield [c, e];
+    * iterateSurroundingPlane(center: Point): Generator<[Point, T | undefined]> {
+        for (let p of center.iterateNeighbors()) {
+            const e = this._pointToElement.get(p);
+            yield [p, e];
         }
     }
 
     * iterateCircle(center: Point, radius: number): Generator<[Point, T | undefined]> {
-        for (let c of GMath.iteratePointsWithinCircle(center, radius))
-            yield [c, this._keyToElement.get(c.key)];
+        for (let p of GMath.iteratePointsWithinCircle(center, radius))
+            yield [p, this._pointToElement.get(p)];
     }
 
     * iterateCircumference(center: Point, radius: number): Generator<[Point, T | undefined]> {
-        for (let c of GMath.iteratePointsOnCircumference(center, radius))
-            yield [c, this._keyToElement.get(c.key)];
+        for (let p of GMath.iteratePointsOnCircumference(center, radius))
+            yield [p, this._pointToElement.get(p)];
     }
 }
 

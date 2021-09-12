@@ -5,17 +5,24 @@ import G from "./../G";
 import Point from "../util/Point";
 import _Npc from "./_Npc";
 import AttackAction from "./../actions/AttackAction";
+import Light from "./../lights/Light";
 
-export default class Goomba extends _Npc {
-    name = "Goomba";
-    _glyph = 'g';
-    _fgColor = ColorHelper.fromString("orange");
+export default class AnglerFish extends _Npc {
+    name = "Angler Fish";
+    _glyph = 'f';
+    _fgColor = ColorHelper.fromString("blue");
     _bgColor = null;
 
     alive = true;
 
+    light : Light;
+
     constructor() {
         super();
+
+        this.light = new Light(this, 3, [240, 50, 180]);
+        G.board.lights.addLight(this.light);
+
     }
 
     // Make this return actions (like player) and perform them via the npcController
@@ -45,6 +52,7 @@ export default class Goomba extends _Npc {
     }
 
     kill() {
+        G.board.lights.removeLight(this.light);
         G.board.actors.removeViaElement(this);
     }
 

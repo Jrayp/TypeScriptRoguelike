@@ -3,7 +3,7 @@ import ITargetableAction from "../interfaces/ITargetableAction";
 import Point from "../util/Point";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { InputState } from "./../Enums";
+import { InputState, Layer } from "./../Enums";
 
 export default class Input {
 
@@ -41,7 +41,9 @@ export default class Input {
         let mouseTileX = Math.floor(x / G.boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / G.boardDisplay.tileHeight);
 
-        Input.mouseBoardPoint = new Point(mouseTileX, mouseTileY);
+        let newPoint = Point.get(mouseTileX, mouseTileY, G.player.position!.layer);
+        if (newPoint)
+            Input.mouseBoardPoint = newPoint;
 
         switch (Input.state) {
             case InputState.BOARD_CONTROL:
@@ -77,13 +79,13 @@ export default class Input {
     ///////////////////////////////////////////////////////
 
     static handleKeyDown(event: KeyboardEvent) {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
+        // if (event.altKey || event.ctrlKey || event.metaKey) return;
 
         let action: _Action | undefined;
 
         switch (Input.state) {
             case InputState.BOARD_CONTROL:
-                action = Input.handleBoardControlKeyDown(event.code);
+                action = Input.handleBoardControlKeyDown(event.code, event.shiftKey);
                 break;
             case InputState.TARGETING:
                 Input.handleTargetingKeyDown(event.code);
@@ -98,10 +100,24 @@ export default class Input {
         }
     }
 
-    static handleBoardControlKeyDown(keycode: string): _Action | undefined {
+    static handleBoardControlKeyDown(keycode: string, shift: boolean): _Action | undefined {
         switch (keycode) {
             case "KeyF":
                 Input.startTargeting();
+                break;
+            case "Period":
+                if (shift) {
+                    let playerTile = G.player.tile!;
+                    if (G.player.position!.layer === Layer.ABOVE && playerTile.downMovementValid)
+                        return G.player.tryMove(playerTile.opposite.position);
+                }
+                break;
+            case "Comma":
+                if (shift) {
+                    let playerTile = G.player.tile!;
+                    if (G.player.position!.layer === Layer.BELOW && playerTile.upMovementValid)
+                        return G.player.tryMove(playerTile.opposite.position);
+                }
                 break;
             default:
                 return G.player.getAction(keycode);

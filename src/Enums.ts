@@ -42,3 +42,8 @@ export enum ActionState {
     UNSUCCESSFUL = 'unsuccessful',
     START_EFFECT = 'start effect'
 }
+
+export enum Layer {
+    ABOVE = 0,
+    BELOW = 1
+}

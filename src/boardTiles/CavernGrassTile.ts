@@ -10,7 +10,10 @@ export class CavernGrassTile extends _BoardTile {
     _fgColor = [35, 200, 100] as Color;
     _bgColor = null;
     passable = true;
+    topPassable = true;
+    bottomPassable = false;
     transparent = true;
+    destroyable = true;
 
     onEnter(actor: _Actor) {
         if (RNG.getUniform() < .1)

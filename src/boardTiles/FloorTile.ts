@@ -7,6 +7,8 @@ export class FloorTile extends _BoardTile {
     _fgColor = [100, 100, 100] as Color;
     _bgColor = null;
     passable = true;
+    topPassable = true;
+    bottomPassable = false;
     transparent = true;
-
+    destroyable = true;
 }
