@@ -31,7 +31,7 @@ export default class Board {
     constructor() {
     }
 
-    draw(seenCells: Set<number>, percievedOpaqueColors: Map<number, Color>) {
+    draw(seenCells: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
         G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
     }
 
@@ -60,8 +60,8 @@ export default class Board {
                 }
 
 
-            this.tiles.set(Point.getFromXYL(x, y, Layer.ABOVE), newTile!);
-            this.tiles.set(Point.getFromXYL(x, y, Layer.BELOW), newWaterTile!);
+            this.tiles.set(Point.get(x, y, Layer.ABOVE)!, newTile!);
+            this.tiles.set(Point.get(x, y, Layer.BELOW)!, newWaterTile!);
         }
 
 
@@ -83,7 +83,7 @@ export default class Board {
                     else newWaterTile = new WaterTile();
                 }
 
-            this.tiles.replace(Point.getFromXYL(x, y, Layer.BELOW), newWaterTile!);
+            this.tiles.replace(Point.get(x, y, Layer.BELOW)!, newWaterTile!);
         }
 
         let cavernMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
@@ -109,9 +109,9 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaKey(Point.computeKeyFromXYL(x, y, Layer.ABOVE)).name != "Glowing Crystal") {
+            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaXYZ(x, y, Layer.ABOVE).name != "Glowing Crystal") {
                 newTile = new FloorTile()
-                this.tiles.replace(Point.getFromXYL(x, y, Layer.ABOVE), newTile);
+                this.tiles.replace(Point.get(x, y, Layer.ABOVE)!, newTile);
             }
 
         }
@@ -131,9 +131,9 @@ export default class Board {
 
         let vegetationUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 1 && this.tiles.getElementViaKey(Point.computeKeyFromXYL(x, y, Layer.ABOVE)).name == "Floor") {
+            if (value == 1 && this.tiles.getElementViaXYZ(x, y, Layer.ABOVE).name == "Floor") {
                 newTile = new CavernGrassTile();
-                this.tiles.replace(Point.getFromXYL(x, y, Layer.ABOVE), newTile);
+                this.tiles.replace(Point.get(x, y, Layer.ABOVE)!, newTile);
             }
 
         }

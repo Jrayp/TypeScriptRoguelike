@@ -5,6 +5,7 @@ import { Layer } from './../Enums';
 import C from '../C';
 import Board from './../Board';
 import G from './../G';
+import Point from './../util/Point';
 
 
 export default class BoardDisplay extends Display {
@@ -21,7 +22,7 @@ export default class BoardDisplay extends Display {
         super(C.BOARD_DISPLAY_OPTIONS);
     }
 
-    update(board: Board, seenTileKeys: Set<number>, percievedOpaqueColors: Map<number, Color>) {
+    update(board: Board, seenTilePoints: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
         const tileLayer = board.tiles;
         const actorLayer = board.actors;
         const lightManager = G.board.lights;
@@ -34,11 +35,11 @@ export default class BoardDisplay extends Display {
         let fgDrawColor: string | null;
         let bgDrawColor: string | null;
 
-        for (let seenKey of seenTileKeys) {
-            if (icons.hasKey(seenKey))
+        for (let seenPoint of seenTilePoints) {
+            if (icons.hasIconAt(seenPoint))
                 continue;
 
-            tile = tileLayer.getElementViaKey(seenKey);
+            tile = tileLayer.getElementViaPoint(seenPoint);
             const position = tile.position;
             const belowLayer = position.layer == Layer.BELOW;
             const belowBlend: Color = [0, 100, 255];
@@ -56,7 +57,7 @@ export default class BoardDisplay extends Display {
                 this.draw(position.x, position.y, actor.glyph, fgDrawColor, bgDrawColor);
             }
             else if (!tile.transparent) { // Walls etc 
-                let percievedLightColor = percievedOpaqueColors.get(seenKey)!;
+                let percievedLightColor = percievedOpaqueColors.get(seenPoint)!;
                 if (belowLayer && tile.multiplyBelow) {
                     fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, percievedLightColor, belowBlend);
                     bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, percievedLightColor, belowBlend);
@@ -68,7 +69,7 @@ export default class BoardDisplay extends Display {
                 this.draw(position.x, position.y, tile.glyph, fgDrawColor, bgDrawColor);
             }
             else { // Transparent Tiles 
-                let lightColor: Color = lightManager.getColor(position.key)!;
+                let lightColor: Color = lightManager.getColor(position)!;
                 if (belowLayer && tile.multiplyBelow) {
                     fgDrawColor = this.multiplyAndConvertColor(tile.fgColor, lightColor, belowBlend);
                     bgDrawColor = this.multiplyAndConvertColor(tile.bgColor, lightColor, belowBlend);

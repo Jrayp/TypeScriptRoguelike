@@ -30,25 +30,22 @@ export class Icon implements IDrawable {
 
 export default class UIController {
 
-    private _PointToIconMap = new Map<Point, Icon>();
-    private _keys = new Set<number>();
+    private _pointToIconMap = new Map<Point, Icon>();
 
     addIcon(point: Point, icon: Icon) {
-        this._PointToIconMap.set(point, icon);
-        this._keys.add(point.key);
+        this._pointToIconMap.set(point, icon);
     }
 
-    hasKey(key: number) {
-        return this._keys.has(key);
+    hasIconAt(point:Point) {
+        return this._pointToIconMap.has(point);
     }
 
     clear() {
-        this._PointToIconMap.clear();
-        this._keys.clear();
+        this._pointToIconMap.clear();
     }
 
     *iterate() {
-        for (let i of this._PointToIconMap)
+        for (let i of this._pointToIconMap)
             yield i;
     }
 

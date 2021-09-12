@@ -102,14 +102,13 @@ export default class Light implements IActivatable, IAttachable {
         if (!G.board.xyWithinBounds(x, y))
             return false;
         else {
-            let tile = G.board.tiles.getElementViaKey(Point.computeKeyFromXYL(x, y, this._currentLayer));
+            let tile = G.board.tiles.getElementViaXYZ(x, y, this._currentLayer);
             return tile.transparent;
         }
     }
 
     private reflectivityCallback = (x: number, y: number) => {
-        const key = Point.computeKeyFromXYL(x, y, this._currentLayer);
-        if (!G.board.xyWithinBounds(x, y) || !G.board.tiles.getElementViaKey(key).transparent)
+        if (!G.board.xyWithinBounds(x, y) || !G.board.tiles.getElementViaXYZ(x, y, this._currentLayer).transparent)
             return 0;
         else
             return C.LIGHT_DEFAULT_REFLECTIVITY;

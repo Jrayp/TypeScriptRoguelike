@@ -1,3 +1,4 @@
+import { assertTrue } from "./Assertions";
 import Point from "./Point";
 
 
@@ -14,16 +15,15 @@ export default class GMath {
         return (betweenB - betweenA) * (x - minX) / (maxX - minX) + betweenA;
     };
 
-    static roundPoint(c: Point) {
-        return Point.getFromXYL(Math.round(c.x), Math.round(c.y), Math.round(c.layer));
-    }
-
     static lerp(start: number, end: number, t: number) {
         return start + t * (end - start);
     }
 
     static lerpPoint(p0: Point, p1: Point, t: number) {
-        return Point.getFromXYL(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t), GMath.lerp(p0.layer, p1.layer, t));
+        assertTrue(p0.layer == p1.layer);
+        let x = Math.round(GMath.lerp(p0.x, p1.x, t));
+        let y = Math.round(GMath.lerp(p0.y, p1.y, t));
+        return Point.get(x, y, p0.layer);
     }
 
     ///////////////////////////////////////////////////////
@@ -44,14 +44,16 @@ export default class GMath {
         let N = GMath.diagonalDistance(p0, p1);
         for (let step = skipStart; step <= N - skipEnd; step++) {
             let t = N === 0 ? 0.0 : step / N;
-            yield GMath.roundPoint(GMath.lerpPoint(p0, p1, t));
+            let lerpedPoint = GMath.lerpPoint(p0, p1, t);
+            if (lerpedPoint)
+                yield lerpedPoint;
         }
     }
 
     static lineList(p0: Point, p1: Point, skipStart: number = 0, skipEnd: number = 0) {
         let points: Point[] = [];
-        for (let c of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
-            points.push(c);
+        for (let p of GMath.iterateLinePoints(p0, p1, skipStart, skipEnd)) {
+            points.push(p);
         }
         return points;
     }
@@ -78,7 +80,9 @@ export default class GMath {
             let left = Math.ceil(center.x - dx);
             let right = Math.floor(center.x + dx);
             for (let x = left; x <= right; x++) {
-                yield Point.getFromXYL(x, y, center.layer);
+                let point = Point.get(x, y, center.layer);
+                if (point)
+                    yield point;
             }
         }
     }
@@ -87,16 +91,7 @@ export default class GMath {
         let set = new Set<Point>();
         for (let p of GMath.iteratePointsWithinCircle(center, radius))
             set.add(p);
-
         return set;
-    }
-
-    static pointWithinCircleMap(center: Point, radius: number) {
-        let map = new Map<number, Point>();
-        for (let p of GMath.iteratePointsWithinCircle(center, radius))
-            map.set(p.key, p);
-
-        return map;
     }
 
     static pointIsInsideCircle(center: Point, x: number, y: number, radius: number) {
@@ -111,61 +106,62 @@ export default class GMath {
     ///////////////////////////////////////////////////////
 
     static * iteratePointsOnCircumference(center: Point, radius: number) {
-        let dupes = new Set<number>();
+        let dupes = new Set<Point>();
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
-            if (r == 0 || r == d) {
-                let p0 = Point.getFromXYL(center.x - d, center.y + r, center.layer);
-                let p1 = Point.getFromXYL(center.x + d, center.y + r, center.layer);
-                let p2 = Point.getFromXYL(center.x - d, center.y - r, center.layer);
-                let p3 = Point.getFromXYL(center.x + d, center.y - r, center.layer);
-                let p4 = Point.getFromXYL(center.x + r, center.y - d, center.layer);
-                let p5 = Point.getFromXYL(center.x + r, center.y + d, center.layer);
-                let p6 = Point.getFromXYL(center.x - r, center.y - d, center.layer);
-                let p7 = Point.getFromXYL(center.x - r, center.y + d, center.layer);
 
-                if (!dupes.has(p0.key)) {
-                    dupes.add(p0.key)
+            let p0 = Point.get(center.x - d, center.y + r, center.layer);
+            let p1 = Point.get(center.x + d, center.y + r, center.layer);
+            let p2 = Point.get(center.x - d, center.y - r, center.layer);
+            let p3 = Point.get(center.x + d, center.y - r, center.layer);
+            let p4 = Point.get(center.x + r, center.y - d, center.layer);
+            let p5 = Point.get(center.x + r, center.y + d, center.layer);
+            let p6 = Point.get(center.x - r, center.y - d, center.layer);
+            let p7 = Point.get(center.x - r, center.y + d, center.layer);
+
+            if (r == 0 || r == d) {
+                if (p0 && !dupes.has(p0)) {
+                    dupes.add(p0)
                     yield p0;
                 }
-                if (!dupes.has(p1.key)) {
-                    dupes.add(p1.key)
+                if (p1 && !dupes.has(p1)) {
+                    dupes.add(p1)
                     yield p1;
                 }
-                if (!dupes.has(p2.key)) {
-                    dupes.add(p2.key)
+                if (p2 && !dupes.has(p2)) {
+                    dupes.add(p2)
                     yield p2;
                 }
-                if (!dupes.has(p3.key)) {
-                    dupes.add(p3.key)
+                if (p3 && !dupes.has(p3)) {
+                    dupes.add(p3)
                     yield p3;
                 }
-                if (!dupes.has(p4.key)) {
-                    dupes.add(p4.key)
+                if (p4 && !dupes.has(p4)) {
+                    dupes.add(p4)
                     yield p4;
                 }
-                if (!dupes.has(p5.key)) {
-                    dupes.add(p5.key)
+                if (p5 && !dupes.has(p5)) {
+                    dupes.add(p5)
                     yield p5;
                 }
-                if (!dupes.has(p6.key)) {
-                    dupes.add(p6.key)
+                if (p6 && !dupes.has(p6)) {
+                    dupes.add(p6)
                     yield p6;
                 }
-                if (!dupes.has(p7.key)) {
-                    dupes.add(p7.key)
+                if (p7 && !dupes.has(p7)) {
+                    dupes.add(p7)
                     yield p7;
                 }
             }
             else {
-                yield Point.getFromXYL(center.x - d, center.y + r, center.layer);
-                yield Point.getFromXYL(center.x + d, center.y + r, center.layer);
-                yield Point.getFromXYL(center.x - d, center.y - r, center.layer);
-                yield Point.getFromXYL(center.x + d, center.y - r, center.layer);
-                yield Point.getFromXYL(center.x + r, center.y - d, center.layer);
-                yield Point.getFromXYL(center.x + r, center.y + d, center.layer);
-                yield Point.getFromXYL(center.x - r, center.y - d, center.layer);
-                yield Point.getFromXYL(center.x - r, center.y + d, center.layer);
+                if (p0) yield p0;
+                if (p1) yield p1;
+                if (p2) yield p2;
+                if (p3) yield p3;
+                if (p4) yield p4;
+                if (p5) yield p5;
+                if (p6) yield p6;
+                if (p7) yield p7;
             }
         }
     }

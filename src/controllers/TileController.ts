@@ -4,11 +4,6 @@ import UniquePointMap from "./../util/UniquePointMap";
 
 export default class TileController extends UniquePointMap<_BoardTile> {
 
-    removeViaKey(key: number) {
-        this._remove(this.getElementViaKey(key));
-        super.removeViaKey(key);
-    }
-
     removeViaElement(element: _BoardTile) {
         this._remove(element);
         super.removeViaElement(element);

@@ -23,7 +23,7 @@ export default class Goomba extends _Npc {
         let action: _Action | undefined;
 
         let freePoint: Point[] = [];
-        let generator = G.board.tiles.iterateSurrounding(this.position!);
+        let generator = G.board.tiles.iterateSurroundingPlane(this.position!);
         for (let pointAndTile of generator) {
             const tile = pointAndTile[1]!;
             if (tile.occupant == G.player) {
