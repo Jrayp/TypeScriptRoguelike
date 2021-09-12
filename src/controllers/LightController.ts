@@ -41,12 +41,6 @@ export default class LightController {
         }
     }
 
-    // updateFov() {
-    //     for (let light of this._lights) {
-    //         light.updateFov();
-    //     }
-    // }
-
     // TODO: Just make the light not shine on the wall if the player cant see the neighboring
     // floor tiles..
 

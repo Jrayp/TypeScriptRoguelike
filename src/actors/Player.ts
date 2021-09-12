@@ -1,9 +1,9 @@
 import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from 'rot-js/lib/fov/precise-shadowcasting';
+import _DiggableTile from './../boardTiles/_DiggableTile';
 import DebugAction from '../actions/DebugAction';
 import G from "../G";
-import { isDiggable } from '../interfaces/IDiggable';
 import ISight from '../interfaces/ISight';
 import Point from "../util/Point";
 import AttackAction from './../actions/AttackAction';
@@ -35,7 +35,7 @@ export default class Player extends _Actor implements ISight {
     // Sight properties
     seenPoints = new Set<Point>();
     percievedOpaqueColors = new Map<Point, Color>();
-    fovAlgo: PreciseShadowcasting;
+    fovAlgorithm: PreciseShadowcasting;
     get sightRange() {
         return this.position!.layer == Layer.BELOW ? 4 : 30;
     }
@@ -45,7 +45,7 @@ export default class Player extends _Actor implements ISight {
     constructor() {
         super();
 
-        this.fovAlgo = new FOV.PreciseShadowcasting(this.sightPassesCallback);
+        this.fovAlgorithm = new FOV.PreciseShadowcasting(this.sightPassesCallback);
 
         this.light = new Light(this, 4, [175, 175, 175]);
         G.board.lights.addLight(this.light);
@@ -72,7 +72,7 @@ export default class Player extends _Actor implements ISight {
         // floor tiles..
 
         // Get all the Point in the players FOV and add opaque Point to a map
-        this.fovAlgo.compute(thisPoint.x, thisPoint.y, this.sightRange,
+        this.fovAlgorithm.compute(thisPoint.x, thisPoint.y, this.sightRange,
             (x: number, y: number, r: number, visibility: number) => {
                 let point = Point.get(x, y, this.position!.layer)!;
                 if (G.board.lights.getBrightness(point)) {
@@ -113,7 +113,7 @@ export default class Player extends _Actor implements ISight {
             case 'Numpad7': return this.tryMove(this.position!.neighbor(Direction.NW)!);
             case 'Numpad5': return new WaitAction().logAfter("You wait..");
             case 'KeyL': return new SwitchAction(this.light, SwitchSetting.TOGGLE).logAfterConditional(() => {
-                return this.light.isActive() ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
+                return this.light.isActive ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
             });
             case 'KeyC':
                 let da = new DebugAction(() => {
@@ -139,7 +139,7 @@ export default class Player extends _Actor implements ISight {
             return new AttackAction(occupant);
         }
         else if (!destinationTile.passable) {
-            if (isDiggable(destinationTile)) {
+            if (destinationTile instanceof _DiggableTile) {
                 return new DigAction(destinationTile);
             }
             return undefined;

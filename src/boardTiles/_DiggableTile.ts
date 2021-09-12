@@ -1,9 +1,8 @@
-import G from "./../G";
+import { RNG } from "rot-js";
 import IDiggable from "../interfaces/IDiggable";
-import { FloorTile } from "./FloorTile";
+import G from "./../G";
 import { RubbleTile } from "./RubbleTile";
 import { _BoardTile } from "./_BoardTile";
-import { RNG } from "rot-js";
 
 export default abstract class _DiggableTile extends _BoardTile implements IDiggable {
     abstract digStrength: number;

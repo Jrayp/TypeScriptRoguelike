@@ -4,11 +4,9 @@ import IPositional from "./IPositional";
 
 export default interface ISight extends IPositional {
 
-    fovAlgo: PreciseShadowcasting;
-
-    seenPoints: Set<Point>;
 
     computeFov(): Set<Point>;
     get sightRange(): number;
-
+    get fovAlgorithm(): PreciseShadowcasting;
+    get seenPoints(): Set<Point>;
 }

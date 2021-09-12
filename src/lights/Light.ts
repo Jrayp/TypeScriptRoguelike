@@ -1,11 +1,11 @@
 import { FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import { Layer } from "./../Enums";
 import IAttachable from "src/interfaces/IAttachable";
 import C from "../C";
 import G from "../G";
 import Point from "../util/Point";
+import { Layer } from "./../Enums";
 import IActivatable from "./../interfaces/IActivatable";
 import IPositional from "./../interfaces/IPositional";
 
@@ -34,7 +34,7 @@ export default class Light implements IActivatable, IAttachable {
     // IActivatable
     ///////////////////////////////////////////////////////
 
-    isActive(): boolean {
+    get isActive(): boolean {
         return this._active && this._attachedTo != undefined && this._attachedTo.position != undefined;
     }
 
@@ -72,7 +72,7 @@ export default class Light implements IActivatable, IAttachable {
     ///////////////////////////////////////////////////////
 
     update() {
-        if (this.isActive()) {
+        if (this.isActive) {
             this.reposition(this._attachedTo!.position!)
             this._lighting.setFOV(this._lightCone);
             this._lighting.compute(this.lightingCallback);

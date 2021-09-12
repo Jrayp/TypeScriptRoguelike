@@ -8,7 +8,7 @@ export default class SightHelper {
         const sightImplmenterPoint = sight.position;
         sight.seenPoints.clear();
         if (sightImplmenterPoint) {
-            sight.fovAlgo.compute(sightImplmenterPoint.x, sightImplmenterPoint.y, sight.sightRange,
+            sight.fovAlgorithm.compute(sightImplmenterPoint.x, sightImplmenterPoint.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
                     let point = Point.get(x, y, sight.position!.layer)!;
                     if (G.board.tiles.getElementViaPoint(point).transparent && G.board.lights.getBrightness(point))

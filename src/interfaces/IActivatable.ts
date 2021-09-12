@@ -1,5 +1,5 @@
 export default interface IActivatable {
-    isActive(): boolean;
+    get isActive(): boolean;
     activate(): void;
     toggle(): boolean;
     deactivate(): void;

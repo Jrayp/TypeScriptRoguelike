@@ -9,7 +9,7 @@ import Point from '../util/Point';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements INamed, IDrawable, IPositional {
-    abstract name: string;
+    abstract get name(): string;
 
     abstract _glyph: string;
     abstract _fgColor: Color | null;
@@ -34,7 +34,7 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract bottomPassable: boolean;
     abstract destroyable: boolean;
 
-    multiplyBelow : boolean = true;
+    multiplyBelow: boolean = true;
 
     constructor() {
     }
