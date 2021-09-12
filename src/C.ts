@@ -3,6 +3,8 @@ import Point from "./util/Point";
 export default class C {
     static readonly BOARD_WIDTH = 60;
     static readonly BOARD_HEIGHT = 30;
+    static readonly BOARD_DEPTH = 2;
+
 
     static readonly MAX_LOG_LENGTH = 50;
 

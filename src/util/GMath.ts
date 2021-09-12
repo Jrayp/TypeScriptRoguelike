@@ -15,7 +15,7 @@ export default class GMath {
     };
 
     static roundPoint(c: Point) {
-        return new Point(Math.round(c.x), Math.round(c.y), Math.round(c.layer));
+        return Point.getFromXYL(Math.round(c.x), Math.round(c.y), Math.round(c.layer));
     }
 
     static lerp(start: number, end: number, t: number) {
@@ -23,7 +23,7 @@ export default class GMath {
     }
 
     static lerpPoint(p0: Point, p1: Point, t: number) {
-        return new Point(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t), GMath.lerp(p0.layer, p1.layer, t));
+        return Point.getFromXYL(GMath.lerp(p0.x, p1.x, t), GMath.lerp(p0.y, p1.y, t), GMath.lerp(p0.layer, p1.layer, t));
     }
 
     ///////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ export default class GMath {
             let left = Math.ceil(center.x - dx);
             let right = Math.floor(center.x + dx);
             for (let x = left; x <= right; x++) {
-                yield new Point(x, y, center.layer);
+                yield Point.getFromXYL(x, y, center.layer);
             }
         }
     }
@@ -115,14 +115,14 @@ export default class GMath {
         for (let r = 0; r <= Math.floor(radius * Math.SQRT1_2); r++) {
             let d = Math.floor(Math.sqrt(radius * radius - r * r)); // Can be precomputed if its a problem: See below
             if (r == 0 || r == d) {
-                let p0 = new Point(center.x - d, center.y + r, center.layer);
-                let p1 = new Point(center.x + d, center.y + r, center.layer);
-                let p2 = new Point(center.x - d, center.y - r, center.layer);
-                let p3 = new Point(center.x + d, center.y - r, center.layer);
-                let p4 = new Point(center.x + r, center.y - d, center.layer);
-                let p5 = new Point(center.x + r, center.y + d, center.layer);
-                let p6 = new Point(center.x - r, center.y - d, center.layer);
-                let p7 = new Point(center.x - r, center.y + d, center.layer);
+                let p0 = Point.getFromXYL(center.x - d, center.y + r, center.layer);
+                let p1 = Point.getFromXYL(center.x + d, center.y + r, center.layer);
+                let p2 = Point.getFromXYL(center.x - d, center.y - r, center.layer);
+                let p3 = Point.getFromXYL(center.x + d, center.y - r, center.layer);
+                let p4 = Point.getFromXYL(center.x + r, center.y - d, center.layer);
+                let p5 = Point.getFromXYL(center.x + r, center.y + d, center.layer);
+                let p6 = Point.getFromXYL(center.x - r, center.y - d, center.layer);
+                let p7 = Point.getFromXYL(center.x - r, center.y + d, center.layer);
 
                 if (!dupes.has(p0.key)) {
                     dupes.add(p0.key)
@@ -158,14 +158,14 @@ export default class GMath {
                 }
             }
             else {
-                yield new Point(center.x - d, center.y + r, center.layer);
-                yield new Point(center.x + d, center.y + r, center.layer);
-                yield new Point(center.x - d, center.y - r, center.layer);
-                yield new Point(center.x + d, center.y - r, center.layer);
-                yield new Point(center.x + r, center.y - d, center.layer);
-                yield new Point(center.x + r, center.y + d, center.layer);
-                yield new Point(center.x - r, center.y - d, center.layer);
-                yield new Point(center.x - r, center.y + d, center.layer);
+                yield Point.getFromXYL(center.x - d, center.y + r, center.layer);
+                yield Point.getFromXYL(center.x + d, center.y + r, center.layer);
+                yield Point.getFromXYL(center.x - d, center.y - r, center.layer);
+                yield Point.getFromXYL(center.x + d, center.y - r, center.layer);
+                yield Point.getFromXYL(center.x + r, center.y - d, center.layer);
+                yield Point.getFromXYL(center.x + r, center.y + d, center.layer);
+                yield Point.getFromXYL(center.x - r, center.y - d, center.layer);
+                yield Point.getFromXYL(center.x - r, center.y + d, center.layer);
             }
         }
     }

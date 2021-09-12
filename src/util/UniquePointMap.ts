@@ -1,3 +1,4 @@
+import { NamedTupleMember } from "typescript";
 import { assertTrue } from "./Assertions";
 import GMath from "./GMath";
 import Point from "./Point";
@@ -5,7 +6,6 @@ import Point from "./Point";
 export default class UniquePointMap<T>{
     protected _elementToPoint: Map<T, Point> = new Map();
     protected _keyToElement: Map<number, T> = new Map();
-
 
     get count() {
         return this._keyToElement.size;
@@ -63,13 +63,17 @@ export default class UniquePointMap<T>{
         return this._keyToElement.has(point.key);
     }
 
+    hasXYZ(x: number, y: number, z: number) {
+        return this._keyToElement.has(Point.computeKeyFromXYL(x, y, z));
+    }
+
     ///////////////////////////////////////////////////////
     // Retrieval
     ///////////////////////////////////////////////////////
 
     getElementViaKey(key: number): T {
         // TODO: The messages are super slow
-        assertTrue(this._keyToElement.has(key), `No element found at key value ${key}. Point value: ${Point.fromKey(key).toString()}`);
+        assertTrue(this._keyToElement.has(key), `No element found at key value ${key}. Point value: ${Point.getFromKey(key).toString()}`);
         return this._keyToElement.get(key)!;
     }
 
@@ -78,10 +82,15 @@ export default class UniquePointMap<T>{
         return this._keyToElement.get(point.key)!;
     }
 
+    getElementViaXYZ(x: number, y: number, z: number): T {
+        const key = Point.computeKeyFromXYL(x, y, z);
+        assertTrue(this._keyToElement.has(key));
+        return this._keyToElement.get(key)!;
+    }
+
     getPointViaElement(element: T): Point | undefined {
         return this._elementToPoint.get(element);
     }
-
 
     ///////////////////////////////////////////////////////
     // Altering
@@ -92,7 +101,7 @@ export default class UniquePointMap<T>{
         this.set(point, element);
     }
 
-    moveElement(element: T, destPoint: Point) {
+    moveElementToPoint(element: T, destPoint: Point) {
         assertTrue(this._elementToPoint.has(element),);
         assertTrue(this._keyToElement.has(destPoint.key) === false, `Can't move element to ${destPoint.toString()} as there is already an element at the destination.`);
         this.removeViaElement(element);

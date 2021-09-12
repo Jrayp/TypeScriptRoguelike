@@ -10,7 +10,7 @@ export default class SightHelper {
         if (sightImplmenterPoint) {
             sight.fovAlgo.compute(sightImplmenterPoint.x, sightImplmenterPoint.y, sight.sightRange,
                 (x: number, y: number, r: number, visibility: number) => {
-                    let pointKey = Point.toKey(x, y, sight.position!.layer);
+                    let pointKey = Point.computeKeyFromXYL(x, y, sight.position!.layer);
                     if (G.board.tiles.getElementViaKey(pointKey).transparent && G.board.lights.getBrightness(pointKey))
                         sight.seenPoints.add(pointKey); // Npc's only care about seeing transparent tiles
                 });

@@ -42,7 +42,7 @@ export default class FireballEffect extends _Effect {
             if (!destTile.passable)
                 this.explode();
             else
-                G.board.effects.moveElement(this, dest);
+                G.board.effects.moveElementToPoint(this, dest);
         }
         this.step++;
     }

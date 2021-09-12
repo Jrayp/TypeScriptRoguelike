@@ -17,7 +17,7 @@ export default class MoveAction extends _Action {
     }
 
     perform() {
-        G.board.actors.moveElement(this._actor, this._dest);
+        G.board.actors.moveElementToPoint(this._actor, this._dest);
         let tile = this._actor.tile!;
         let log = tile.onEnter(this._actor);
         if (log)

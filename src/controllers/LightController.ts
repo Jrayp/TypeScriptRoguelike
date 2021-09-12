@@ -54,7 +54,7 @@ export default class LightController {
         if (!G.board.xyWithinBounds(x, y))
             return;
 
-        const key = new Point(x, y, layer).key;
+        const key = Point.getFromXYL(x, y, layer).key;
         let tile = G.board.tiles.getElementViaKey(key);
         // Wall tiles don't really need brightness given the way we currently draw them, 
         // but we need a value here so that the tile is picked up by the players FOV alg. 

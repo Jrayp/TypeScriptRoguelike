@@ -41,7 +41,7 @@ export default class Input {
         let mouseTileX = Math.floor(x / G.boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / G.boardDisplay.tileHeight);
 
-        Input.mouseBoardPoint = new Point(mouseTileX, mouseTileY, G.player.position!.layer);
+        Input.mouseBoardPoint = Point.getFromXYL(mouseTileX, mouseTileY, G.player.position!.layer);
 
         switch (Input.state) {
             case InputState.BOARD_CONTROL:

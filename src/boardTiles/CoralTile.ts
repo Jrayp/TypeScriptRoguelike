@@ -17,8 +17,8 @@ export default class CoralTile extends _BoardTile {
 
     constructor() {
         super();
-        this._glyph = RNG.getItem(['&', '(', ')', '"'])!;
-        this._fgColor = ColorHelper.randomize(RNG.getUniform() < .5 ? [200, 25, 75] : [75, 25, 200] , 50);
+        this._glyph = RNG.getItem(['&', '"'])!;
+        this._fgColor = ColorHelper.randomize(RNG.getUniform() < .5 ? [200, 25, 75] : [75, 25, 200], 50);
     }
 
 
