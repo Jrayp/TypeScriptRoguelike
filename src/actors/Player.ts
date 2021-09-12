@@ -19,9 +19,12 @@ import _Actor from "./_Actor";
 
 
 export default class Player extends _Actor implements ISight {
-    name = "Player";
+    name = 'Player';
 
-    // IDrawable Properties
+    ///////////////////////////////////////////////////////
+    // Drawable Properties
+    ///////////////////////////////////////////////////////
+
     _glyph = '@';
     _fgColor = [255, 0, 0] as Color;
     _bgColor = null;
@@ -32,74 +35,98 @@ export default class Player extends _Actor implements ISight {
         else return this._bgColor;
     }
 
+    ///////////////////////////////////////////////////////
     // Sight properties
+    ///////////////////////////////////////////////////////
+
     seenPoints = new Set<Point>();
     percievedOpaqueColors = new Map<Point, Color>();
-    fovAlgorithm: PreciseShadowcasting;
+
     get sightRange() {
         return this.position!.layer == Layer.BELOW ? 4 : 30;
     }
 
-    light: Light;
+    private _fovAlgorithm: PreciseShadowcasting;
+
+    ///////////////////////////////////////////////////////
+    // Misc Properties
+    ///////////////////////////////////////////////////////
+
+    private _lightOrb: Light;
+
+    ///////////////////////////////////////////////////////
+    // Constructor
+    ///////////////////////////////////////////////////////
 
     constructor() {
         super();
-
-        this.fovAlgorithm = new FOV.PreciseShadowcasting(this.sightPassesCallback);
-
-        this.light = new Light(this, 4, [175, 175, 175]);
-        G.board.lights.addLight(this.light);
+        this._fovAlgorithm = new FOV.PreciseShadowcasting(this.sightPassesCallback);
+        this._lightOrb = new Light(this, 4, [175, 175, 175]);
+        G.board.lights.addLight(this._lightOrb);
     }
+
+    ///////////////////////////////////////////////////////
+    // Fov Callbacks
+    ///////////////////////////////////////////////////////
 
     sightPassesCallback = (x: number, y: number) => {
-        if (!G.board.xyWithinBounds(x, y)) {
-            return false;
+        let point = Point.get(x, y, this.position!.layer);
+        if (point) {
+            return G.board.tiles.getElementViaPoint(point).transparent;
         }
         else {
-            return G.board.tiles.getElementViaXYZ(x, y, this.position!.layer).transparent;
+            return false;
         }
     }
 
+    fovCallback = (x: number, y: number, r: number, visibility: number) => {
+        let point = Point.get(x, y, this.position!.layer)!;
+        if (G.board.lights.getBrightness(point)) {
+            let tile = G.board.tiles.getElementViaPoint(point);
+            if (tile.transparent) {
+                this.seenPoints.add(point);
+            } else {
+                this.percievedOpaqueColors.set(point, G.board.lights.baseColor);
+            }
+        }
+    }
+
+    ///////////////////////////////////////////////////////
+    // Fov Computation
+    ///////////////////////////////////////////////////////
+
+    // TODO: Just make the light not shine on the wall if the player cant see the neighboring
+    // floor tiles..
+
     computeFov(): Set<Point> {
-        const thisPoint = this.position!;
+        const pos = this.position!;
+
         this.seenPoints.clear();
         this.percievedOpaqueColors.clear();
-        let placeHolderColor: Color = [0, 0, 0];
-        let tiles = G.board.tiles;
-        let playerZ = this.position!.layer;
 
-        // TODO: Just make the light not shine on the wall if the player cant see the neighboring
-        // floor tiles..
+        // Get all the points in the players FOV and add opaque points to a map
+        this._fovAlgorithm.compute(pos.x, pos.y, this.sightRange, this.fovCallback);
 
-        // Get all the Point in the players FOV and add opaque Point to a map
-        this.fovAlgorithm.compute(thisPoint.x, thisPoint.y, this.sightRange,
-            (x: number, y: number, r: number, visibility: number) => {
-                let point = Point.get(x, y, this.position!.layer)!;
-                if (G.board.lights.getBrightness(point)) {
-                    let tile = tiles.getElementViaPoint(point);
-                    if (tile.transparent) {
-                        this.seenPoints.add(point);
-                    } else {
-                        this.percievedOpaqueColors.set(point, placeHolderColor);
-                    }
-                }
-            });
-
-        // Set percieved color of opaque tiles to that of the brightest neighboring floor tile
-        // that the player can see.
+        // Set percieved color of opaque tiles to that of the brightest neighboring 
+        // floor tile that the player can see.
         for (let opaquePointAndColor of this.percievedOpaqueColors) {
-            let pointKey = opaquePointAndColor[0];
-            let tile = tiles.getElementViaPoint(opaquePointAndColor[0]);
-            let percievedColor = G.board.lights.percievedLightColorOfOpaque(tile, this)!;
+            let point = opaquePointAndColor[0];
+            let tile = G.board.tiles.getElementViaPoint(point);
+            let percievedColor = G.board.lights.percievedLightColorOfOpaque(tile, this);
             if (percievedColor) {
-                this.percievedOpaqueColors.set(pointKey, percievedColor);
-                this.seenPoints.add(pointKey);
+                this.percievedOpaqueColors.set(point, percievedColor);
+                this.seenPoints.add(point);
             }
         }
 
-        this.seenPoints.add(thisPoint);
+        // Always see the tile youre on
+        this.seenPoints.add(pos);
         return this.seenPoints;
     }
+
+    ///////////////////////////////////////////////////////
+    // Actions
+    ///////////////////////////////////////////////////////
 
     getAction(keyCode: string): _Action | undefined {
         switch (keyCode) {
@@ -112,8 +139,8 @@ export default class Player extends _Actor implements ISight {
             case 'Numpad4': return this.tryMove(this.position!.neighbor(Direction.W)!);
             case 'Numpad7': return this.tryMove(this.position!.neighbor(Direction.NW)!);
             case 'Numpad5': return new WaitAction().logAfter("You wait..");
-            case 'KeyL': return new SwitchAction(this.light, SwitchSetting.TOGGLE).logAfterConditional(() => {
-                return this.light.isActive ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
+            case 'KeyL': return new SwitchAction(this._lightOrb, SwitchSetting.TOGGLE).logAfterConditional(() => {
+                return this._lightOrb.isActive ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
             });
             case 'KeyC':
                 let da = new DebugAction(() => {
@@ -125,8 +152,6 @@ export default class Player extends _Actor implements ISight {
                     else return ActionState.UNSUCCESSFUL;
                 }).logAfterConditional(() => { return da.state === ActionState.SUCCESSFUL ? "You place a glowing crystal." : "There is already a crystal here." });
                 return da;
-            // case 'KeyF': return ['fireball', 0, 0];
-            // case 'KeyO': return ['circle', 0, 0];
             default: return undefined;
         }
     }

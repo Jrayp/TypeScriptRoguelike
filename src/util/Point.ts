@@ -73,9 +73,9 @@ export default class Point {
 
     *iterateNeighbors() {
         for (let offset of _PLANE_OFFSETS) {
-            let n = Point.addPointToXY(this, offset[0], offset[1], this.layer);
-            if (n) {
-                yield n;
+            let neighbor = Point.addPointToXY(this, offset[0], offset[1], this.layer);
+            if (neighbor) {
+                yield neighbor;
             }
         }
     }
@@ -83,6 +83,10 @@ export default class Point {
     ///////////////////////////////////////////////////////
     // Misc
     ///////////////////////////////////////////////////////
+
+    onEdge() {
+        return Point.pointOnEdge(this);
+    }
 
     toString() {
         return `(${this.x}, ${this.y}, ${this.layer})`;
@@ -108,6 +112,14 @@ export default class Point {
         return x >= 0 && x < C.BOARD_WIDTH
             && y >= 0 && y < C.BOARD_HEIGHT
             && layer >= 0 && layer < C.BOARD_DEPTH;
+    }
+
+    static pointOnEdge(point: Point) {
+        return point.x == 0 || point.x == C.BOARD_WIDTH - 1 || point.y == 0 || point.y == C.BOARD_HEIGHT - 1;
+    }
+
+    static xyOnEdge(x: number, y: number) {
+        return x == 0 || x == C.BOARD_WIDTH - 1 || y == 0 || y == C.BOARD_HEIGHT - 1;
     }
 
     private static _initialize = (() => {

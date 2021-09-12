@@ -39,7 +39,7 @@ export default class Board {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
             let newWaterTile: _BoardTile;
-            if (this.numbersOnEdge(x, y)) {
+            if (Point.xyOnEdge(x, y)) {
                 newTile = new BorderTile();
                 newWaterTile = new BorderTile();
             }
@@ -67,7 +67,7 @@ export default class Board {
 
         let cavernUserCallback2 = (x: number, y: number, value: number) => {
             let newWaterTile: _BoardTile;
-            if (this.numbersOnEdge(x, y)) {
+            if (Point.xyOnEdge(x, y)) {
                 return;
             }
             else if (value == 0) {
@@ -109,7 +109,8 @@ export default class Board {
 
         let structuredUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
-            if (value == 0 && !this.numbersOnEdge(x, y) && this.tiles.getElementViaXYZ(x, y, Layer.ABOVE).name != "Glowing Crystal") {
+            let point = Point.get(x, y, Layer.ABOVE)!;
+            if (value == 0 && !point.onEdge() && this.tiles.getElementViaPoint(point).name != "Glowing Crystal") {
                 newTile = new FloorTile()
                 this.tiles.replace(Point.get(x, y, Layer.ABOVE)!, newTile);
             }
@@ -147,28 +148,6 @@ export default class Board {
 
         vegetationMap.create(vegetationUserCallback);
 
-    }
-
-
-
-    ///////////////////////////////////////////////////////
-    // Static
-    ///////////////////////////////////////////////////////
-
-    pointOnEdge(point: Point) {
-        return point.x == 0 || point.x == C.BOARD_WIDTH - 1 || point.y == 0 || point.y == C.BOARD_HEIGHT - 1;
-    }
-
-    numbersOnEdge(x: number, y: number) {
-        return x == 0 || x == C.BOARD_WIDTH - 1 || y == 0 || y == C.BOARD_HEIGHT - 1;
-    }
-
-    pointWithinBounds(point: Point) {
-        return point.x >= 0 && point.x < C.BOARD_WIDTH && point.y >= 0 && point.y < C.BOARD_HEIGHT;
-    }
-
-    xyWithinBounds(x: number, y: number) {
-        return x >= 0 && x < C.BOARD_WIDTH && y >= 0 && y < C.BOARD_HEIGHT;
     }
 
 }
