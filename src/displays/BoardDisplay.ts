@@ -10,8 +10,8 @@ import Point from './../util/Point';
 
 export default class BoardDisplay extends Display {
 
-    width: number;
-    height: number;
+    widthInTiles: number;
+    heightInTiles: number;
 
     tileWidth: number;
     tileHeight: number;
@@ -22,7 +22,15 @@ export default class BoardDisplay extends Display {
         super(C.BOARD_DISPLAY_OPTIONS);
     }
 
-    update(board: Board, seenTilePoints: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
+    init() {
+        this.rect = this.getContainer()!.getBoundingClientRect();
+        this.widthInTiles = C.BOARD_WIDTH;
+        this.heightInTiles = C.BOARD_HEIGHT;
+        this.tileWidth = this.rect.width / this.widthInTiles;
+        this.tileHeight = this.rect.height / this.heightInTiles;
+    }
+
+    drawBoard(board: Board, seenTilePoints: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
         const tileLayer = board.tiles;
         const actorLayer = board.actors;
         const lightManager = G.board.lights;
@@ -97,9 +105,5 @@ export default class BoardDisplay extends Display {
 
     private multiplyAndConvertColor(color: Color | null, ...multipliers: Color[]) {
         return !color ? null : ColorHelper.toRGB(ColorHelper.multiply(color, ...multipliers));
-    }
-
-    private multiplyAndAddAndConvertColor(color: Color | null, multiplier: Color, adder: Color) {
-        return !color ? null : ColorHelper.toRGB(ColorHelper.interpolate(ColorHelper.multiply(color, multiplier), adder, .75));
     }
 }

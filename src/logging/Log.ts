@@ -1,13 +1,18 @@
+import LogDisplay from "./../displays/LogDisplay";
 import C from "../C";
 import G from "../G";
 import { assertTrue } from "../util/Assertions";
 
 
 export default class Log {
+    private _logDisplay: LogDisplay;
+
     private _logList: string[] = []; // TODO: Handle deletions after some max length
     private _repeatList: number[] = [];
 
-    constructor() {
+    constructor(logDisplay: LogDisplay) {
+        this._logDisplay = logDisplay;
+
         // Hack to prevent 'undefined' showing up in the log display at start of game
         for (let i = 0; i < C.LOG_DISPLAY_HEIGHT; i++) {
             this._logList.push("");
@@ -26,7 +31,7 @@ export default class Log {
             repeatList.push(1);
         }
 
-        G.logDisplay.update(logList, repeatList);
+        this._logDisplay.update(logList, repeatList);
     }
 
 }

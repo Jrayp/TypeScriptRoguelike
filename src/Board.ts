@@ -31,10 +31,6 @@ export default class Board {
     constructor() {
     }
 
-    draw(seenCells: Set<Point>, percievedOpaqueColors: Map<Point, Color>) {
-        G.boardDisplay.update(this, seenCells, percievedOpaqueColors);
-    }
-
     generate() {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;

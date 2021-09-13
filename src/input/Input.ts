@@ -1,3 +1,5 @@
+import BoardDisplay from "./../displays/BoardDisplay";
+import LogDisplay from "./../displays/LogDisplay";
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
 import Point from "../util/Point";
@@ -7,27 +9,42 @@ import { InputState, Layer } from "./../Enums";
 
 export default class Input {
 
-    static logCanvas: HTMLElement;
-    static boardCanvas: HTMLElement;
-    static mouseOverCanvas: HTMLElement;
-    static mouseBoardPoint: Point;
-    static currentTargetedAction: ITargetableAction | undefined;
+    private static _logDisplay: LogDisplay;
+    private static _boardDisplay: BoardDisplay;
 
-    static state = InputState.BOARD_CONTROL;
+    private static _logCanvas: HTMLElement;
+    private static _boardCanvas: HTMLElement;
+    private static _mouseOverCanvas: HTMLElement;
+
+    private static _mouseBoardPoint: Point;
+
+    private static _currentTargetedAction: ITargetableAction | undefined;
+
+    private static _state = InputState.BOARD_CONTROL;
+
+    static SetState(state: InputState) {
+        Input._state = state;
+    }
+
+    static init(logDisplay: LogDisplay, boardDisplay: BoardDisplay) {
+        Input._logDisplay = logDisplay;
+        Input._boardDisplay = boardDisplay;
+        Input.setInputHandlers(logDisplay.getContainer()!, boardDisplay.getContainer()!)
+    }
 
     static setInputHandlers(logCanvas: HTMLElement, boardCanvas: HTMLElement) {
-        Input.logCanvas = logCanvas;
-        Input.boardCanvas = boardCanvas;
+        Input._logCanvas = logCanvas;
+        Input._boardCanvas = boardCanvas;
 
-        Input.logCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.logCanvas });
+        Input._logCanvas.addEventListener('mouseover', () => { Input._mouseOverCanvas = Input._logCanvas });
 
-        Input.boardCanvas.setAttribute('tabindex', "1");
-        Input.boardCanvas.addEventListener('mouseover', () => { Input.mouseOverCanvas = Input.boardCanvas; });
-        Input.boardCanvas.addEventListener('mousemove', Input.handleMouseMoveOverBoard);
-        Input.boardCanvas.addEventListener('click', Input.handleMouseClick);
-        Input.boardCanvas.addEventListener('keydown', Input.handleKeyDown);
+        Input._boardCanvas.setAttribute('tabindex', "1");
+        Input._boardCanvas.addEventListener('mouseover', () => { Input._mouseOverCanvas = Input._boardCanvas; });
+        Input._boardCanvas.addEventListener('mousemove', Input.handleMouseMoveOverBoard);
+        Input._boardCanvas.addEventListener('click', Input.handleMouseClick);
+        Input._boardCanvas.addEventListener('keydown', Input.handleKeyDown);
 
-        Input.boardCanvas.focus();
+        Input._boardCanvas.focus();
     }
 
     ///////////////////////////////////////////////////////
@@ -35,17 +52,17 @@ export default class Input {
     ///////////////////////////////////////////////////////
 
     static handleMouseMoveOverBoard(event: MouseEvent) {
-        let x = event.clientX - G.boardDisplay.rect.left;
-        let y = event.clientY - G.boardDisplay.rect.top;
+        let x = event.clientX - Input._boardDisplay.rect.left;
+        let y = event.clientY - Input._boardDisplay.rect.top;
 
-        let mouseTileX = Math.floor(x / G.boardDisplay.tileWidth);
-        let mouseTileY = Math.floor(y / G.boardDisplay.tileHeight);
+        let mouseTileX = Math.floor(x / Input._boardDisplay.tileWidth);
+        let mouseTileY = Math.floor(y / Input._boardDisplay.tileHeight);
 
         let newPoint = Point.get(mouseTileX, mouseTileY, G.player.position!.layer);
         if (newPoint)
-            Input.mouseBoardPoint = newPoint;
+            Input._mouseBoardPoint = newPoint;
 
-        switch (Input.state) {
+        switch (Input._state) {
             case InputState.BOARD_CONTROL:
                 break;
 
@@ -59,7 +76,7 @@ export default class Input {
     }
 
     static handleMouseClick(event: MouseEvent) {
-        switch (Input.state) {
+        switch (Input._state) {
             case InputState.BOARD_CONTROL:
                 break;
 
@@ -79,11 +96,9 @@ export default class Input {
     ///////////////////////////////////////////////////////
 
     static handleKeyDown(event: KeyboardEvent) {
-        // if (event.altKey || event.ctrlKey || event.metaKey) return;
-
         let action: _Action | undefined;
 
-        switch (Input.state) {
+        switch (Input._state) {
             case InputState.BOARD_CONTROL:
                 action = Input.handleBoardControlKeyDown(event.code, event.shiftKey);
                 break;
@@ -130,7 +145,7 @@ export default class Input {
         switch (keycode) {
             case "Escape":
                 Input.endTargeting();
-                Input.state = InputState.BOARD_CONTROL;
+                Input._state = InputState.BOARD_CONTROL;
                 break;
         }
 
@@ -143,27 +158,27 @@ export default class Input {
     ///////////////////////////////////////////////////////
 
     static startTargeting() {
-        Input.currentTargetedAction = new FireballAction();
-        Input.state = InputState.TARGETING;
+        Input._currentTargetedAction = new FireballAction();
+        Input._state = InputState.TARGETING;
 
         Input.updateTargeting();
     }
 
     static updateTargeting() {
         G.board.icons.clear();
-        Input.currentTargetedAction!.target(G.player.position!, Input.mouseBoardPoint);
-        G.draw();
+        Input._currentTargetedAction!.target(G.player.position!, Input._mouseBoardPoint);
+        G.drawBoard();
     }
 
     static endTargeting() {
-        Input.currentTargetedAction = undefined;
+        Input._currentTargetedAction = undefined;
         G.board.icons.clear();
-        G.draw();
+        G.drawBoard();
     }
 
     //TODO: Could created targetedAction class which returns an action on finuished target call
     static performTargetedAction() {
-        let action = Input.currentTargetedAction!;
+        let action = Input._currentTargetedAction!;
         this.endTargeting();
         G.handleAction(action);
     }

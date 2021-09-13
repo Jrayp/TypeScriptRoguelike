@@ -30,14 +30,14 @@ export default class EffectsController extends UniquePointMap<_Effect>{
     }
 
     handleEffects() {
-        Input.state = InputState.EFFECT_LOOP;
+        Input.SetState(InputState.EFFECT_LOOP);
         this.currentLoop = new Loop(this.updateAndDraw, () => { return this.count == 0 && this._generators.size == 0 }, this.finalize);
         this.currentLoop.start();
     }
 
     finalize() {
-        Input.state = InputState.BOARD_CONTROL;
-        G.updateAndDraw();
+        Input.SetState(InputState.BOARD_CONTROL);
+        G.updateAndDrawBoard();
     }
 
     updateAndDraw = () => {
@@ -49,6 +49,6 @@ export default class EffectsController extends UniquePointMap<_Effect>{
         }
         G.board.lights.update();
         G.player.computeFov();
-        G.draw();
+        G.drawBoard();
     }
 }
