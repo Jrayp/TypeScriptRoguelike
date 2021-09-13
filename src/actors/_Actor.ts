@@ -9,7 +9,7 @@ import Point from '../util/Point';
 
 export default abstract class _Actor implements INamed, IDrawable, IPositional {
 
-    abstract name: string;
+    abstract get name(): string;
 
     abstract _glyph: string;
     abstract _fgColor: Color | null;
@@ -42,18 +42,4 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
     act() {
 
     }
-
-    // move(newpoint: Point) {
-    //     let destinationTile = G.board.tileLayer.getElementViaPoint(newPoint);
-
-    //     if (G.board.tileLayer.getElementViaPoint(newPoint).passable) {
-    //         G.board.actorLayer.moveViaElement(this, newPoint);
-    //         destinationTile.onEnter(this)
-    //         return true;
-    //     }
-    //     else {
-    //         return false;
-    //     }
-    // }
-
 }

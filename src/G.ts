@@ -4,7 +4,6 @@ import AnglerFish from "./actors/AnglerFish";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
 import Board from "./Board";
-import C from "./C";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
 import { ActionState } from "./Enums";
@@ -14,9 +13,8 @@ import Log from "./logging/Log";
 
 export default class G {
 
-    // TODO: Make private
-    static readonly logDisplay: LogDisplay = new LogDisplay();
-    static readonly boardDisplay: BoardDisplay = new BoardDisplay();
+    private static readonly _logDisplay: LogDisplay = new LogDisplay();
+    private static readonly _boardDisplay: BoardDisplay = new BoardDisplay();
 
     static board: Board;
     static log: Log;
@@ -25,18 +23,11 @@ export default class G {
     static init() {
         RNG.setSeed(-123);
 
-        document.body.append(G.logDisplay.getContainer()!);
-        document.body.append(G.boardDisplay.getContainer()!);
+        document.body.append(G._logDisplay.getContainer()!);
+        document.body.append(G._boardDisplay.getContainer()!);
 
-        G.logDisplay.rect = G.logDisplay.getContainer()!.getBoundingClientRect();
-
-        G.boardDisplay.rect = G.boardDisplay.getContainer()!.getBoundingClientRect();
-        G.boardDisplay.width = C.BOARD_WIDTH;
-        G.boardDisplay.height = C.BOARD_HEIGHT;
-        G.boardDisplay.tileWidth = G.boardDisplay.rect.width / G.boardDisplay.width;
-        G.boardDisplay.tileHeight = G.boardDisplay.rect.height / G.boardDisplay.height;
-
-        G.log = new Log();
+        G.log = new Log(G._logDisplay);
+        G._boardDisplay.init();
         G.board = new Board()
         G.board.generate();
 
@@ -63,11 +54,10 @@ export default class G {
         }
 
         G.board.lights.update();
+        G.player.computeFov();
+        G.drawBoard();
 
-        let playerSeenPoint = G.player.computeFov();
-        G.board.draw(playerSeenPoint, G.player.percievedOpaqueColors);
-
-        Input.setInputHandlers(G.logDisplay.getContainer()!, G.boardDisplay.getContainer()!);
+        Input.init(G._logDisplay, G._boardDisplay);
 
         window.onscroll = G.recalculateCanvasRects;
         window.onresize = G.recalculateCanvasRects;
@@ -76,12 +66,8 @@ export default class G {
     }
 
     private static recalculateCanvasRects() {
-        G.boardDisplay.rect = G.boardDisplay.getContainer()!.getBoundingClientRect();
-        G.logDisplay.rect = G.logDisplay.getContainer()!.getBoundingClientRect();
-    }
-
-    static draw() {
-        G.board.draw(G.player.seenPoints, G.player.percievedOpaqueColors);
+        G._boardDisplay.rect = G._boardDisplay.getContainer()!.getBoundingClientRect();
+        G._logDisplay.rect = G._logDisplay.getContainer()!.getBoundingClientRect();
     }
 
     static handleAction(action: _Action) {
@@ -97,16 +83,18 @@ export default class G {
         if (action.state == ActionState.START_EFFECT)
             G.board.effects.handleEffects();
         else
-            G.updateAndDraw();
+            G.updateAndDrawBoard();
     }
 
-    static updateAndDraw() {
-        // Uh oh.. whaty about light so npc and thier vision??? 
-        // Maybe doesnt matter they just have to see what they see before moving?
+    static updateAndDrawBoard() {
         G.board.actors.update();
         G.board.lights.update();
         G.player.computeFov();
-        G.draw();
+        G.drawBoard();
+    }
+
+    static drawBoard() {
+        G._boardDisplay.drawBoard(G.board, G.player.seenPoints, G.player.percievedOpaqueColors);
     }
 
 }

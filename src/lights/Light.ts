@@ -1,11 +1,11 @@
 import { FOV, Lighting } from "rot-js";
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import { Layer } from "./../Enums";
 import IAttachable from "src/interfaces/IAttachable";
 import C from "../C";
 import G from "../G";
 import Point from "../util/Point";
+import { Layer } from "./../Enums";
 import IActivatable from "./../interfaces/IActivatable";
 import IPositional from "./../interfaces/IPositional";
 
@@ -34,7 +34,7 @@ export default class Light implements IActivatable, IAttachable {
     // IActivatable
     ///////////////////////////////////////////////////////
 
-    isActive(): boolean {
+    get isActive(): boolean {
         return this._active && this._attachedTo != undefined && this._attachedTo.position != undefined;
     }
 
@@ -72,7 +72,7 @@ export default class Light implements IActivatable, IAttachable {
     ///////////////////////////////////////////////////////
 
     update() {
-        if (this.isActive()) {
+        if (this.isActive) {
             this.reposition(this._attachedTo!.position!)
             this._lighting.setFOV(this._lightCone);
             this._lighting.compute(this.lightingCallback);
@@ -99,19 +99,23 @@ export default class Light implements IActivatable, IAttachable {
     }
 
     private lightPassingCallback = (x: number, y: number) => {
-        if (!G.board.xyWithinBounds(x, y))
-            return false;
+        let point = Point.get(x, y, this._currentLayer);
+        if (point) {
+            return G.board.tiles.getElementViaPoint(point).transparent;
+        }
         else {
-            let tile = G.board.tiles.getElementViaXYZ(x, y, this._currentLayer);
-            return tile.transparent;
+            return false;
         }
     }
 
     private reflectivityCallback = (x: number, y: number) => {
-        if (!G.board.xyWithinBounds(x, y) || !G.board.tiles.getElementViaXYZ(x, y, this._currentLayer).transparent)
-            return 0;
-        else
+        let point = Point.get(x, y, this._currentLayer);
+        if (point && G.board.tiles.getElementViaPoint(point).transparent) {
             return C.LIGHT_DEFAULT_REFLECTIVITY;
+        }
+        else {
+            return 0;
+        }
     }
 
 }

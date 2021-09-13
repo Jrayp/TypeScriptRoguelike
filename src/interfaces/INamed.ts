@@ -1,5 +1,3 @@
 export default interface INamed {
-
-    name: string;
-
+    get name():string;
 }

@@ -5,7 +5,7 @@ import { _BoardTile } from "./_BoardTile";
 export class RubbleTile extends _BoardTile {
     name = 'Rubble';
     _glyph = ',';
-    _fgColor = [35, 60, 85] as Color;
+    _fgColor = [55, 85, 110] as Color;
     _bgColor = null;
     passable = true;
     topPassable = true;
