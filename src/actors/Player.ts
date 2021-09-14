@@ -5,7 +5,7 @@ import _DiggableTile from './../boardTiles/_DiggableTile';
 import DebugAction from '../actions/DebugAction';
 import G from "../G";
 import ISight from '../interfaces/ISight';
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import AttackAction from './../actions/AttackAction';
 import DigAction from './../actions/DigAction';
 import MoveAction from './../actions/MoveAction';
@@ -40,8 +40,8 @@ export default class Player extends _Actor implements ISight {
     // Sight properties
     ///////////////////////////////////////////////////////
 
-    seenPoints = new Set<Point>();
-    percievedOpaqueColors = new Map<Point, Color>();
+    seenCells = new Set<Cell>();
+    percievedOpaqueColors = new Map<Cell, Color>();
 
     get sightRange() {
         return this.position!.layer == Layer.BELOW ? 4 : 30;
@@ -71,9 +71,9 @@ export default class Player extends _Actor implements ISight {
     ///////////////////////////////////////////////////////
 
     sightPassesCallback = (x: number, y: number) => {
-        let point = Point.get(x, y, this.position!.layer);
-        if (point) {
-            return G.board.tiles.getElementViaPoint(point).transparent;
+        let cell = Cell.get(x, y, this.position!.layer);
+        if (cell) {
+            return G.board.tiles.getElementViaCell(cell).transparent;
         }
         else {
             return false;
@@ -81,13 +81,13 @@ export default class Player extends _Actor implements ISight {
     }
 
     fovCallback = (x: number, y: number, r: number, visibility: number) => {
-        let point = Point.get(x, y, this.position!.layer)!;
-        if (G.board.lights.getBrightness(point)) {
-            let tile = G.board.tiles.getElementViaPoint(point);
+        let cell = Cell.get(x, y, this.position!.layer)!;
+        if (G.board.lights.getBrightness(cell)) {
+            let tile = G.board.tiles.getElementViaCell(cell);
             if (tile.transparent) {
-                this.seenPoints.add(point);
+                this.seenCells.add(cell);
             } else {
-                this.percievedOpaqueColors.set(point, G.board.lights.baseColor);
+                this.percievedOpaqueColors.set(cell, G.board.lights.baseColor);
             }
         }
     }
@@ -99,30 +99,30 @@ export default class Player extends _Actor implements ISight {
     // TODO: Just make the light not shine on the wall if the player cant see the neighboring
     // floor tiles..
 
-    computeFov(): Set<Point> {
+    computeFov(): Set<Cell> {
         const pos = this.position!;
 
-        this.seenPoints.clear();
+        this.seenCells.clear();
         this.percievedOpaqueColors.clear();
 
-        // Get all the points in the players FOV and add opaque points to a map
+        // Get all the cells in the players FOV and add opaque cells to a map
         this._fovAlgorithm.compute(pos.x, pos.y, this.sightRange, this.fovCallback);
 
         // Set percieved color of opaque tiles to that of the brightest neighboring 
         // floor tile that the player can see.
-        for (let opaquePointAndColor of this.percievedOpaqueColors) {
-            let point = opaquePointAndColor[0];
-            let tile = G.board.tiles.getElementViaPoint(point);
+        for (let opaqueCellAndColor of this.percievedOpaqueColors) {
+            let cell = opaqueCellAndColor[0];
+            let tile = G.board.tiles.getElementViaCell(cell);
             let percievedColor = G.board.lights.percievedLightColorOfOpaque(tile, this);
             if (percievedColor) {
-                this.percievedOpaqueColors.set(point, percievedColor);
-                this.seenPoints.add(point);
+                this.percievedOpaqueColors.set(cell, percievedColor);
+                this.seenCells.add(cell);
             }
         }
 
         // Always see the tile youre on
-        this.seenPoints.add(pos);
-        return this.seenPoints;
+        this.seenCells.add(pos);
+        return this.seenCells;
     }
 
     ///////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ export default class Player extends _Actor implements ISight {
             });
             case 'KeyC':
                 let da = new DebugAction(() => {
-                    let tile = G.board.tiles.getElementViaPoint(this.position!);
+                    let tile = G.board.tiles.getElementViaCell(this.position!);
                     if (tile.name != "Glowing Crystal") {
                         G.board.tiles.replace(this.position!, new GlowingCrystalTile());
                         return ActionState.SUCCESSFUL;
@@ -164,8 +164,8 @@ export default class Player extends _Actor implements ISight {
         }
     }
 
-    tryMove(destPoint: Point) {
-        const destinationTile = G.board.tiles.getElementViaPoint(destPoint);
+    tryMove(destCell: Cell) {
+        const destinationTile = G.board.tiles.getElementViaCell(destCell);
 
         const occupant = destinationTile.occupant();
         if (occupant) { // For now always enemy
@@ -178,7 +178,7 @@ export default class Player extends _Actor implements ISight {
             return undefined;
         }
 
-        return new MoveAction(this, destPoint);
+        return new MoveAction(this, destCell);
     }
 
 

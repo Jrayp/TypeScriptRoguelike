@@ -26,14 +26,14 @@ export default class ExplosionEffect extends _Effect {
 
     doStep() {
         if (this.counter == 1) {
-            let tile = G.board.tiles.getElementViaPoint(this.position);
+            let tile = G.board.tiles.getElementViaCell(this.position);
             if (tile.destroyable)
                 if (tile.passable)
                     G.board.tiles.replace(this.position, new RubbleTile(ColorHelper.randomize([70, 70, 70], 8)));
                 else if (RNG.getUniform() < .75)
                     G.board.tiles.replace(this.position, new RubbleTile(ColorHelper.randomize([70, 70, 70], 8)));
-            if (G.board.actors.hasPoint(this.position)) {
-                let actor = G.board.actors.getElementViaPoint(this.position);
+            if (G.board.actors.hasCell(this.position)) {
+                let actor = G.board.actors.getElementViaCell(this.position);
                 actor.kill();
             }
 

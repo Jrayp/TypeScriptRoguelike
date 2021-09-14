@@ -1,5 +1,5 @@
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 
 export default interface IPositional {
-    get position(): Point | undefined;
+    get position(): Cell | undefined;
 }

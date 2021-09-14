@@ -1,4 +1,4 @@
-import Point from "./util/Point";
+import Cell from "./util/Cell";
 
 export default class C {
     static readonly BOARD_WIDTH = 60;

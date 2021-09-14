@@ -4,7 +4,7 @@ import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
 import IAttachable from "src/interfaces/IAttachable";
 import C from "../C";
 import G from "../G";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import { Layer } from "./../Enums";
 import IActivatable from "./../interfaces/IActivatable";
 import IPositional from "./../interfaces/IPositional";
@@ -88,9 +88,9 @@ export default class Light implements IActivatable, IAttachable {
     // Private
     ///////////////////////////////////////////////////////
 
-    private reposition(point: Point) {
+    private reposition(cell: Cell) {
         this._lighting.clearLights();
-        this._lighting.setLight(point.x, point.y, this._color);
+        this._lighting.setLight(cell.x, cell.y, this._color);
         this._currentLayer = this._attachedTo!.position!.layer;
     }
 
@@ -99,9 +99,9 @@ export default class Light implements IActivatable, IAttachable {
     }
 
     private lightPassingCallback = (x: number, y: number) => {
-        let point = Point.get(x, y, this._currentLayer);
-        if (point) {
-            return G.board.tiles.getElementViaPoint(point).transparent;
+        let cell = Cell.get(x, y, this._currentLayer);
+        if (cell) {
+            return G.board.tiles.getElementViaCell(cell).transparent;
         }
         else {
             return false;
@@ -109,8 +109,8 @@ export default class Light implements IActivatable, IAttachable {
     }
 
     private reflectivityCallback = (x: number, y: number) => {
-        let point = Point.get(x, y, this._currentLayer);
-        if (point && G.board.tiles.getElementViaPoint(point).transparent) {
+        let cell = Cell.get(x, y, this._currentLayer);
+        if (cell && G.board.tiles.getElementViaCell(cell).transparent) {
             return C.LIGHT_DEFAULT_REFLECTIVITY;
         }
         else {

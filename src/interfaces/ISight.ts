@@ -1,9 +1,9 @@
 import PreciseShadowcasting from "rot-js/lib/fov/precise-shadowcasting";
-import Point from "./../util/Point";
+import Cell from "../util/Cell";
 import IPositional from "./IPositional";
 
 export default interface ISight extends IPositional {
-    computeFov(): Set<Point>;
+    computeFov(): Set<Cell>;
     get sightRange(): number;
-    get seenPoints(): Set<Point>;
+    get seenCells(): Set<Cell>;
 }

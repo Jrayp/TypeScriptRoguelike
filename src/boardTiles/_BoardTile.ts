@@ -5,7 +5,7 @@ import INamed from '../interfaces/INamed';
 import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
 import IDrawable from '../interfaces/IDrawable';
-import Point from '../util/Point';
+import Cell from '../util/Cell';
 import { Layer } from './../Enums';
 
 // Maybe concept of limbo by reversing coorinate signs??
@@ -44,8 +44,8 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     constructor() {
     }
 
-    get position(): Point {
-        return G.board.tiles.getPointViaElement(this)!;
+    get position(): Cell {
+        return G.board.tiles.getCellViaElement(this)!;
     }
 
     get layer() {
@@ -57,13 +57,13 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     }
 
     occupant() {
-        const point = this.position;
-        return G.board.actors.hasPoint(point) ? G.board.actors.getElementViaPoint(point) : undefined;
+        const cell = this.position;
+        return G.board.actors.hasCell(cell) ? G.board.actors.getElementViaCell(cell) : undefined;
     }
 
     opposite(): _BoardTile {
-        let p = this.position.oppositePoint();
-        return G.board.tiles.getElementViaPoint(p);
+        let p = this.position.oppositeCell();
+        return G.board.tiles.getElementViaCell(p);
     }
 
     oppositeMovementValidFromHere() {

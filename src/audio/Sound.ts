@@ -1,13 +1,13 @@
 import { Howl } from "howler";
-import Point from "src/util/Point";
+import Cell from "src/util/Cell";
 import IPositional from "./../interfaces/IPositional";
 
 export default class Sound implements IPositional {
 
-    _position: Point;
+    _position: Cell;
     sound: Howl;
 
-    constructor(pos: Point) {
+    constructor(pos: Cell) {
         this._position = pos;
 
         this.sound = new Howl({
@@ -19,7 +19,7 @@ export default class Sound implements IPositional {
         this.sound.play();
     }
 
-    get position(): Point | undefined {
+    get position(): Cell | undefined {
         return this._position;
     }
 

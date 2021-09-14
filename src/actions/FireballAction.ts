@@ -1,7 +1,7 @@
 import { Icon } from "./../controllers/UIController";
 import G from "./../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import GMath from "./../util/GMath";
 import _Action from "./_Action";
 import { ActionState } from "./../Enums";
@@ -11,9 +11,9 @@ export default class FireballAction extends _Action implements ITargetableAction
 
     radius = 2.45;
 
-    path: Point[];
+    path: Cell[];
 
-    target(start: Point, end: Point) {
+    target(start: Cell, end: Cell) {
         let aoeIcon = new Icon(' ', null, [0, 150, 30]);
         let lineIcon = new Icon('*', [255, 255, 255], null);
         let combinedIcon = new Icon('*', [255, 255, 255], [0, 150, 30]);
@@ -22,23 +22,23 @@ export default class FireballAction extends _Action implements ITargetableAction
 
         this.path = GMath.lineList(start, end, 1);
 
-        let circle = GMath.pointWithinCircleSet(end, this.radius);
+        let circle = GMath.cellWithinCircleSet(end, this.radius);
         for (let p of circle) {
             {
-                if (!G.board.tiles.hasPoint(p))
+                if (!G.board.tiles.hasCell(p))
                     continue;
-                let tile = G.board.tiles.getElementViaPoint(p);
-                if (tile.occupant() && G.player.seenPoints.has(p))
+                let tile = G.board.tiles.getElementViaCell(p);
+                if (tile.occupant() && G.player.seenCells.has(p))
                     G.board.icons.addIcon(p, new Icon(tile.occupant()!.glyph, tile.occupant()!.fgColor, [255, 50, 30]));
-                else if (G.player.seenPoints.has(p))
+                else if (G.player.seenCells.has(p))
                     G.board.icons.addIcon(p, aoeIcon);
                 else
                     G.board.icons.addIcon(p, new Icon(' ', null, [0, 100, 25]));
             }
         }
         for (let p of this.path) {
-            let tile = G.board.tiles.getElementViaPoint(p);
-            switch (G.player.seenPoints.has(p)) {
+            let tile = G.board.tiles.getElementViaCell(p);
+            switch (G.player.seenCells.has(p)) {
                 case true:
                     if (tile.occupant())
                         G.board.icons.addIcon(p, new Icon(tile.occupant()!.glyph, tile.occupant()!.fgColor, [255, 50, 30]));
