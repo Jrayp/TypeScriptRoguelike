@@ -15,7 +15,7 @@ export default class AnglerFish extends _Npc {
 
     alive = true;
 
-    light : Light;
+    light: Light;
 
     constructor() {
         super();
@@ -37,7 +37,7 @@ export default class AnglerFish extends _Npc {
                 action = new AttackAction(tile.occupant()!);
                 break;
             }
-            else if (tile.passable && !tile.occupant)
+            else if (tile.passable && !tile.occupant())
                 freePoint.push(pointAndTile[0]);
         }
 

@@ -34,6 +34,8 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
         else return undefined;
     }
 
+    
+
     kill() {
 
     }

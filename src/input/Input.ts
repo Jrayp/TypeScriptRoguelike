@@ -132,7 +132,7 @@ export default class Input {
                     // console.log(start.toString());
                     // console.log(end.toString());
 
-                    let path = G.board.paths.getPath(start, end);
+                    let path = G.board.graph.getPath(start, end);
                     if (path)
                         for (let p of path) {
                             // console.log("PATH: " + p.data.toString());

@@ -26,7 +26,7 @@ export default class G {
     static player: Player;
 
     static init() {
-        RNG.setSeed(-123);
+        // RNG.setSeed(-123);
 
         document.body.append(G._logDisplay.getContainer()!);
         document.body.append(G._boardDisplay.getContainer()!);
@@ -37,26 +37,23 @@ export default class G {
         G.board.generate();
 
         G.player = new Player();
-        G.board.actors.set(Point.get(2, 1, 0)!, G.player);
-
-        // G.board.actors.set(Point.get(Math.floor(C.BOARD_WIDTH / 2), Math.floor(C.BOARD_HEIGHT / 2), 0)!, G.player);
-        // for (let tileAndPoint of G.board.tiles.iterateElements()) {
-        //     if (tileAndPoint[0].name === "Floor") {
-        //         G.board.actors.set(tileAndPoint[1], G.player);
-        //         break;
-        //     }
-        // }
+        for (let tileAndPoint of G.board.tiles.iterateElements()) {
+            if (tileAndPoint[0].name === "Floor") {
+                G.board.actors.set(tileAndPoint[1], G.player);
+                break;
+            }
+        }
         Howler.pos(G.player.position!.x, G.player.position!.y, 0);
 
         for (let tileAndPoint of G.board.tiles.iterateElements()) {
-            if (tileAndPoint[0].passable && tileAndPoint[0].position!.layer == 0 && !tileAndPoint[0].occupant && RNG.getUniform() < .025) {
+            if (tileAndPoint[0].passable && tileAndPoint[0].layer == 0 && !tileAndPoint[0].occupant() && RNG.getUniform() < .025) {
                 let g = new Goomba();
                 G.board.actors.set(tileAndPoint[1], g);
             }
         }
 
         for (let tileAndPoint of G.board.tiles.iterateElements()) {
-            if (tileAndPoint[0].passable && tileAndPoint[0].position!.layer == 1 && !tileAndPoint[0].occupant && RNG.getUniform() < .01) {
+            if (tileAndPoint[0].passable && tileAndPoint[0].position!.layer == 1 && !tileAndPoint[0].occupant() && RNG.getUniform() < .01) {
                 let f = new AnglerFish();
                 G.board.actors.set(tileAndPoint[1], f);
             }
@@ -70,8 +67,6 @@ export default class G {
 
         window.onscroll = G.recalculateCanvasRects;
         window.onresize = G.recalculateCanvasRects;
-
-        G.board.paths.init();
 
         G.log.write("Welcome to TypeScript Roguelike!");
 

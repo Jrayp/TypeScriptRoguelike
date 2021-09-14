@@ -32,7 +32,7 @@ export default class Board {
 
     sounds = new AudioController();
 
-    paths = new GraphController();
+    graph = new GraphController();
 
     constructor() {
     }

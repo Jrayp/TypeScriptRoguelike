@@ -30,7 +30,7 @@ export default class Goomba extends _Npc {
                 action = new AttackAction(tile.occupant()!);
                 break;
             }
-            else if (tile.passable && !tile.occupant)
+            else if (tile.passable && !tile.occupant())
                 freePoint.push(pointAndTile[0]);
         }
 
