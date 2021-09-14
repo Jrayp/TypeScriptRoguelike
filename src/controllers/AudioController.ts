@@ -1,6 +1,6 @@
 import G from "./../G";
 import C from "./../C";
-import Point from "./../util/Point";
+import Cell from "../util/Cell";
 import { aStar, PathFinder } from 'ngraph.path';
 import createGraph, { Graph } from 'ngraph.graph';
 import { Howl, Howler } from "howler";
@@ -11,8 +11,8 @@ export default class AudioController {
 
     // private _muffleGrid: number[][][];
 
-    muffleGraph: Graph<Point, number>;
-    astar: PathFinder<Point>;
+    muffleGraph: Graph<Cell, number>;
+    astar: PathFinder<Cell>;
 
     sounds: Set<Sound> = new Set<Sound>();
 
@@ -21,19 +21,19 @@ export default class AudioController {
         for (let x = 0; x < C.BOARD_WIDTH; x++) {
             for (let y = 0; y < C.BOARD_HEIGHT; y++) {
                 for (let z = 0; z < C.BOARD_DEPTH; z++) {
-                    let point = Point.get(x, y, z)!;
-                    this.muffleGraph.addNode(point.key, point);
-                    for (let n of point.iterateNeighbors())
+                    let cell = Cell.get(x, y, z)!;
+                    this.muffleGraph.addNode(cell.key, cell);
+                    for (let n of cell.iterateNeighbors())
                         if (n) {
                             // TODO: Doesnt account for layers
-                            this.muffleGraph.addLink(point.key, n.key);
+                            this.muffleGraph.addLink(cell.key, n.key);
                         }
                 }
             }
         }
         this.astar = aStar(this.muffleGraph, {
             distance(fromNode, toNode, link) {
-                let tile = G.board.tiles.getElementViaPoint(toNode.data);
+                let tile = G.board.tiles.getElementViaCell(toNode.data);
                 return tile.name == "Wall" ? 8 : 1;
             },
 
@@ -55,7 +55,7 @@ export default class AudioController {
             if (p.data == G.player.position!)
                 continue;
             console.log(p.data.toString());
-            muffle += G.board.tiles.getElementViaPoint(p.data)!.name == "Wall" ? 16 : 1;
+            muffle += G.board.tiles.getElementViaCell(p.data)!.name == "Wall" ? 16 : 1;
         }
         console.log("Length: " + length.toString());
         console.log("Muffle: " + muffle.toString());

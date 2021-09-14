@@ -2,7 +2,7 @@ import BoardDisplay from "./../displays/BoardDisplay";
 import LogDisplay from "./../displays/LogDisplay";
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
 import { ActionState, InputState, Layer } from "./../Enums";
@@ -18,7 +18,7 @@ export default class Input {
     private static _boardCanvas: HTMLElement;
     private static _mouseOverCanvas: HTMLElement;
 
-    private static _mouseBoardPoint: Point;
+    private static _mouseBoardCell: Cell;
 
     private static _currentTargetedAction: ITargetableAction | undefined;
 
@@ -60,9 +60,9 @@ export default class Input {
         let mouseTileX = Math.floor(x / Input._boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / Input._boardDisplay.tileHeight);
 
-        let newPoint = Point.get(mouseTileX, mouseTileY, G.player.position!.layer);
-        if (newPoint)
-            Input._mouseBoardPoint = newPoint;
+        let newCell = Cell.get(mouseTileX, mouseTileY, G.player.position!.layer);
+        if (newCell)
+            Input._mouseBoardCell = newCell;
 
         switch (Input._state) {
             case InputState.BOARD_CONTROL:
@@ -125,7 +125,7 @@ export default class Input {
             case "KeyP":
                 return new DebugAction(() => {
                     G.board.icons.clear();
-                    let start = Point.get(1, 1, 0)!;
+                    let start = Cell.get(1, 1, 0)!;
                     let end = G.player.position!;
                     // console.log("-----------------------------");
 
@@ -187,7 +187,7 @@ export default class Input {
 
     static updateTargeting() {
         G.board.icons.clear();
-        Input._currentTargetedAction!.target(G.player.position!, Input._mouseBoardPoint);
+        Input._currentTargetedAction!.target(G.player.position!, Input._mouseBoardCell);
         G.drawBoard();
     }
 

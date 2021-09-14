@@ -3,12 +3,12 @@ import { aStar, PathFinder } from 'ngraph.path';
 import C from "../C";
 import { Dir, Layer, PathDir } from '../Enums';
 import G from "../G";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 
 export default class GraphController {
 
-    _boardGraph: Graph<Point, PathDir>;
-    _astar: PathFinder<Point>;
+    _boardGraph: Graph<Cell, PathDir>;
+    _astar: PathFinder<Cell>;
 
     get graph() {
         return this._boardGraph;
@@ -22,8 +22,8 @@ export default class GraphController {
         for (let x = 0; x < C.BOARD_WIDTH; x++) {
             for (let y = 0; y < C.BOARD_HEIGHT; y++) {
                 for (let z = 0; z < C.BOARD_DEPTH; z++) {
-                    let point = Point.get(x, y, z)!;
-                    this._boardGraph.addNode(point.key, point);
+                    let cell = Cell.get(x, y, z)!;
+                    this._boardGraph.addNode(cell.key, cell);
                 }
             }
         }
@@ -32,16 +32,16 @@ export default class GraphController {
         for (let x = 0; x < C.BOARD_WIDTH; x++) {
             for (let y = 0; y < C.BOARD_HEIGHT; y++) {
                 for (let z = 0; z < C.BOARD_DEPTH; z++) {
-                    let point = Point.get(x, y, z)!;
+                    let cell = Cell.get(x, y, z)!;
 
                     if (z == 0)
-                        this._boardGraph.addLink(point.key, point.oppositePoint().key, PathDir.VERTICAL);
+                        this._boardGraph.addLink(cell.key, cell.oppositeCell().key, PathDir.VERTICAL);
 
-                    for (let neighborAndDirection of point.iterateNeighborsWithDirection()) {
+                    for (let neighborAndDirection of cell.iterateNeighborsWithDirection()) {
                         let n = neighborAndDirection[0];
                         let d = neighborAndDirection[1];
 
-                        if (this._boardGraph.getLink(n.key, point.key))
+                        if (this._boardGraph.getLink(n.key, cell.key))
                             continue;
 
                         let pathDir: PathDir;
@@ -50,7 +50,7 @@ export default class GraphController {
                         else
                             pathDir = PathDir.STRAIGHT;
 
-                        this._boardGraph.addLink(point.key, n.key, pathDir);
+                        this._boardGraph.addLink(cell.key, n.key, pathDir);
                     }
                 }
             }
@@ -58,7 +58,7 @@ export default class GraphController {
     }
 
 
-    getPath(from: Point, to: Point) {
+    getPath(from: Cell, to: Cell) {
         return this._astar.find(to.key, from.key);
     }
 }
@@ -66,8 +66,8 @@ export default class GraphController {
 
 // this._astar = aStar(this._boardGraph, {
 //     distance(fromNode, toNode, link) {
-//         let fromTile = G.board.tiles.getElementViaPoint(fromNode.data);
-//         let toTile = G.board.tiles.getElementViaPoint(toNode.data);
+//         let fromTile = G.board.tiles.getElementViaCell(fromNode.data);
+//         let toTile = G.board.tiles.getElementViaCell(toNode.data);
 
 //         let toTileCost: number;
 

@@ -1,7 +1,7 @@
 import { FOV, RNG } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import G from "../G";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import _Actor from "./_Actor";
 
 export default abstract class _Npc extends _Actor {
