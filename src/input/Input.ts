@@ -122,25 +122,25 @@ export default class Input {
             case "KeyF":
                 Input.startTargeting();
                 break;
-            case "KeyP":
-                return new DebugAction(() => {
-                    G.board.icons.clear();
-                    let start = Cell.get(1, 1, 0)!;
-                    let end = G.player.position!;
-                    // console.log("-----------------------------");
+            // case "KeyP":
+                // return new DebugAction(() => {
+                //     G.board.icons.clear();
+                //     let start = Cell.get(1, 1, 0)!;
+                //     let end = G.player.position!;
+                //     // console.log("-----------------------------");
 
-                    // console.log(start.toString());
-                    // console.log(end.toString());
+                //     // console.log(start.toString());
+                //     // console.log(end.toString());
 
-                    let path = G.board.graph.getPath(start, end);
-                    if (path)
-                        for (let p of path) {
-                            // console.log("PATH: " + p.data.toString());
-                            G.board.icons.addIcon(p.data, new Icon("*", [255, 255, 255], p.data.layer == 1 ? [0, 50, 255] : null))
-                        }
-                    return ActionState.SUCCESSFUL;
+                //     let path = G.board.graph.getPath(start, end);
+                //     if (path)
+                //         for (let p of path) {
+                //             // console.log("PATH: " + p.data.toString());
+                //             G.board.icons.addIcon(p.data, new Icon("*", [255, 255, 255], p.data.layer == 1 ? [0, 50, 255] : null))
+                //         }
+                //     return ActionState.SUCCESSFUL;
 
-                }).logAfter('Path created.');
+                // }).logAfter('Path created.');
             case "Period":
                 if (shift) {
                     let playerTile = G.player.tile!;

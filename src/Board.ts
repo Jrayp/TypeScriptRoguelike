@@ -1,5 +1,4 @@
 import { Map, RNG } from 'rot-js';
-import { Color } from 'rot-js/lib/color';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
 import { BorderTile } from './boardTiles/BorderTile';
@@ -14,12 +13,11 @@ import C from './C';
 import ActorController from './controllers/ActorController';
 import AudioController from './controllers/AudioController';
 import EffectsController from './controllers/EffectsController';
-import LightController from './controllers/LightController';
 import GraphController from './controllers/GraphController';
+import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
 import { Layer } from './Enums';
-import G from './G';
 import Cell from './util/Cell';
 
 export default class Board {
@@ -28,11 +26,9 @@ export default class Board {
     effects = new EffectsController();
     icons = new UIController();
 
-    lights = new LightController();
-
-    sounds = new AudioController();
-
     graph = new GraphController();
+    lights = new LightController();
+    sounds = new AudioController();
 
     constructor() {
     }

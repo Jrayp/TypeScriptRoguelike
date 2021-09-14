@@ -1,8 +1,7 @@
 import { Graph } from 'ngraph.graph';
-import { aStar, PathFinder } from 'ngraph.path';
+import { PathFinder } from 'ngraph.path';
 import C from "../C";
-import { Dir, Layer, PathDir } from '../Enums';
-import G from "../G";
+import { Dir, PathDir } from '../Enums';
 import Cell from "../util/Cell";
 
 export default class GraphController {
@@ -55,11 +54,6 @@ export default class GraphController {
                 }
             }
         }
-    }
-
-
-    getPath(from: Cell, to: Cell) {
-        return this._astar.find(to.key, from.key);
     }
 }
 
