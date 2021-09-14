@@ -1,20 +1,20 @@
 import _EffectGenerator from "./../effects/_EffectGenerator";
 import _Effect from "../effects/_Effect";
-import UniquePointMap from "../util/UniquePointMap";
+import CellElementBiMap from "../util/CellElementBiMap";
 import { InputState } from "./../Enums";
 import G from "./../G";
 import Loop from "./../Loop";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import Input from "./../input/Input";
 
-export default class EffectsController extends UniquePointMap<_Effect>{
+export default class EffectsController extends CellElementBiMap<_Effect>{
 
     private _generators = new Set<_EffectGenerator>();
 
     currentLoop: Loop;
 
-    addEffect(point: Point, effect: _Effect, doStepImmediatly: boolean) {
-        this.set(point, effect);
+    addEffect(cell: Cell, effect: _Effect, doStepImmediatly: boolean) {
+        this.set(cell, effect);
         if (doStepImmediatly)
             effect.doStep();
     }
@@ -43,8 +43,8 @@ export default class EffectsController extends UniquePointMap<_Effect>{
     updateAndDraw = () => {
         for (let gen of this._generators)
             gen.generate();
-        for (let actionAndPoint of G.board.effects.iterateElements()) {
-            const action = actionAndPoint[0];
+        for (let actionAndCell of G.board.effects.iterateElements()) {
+            const action = actionAndCell[0];
             action.doStep();
         }
         G.board.lights.update();

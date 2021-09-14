@@ -2,10 +2,12 @@ import BoardDisplay from "./../displays/BoardDisplay";
 import LogDisplay from "./../displays/LogDisplay";
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { InputState, Layer } from "./../Enums";
+import { ActionState, InputState, Layer } from "./../Enums";
+import DebugAction from "./../actions/DebugAction";
+import { Icon } from "./../controllers/UIController";
 
 export default class Input {
 
@@ -16,7 +18,7 @@ export default class Input {
     private static _boardCanvas: HTMLElement;
     private static _mouseOverCanvas: HTMLElement;
 
-    private static _mouseBoardPoint: Point;
+    private static _mouseBoardCell: Cell;
 
     private static _currentTargetedAction: ITargetableAction | undefined;
 
@@ -58,9 +60,9 @@ export default class Input {
         let mouseTileX = Math.floor(x / Input._boardDisplay.tileWidth);
         let mouseTileY = Math.floor(y / Input._boardDisplay.tileHeight);
 
-        let newPoint = Point.get(mouseTileX, mouseTileY, G.player.position!.layer);
-        if (newPoint)
-            Input._mouseBoardPoint = newPoint;
+        let newCell = Cell.get(mouseTileX, mouseTileY, G.player.position!.layer);
+        if (newCell)
+            Input._mouseBoardCell = newCell;
 
         switch (Input._state) {
             case InputState.BOARD_CONTROL:
@@ -120,18 +122,37 @@ export default class Input {
             case "KeyF":
                 Input.startTargeting();
                 break;
+            // case "KeyP":
+                // return new DebugAction(() => {
+                //     G.board.icons.clear();
+                //     let start = Cell.get(1, 1, 0)!;
+                //     let end = G.player.position!;
+                //     // console.log("-----------------------------");
+
+                //     // console.log(start.toString());
+                //     // console.log(end.toString());
+
+                //     let path = G.board.graph.getPath(start, end);
+                //     if (path)
+                //         for (let p of path) {
+                //             // console.log("PATH: " + p.data.toString());
+                //             G.board.icons.addIcon(p.data, new Icon("*", [255, 255, 255], p.data.layer == 1 ? [0, 50, 255] : null))
+                //         }
+                //     return ActionState.SUCCESSFUL;
+
+                // }).logAfter('Path created.');
             case "Period":
                 if (shift) {
                     let playerTile = G.player.tile!;
-                    if (G.player.position!.layer === Layer.ABOVE && playerTile.downMovementValid)
-                        return G.player.tryMove(playerTile.opposite.position);
+                    if (G.player.position!.layer === Layer.ABOVE && playerTile.downMovementValidFromHere())
+                        return G.player.tryMove(playerTile.opposite().position);
                 }
                 break;
             case "Comma":
                 if (shift) {
                     let playerTile = G.player.tile!;
-                    if (G.player.position!.layer === Layer.BELOW && playerTile.upMovementValid)
-                        return G.player.tryMove(playerTile.opposite.position);
+                    if (G.player.position!.layer === Layer.BELOW && playerTile.upMovementValidFromHere())
+                        return G.player.tryMove(playerTile.opposite().position);
                 }
                 break;
             default:
@@ -166,7 +187,7 @@ export default class Input {
 
     static updateTargeting() {
         G.board.icons.clear();
-        Input._currentTargetedAction!.target(G.player.position!, Input._mouseBoardPoint);
+        Input._currentTargetedAction!.target(G.player.position!, Input._mouseBoardCell);
         G.drawBoard();
     }
 

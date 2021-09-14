@@ -5,7 +5,7 @@ export enum InputState {
     TARGETING
 }
 
-export enum Direction {
+export enum Dir {
     N = 0,
     NE = 1,
     E = 2,
@@ -14,6 +14,12 @@ export enum Direction {
     SW = 5,
     W = 6,
     NW = 7
+}
+
+export enum PathDir{
+    STRAIGHT,
+    DIAGONAL,
+    VERTICAL
 }
 
 export enum TryMoveResult {
@@ -46,4 +52,11 @@ export enum ActionState {
 export enum Layer {
     ABOVE = 0,
     BELOW = 1
+}
+
+export enum TraversibilityFlags {
+    CLEAR = 0,
+    WATER = 1,
+    SOLID_ROCK = 2,
+    VEGETATION = 4
 }

@@ -1,7 +1,7 @@
 import { Color } from "rot-js/lib/color";
 import G from "../G";
 import Light from "../lights/Light";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 import ExplosionGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
@@ -12,11 +12,11 @@ export default class FireballEffect extends _Effect {
 
     light: Light;
 
-    lastPoint: Point;
-    path : Point[];
+    lastCell: Cell;
+    path : Cell[];
     step = 1;
 
-    constructor(path: Point[]) {
+    constructor(path: Cell[]) {
         super();
         this.path = path;
         this.light = new Light(this, 8, this._fgColor);
@@ -30,30 +30,30 @@ export default class FireballEffect extends _Effect {
             return;
         }
         
-        const point = this.position;
-        const tile = G.board.tiles.getElementViaPoint(point);
-        if (!tile.passable || tile.occupant) {
+        const cell = this.position;
+        const tile = G.board.tiles.getElementViaCell(cell);
+        if (!tile.passable || tile.occupant()) {
             this.explode();
         }
         else {
-            this.lastPoint = point;
+            this.lastCell = cell;
             let dest = this.path[this.step];
-            let destTile = G.board.tiles.getElementViaPoint(dest);
+            let destTile = G.board.tiles.getElementViaCell(dest);
             if (!destTile.passable)
                 this.explode();
             else
-                G.board.effects.moveElementToPoint(this, dest);
+                G.board.effects.moveElementToCell(this, dest);
         }
         this.step++;
     }
 
     explode() {
-        const point = this.position;
+        const cell = this.position;
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
 
-        let explosionGenerator = new ExplosionGenerator(point, 2);
+        let explosionGenerator = new ExplosionGenerator(cell, 2);
         G.board.effects.addGenerator(explosionGenerator, true);
 
     }

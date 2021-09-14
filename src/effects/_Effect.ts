@@ -2,7 +2,7 @@ import { Color } from "rot-js/lib/color";
 import G from "../G";
 import IDrawable from "../interfaces/IDrawable";
 import IPositional from "../interfaces/IPositional";
-import Point from "../util/Point";
+import Cell from "../util/Cell";
 
 export default abstract class _Effect implements IDrawable, IPositional {
     abstract _glyph: string;
@@ -19,8 +19,8 @@ export default abstract class _Effect implements IDrawable, IPositional {
         return this._bgColor;
     }
 
-    get position(): Point {
-        return G.board.effects.getPointViaElement(this)!;
+    get position(): Cell {
+        return G.board.effects.getCellViaElement(this)!;
     }
 
     doStep() {

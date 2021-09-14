@@ -1,6 +1,5 @@
 import C from "../C";
-import { Direction, Layer } from "../Enums";
-import { assertTrue } from "./Assertions";
+import { Dir, Layer } from "../Enums";
 
 const _PLANE_OFFSETS = [
     [0, -1],
@@ -13,13 +12,14 @@ const _PLANE_OFFSETS = [
     [-1, -1]
 ]
 
-export default class Point {
+export default class Cell {
 
-    private static _pointCache: Point[][][];
+    private static _cellCache: Cell[][][];
 
     readonly x: number;
     readonly y: number;
     readonly layer: Layer;
+    readonly key: number;
 
     ///////////////////////////////////////////////////////
     // Constructor & Factory
@@ -29,11 +29,12 @@ export default class Point {
         this.x = x;
         this.y = y;
         this.layer = layer;
+        this.key = (C.BOARD_WIDTH * C.BOARD_HEIGHT * layer) + (C.BOARD_WIDTH * y) + x;
     }
 
-    static get(x: number, y: number, layer: Layer): Point | null {
-        if (Point.xylValidBoardPoint(x, y, layer))
-            return Point._pointCache[x][y][layer]!;
+    static get(x: number, y: number, layer: Layer): Cell | null {
+        if (Cell.xylValidBoardCell(x, y, layer))
+            return Cell._cellCache[x][y][layer]!;
         else
             return null;
     }
@@ -42,29 +43,29 @@ export default class Point {
     // Math
     ///////////////////////////////////////////////////////
 
-    addToPoint(point: Point) {
-        return Point.addPointToPoint(this, point, this.layer);
+    addToCell(cell: Cell) {
+        return Cell.addCellToCell(this, cell, this.layer);
     }
 
     addToXY(xOffset: number, yOffset: number) {
-        return Point.addPointToXY(this, xOffset, yOffset, this.layer);
+        return Cell.addCellToXY(this, xOffset, yOffset, this.layer);
     }
 
     ///////////////////////////////////////////////////////
     // Adjacency
     ///////////////////////////////////////////////////////
 
-    neighbor(dir: Direction) {
+    neighbor(dir: Dir) {
         let offset = _PLANE_OFFSETS[dir];
-        return Point.addPointToXY(this, offset[0], offset[1], this.layer);
+        return Cell.addCellToXY(this, offset[0], offset[1], this.layer);
     }
 
-    oppositePoint() {
-        return Point._pointCache[this.x][this.y][this.oppositeLayer()];
+    oppositeCell() {
+        return Cell._cellCache[this.x][this.y][this.oppositeLayer()];
     }
 
     oppositeLayer() {
-        return this.layer === Layer.ABOVE ? Layer.BELOW : Layer.ABOVE;
+        return this.layer == Layer.ABOVE ? Layer.BELOW : Layer.ABOVE;
     }
 
     ///////////////////////////////////////////////////////
@@ -73,9 +74,19 @@ export default class Point {
 
     *iterateNeighbors() {
         for (let offset of _PLANE_OFFSETS) {
-            let neighbor = Point.addPointToXY(this, offset[0], offset[1], this.layer);
+            let neighbor = Cell.addCellToXY(this, offset[0], offset[1], this.layer);
             if (neighbor) {
                 yield neighbor;
+            }
+        }
+    }
+
+    *iterateNeighborsWithDirection(): Generator<[Cell, Dir]> {
+        for (let dir: Dir = 0; dir < 8; dir++) {
+            let offset = _PLANE_OFFSETS[dir];
+            let neighbor = Cell.addCellToXY(this, offset[0], offset[1], this.layer);
+            if (neighbor) {
+                yield [neighbor, dir];
             }
         }
     }
@@ -85,7 +96,7 @@ export default class Point {
     ///////////////////////////////////////////////////////
 
     onEdge() {
-        return Point.pointOnEdge(this);
+        return Cell.cellOnEdge(this);
     }
 
     toString() {
@@ -96,26 +107,26 @@ export default class Point {
     // STATIC
     ///////////////////////////////////////////////////////
 
-    static addPointToPoint(pointA: Point, pointB: Point, layer: Layer) {
-        let newX = pointA.x + pointB.x;
-        let newY = pointA.y + pointB.y;
-        return Point.get(newX, newY, layer);
+    static addCellToCell(cellA: Cell, cellB: Cell, layer: Layer) {
+        let newX = cellA.x + cellB.x;
+        let newY = cellA.y + cellB.y;
+        return Cell.get(newX, newY, layer);
     }
 
-    static addPointToXY(point: Point, xOffset: number, yOffset: number, layer: Layer) {
-        let newX = point.x + xOffset;
-        let newY = point.y + yOffset;
-        return Point.get(newX, newY, layer);
+    static addCellToXY(cell: Cell, xOffset: number, yOffset: number, layer: Layer) {
+        let newX = cell.x + xOffset;
+        let newY = cell.y + yOffset;
+        return Cell.get(newX, newY, layer);
     }
 
-    static xylValidBoardPoint(x: number, y: number, layer: Layer) {
+    static xylValidBoardCell(x: number, y: number, layer: Layer) {
         return x >= 0 && x < C.BOARD_WIDTH
             && y >= 0 && y < C.BOARD_HEIGHT
             && layer >= 0 && layer < C.BOARD_DEPTH;
     }
 
-    static pointOnEdge(point: Point) {
-        return point.x == 0 || point.x == C.BOARD_WIDTH - 1 || point.y == 0 || point.y == C.BOARD_HEIGHT - 1;
+    static cellOnEdge(cell: Cell) {
+        return cell.x == 0 || cell.x == C.BOARD_WIDTH - 1 || cell.y == 0 || cell.y == C.BOARD_HEIGHT - 1;
     }
 
     static xyOnEdge(x: number, y: number) {
@@ -123,14 +134,14 @@ export default class Point {
     }
 
     private static _initialize = (() => {
-        Point._pointCache = [];
+        Cell._cellCache = [];
         for (let x = 0; x < C.BOARD_WIDTH; x++) {
-            Point._pointCache[x] = [];
+            Cell._cellCache[x] = [];
             for (let y = 0; y < C.BOARD_HEIGHT; y++) {
-                Point._pointCache[x][y] = [];
+                Cell._cellCache[x][y] = [];
                 for (let z = 0; z < C.BOARD_DEPTH; z++) {
-                    let point = new Point(x, y, z);
-                    Point._pointCache[x][y][z] = point;
+                    let cell = new Cell(x, y, z);
+                    Cell._cellCache[x][y][z] = cell;
                 }
             }
         }

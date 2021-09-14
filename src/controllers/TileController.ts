@@ -1,17 +1,17 @@
 import { _BoardTile } from "./../boardTiles/_BoardTile";
-import Point from "../util/Point";
-import UniquePointMap from "./../util/UniquePointMap";
+import Cell from "../util/Cell";
+import CellElementBiMap from "../util/CellElementBiMap";
 
-export default class TileController extends UniquePointMap<_BoardTile> {
+export default class TileController extends CellElementBiMap<_BoardTile> {
 
     removeViaElement(element: _BoardTile) {
         this._remove(element);
         super.removeViaElement(element);
     }
 
-    removeViaPoint(point: Point) {
-        this._remove(this.getElementViaPoint(point));
-        super.removeViaPoint(point);
+    removeViaCell(cell: Cell) {
+        this._remove(this.getElementViaCell(cell));
+        super.removeViaCell(cell);
     }
 
     private _remove(tile: _BoardTile) {
