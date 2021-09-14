@@ -28,8 +28,8 @@ export default class FireballAction extends _Action implements ITargetableAction
                 if (!G.board.tiles.hasPoint(p))
                     continue;
                 let tile = G.board.tiles.getElementViaPoint(p);
-                if (tile.occupant && G.player.seenPoints.has(p))
-                    G.board.icons.addIcon(p, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                if (tile.occupant() && G.player.seenPoints.has(p))
+                    G.board.icons.addIcon(p, new Icon(tile.occupant()!.glyph, tile.occupant()!.fgColor, [255, 50, 30]));
                 else if (G.player.seenPoints.has(p))
                     G.board.icons.addIcon(p, aoeIcon);
                 else
@@ -40,8 +40,8 @@ export default class FireballAction extends _Action implements ITargetableAction
             let tile = G.board.tiles.getElementViaPoint(p);
             switch (G.player.seenPoints.has(p)) {
                 case true:
-                    if (tile.occupant)
-                        G.board.icons.addIcon(p, new Icon(tile.occupant.glyph, tile.occupant.fgColor, [255, 50, 30]));
+                    if (tile.occupant())
+                        G.board.icons.addIcon(p, new Icon(tile.occupant()!.glyph, tile.occupant()!.fgColor, [255, 50, 30]));
                     else if (circle.has(p))
                         G.board.icons.addIcon(p, combinedIcon);
                     else

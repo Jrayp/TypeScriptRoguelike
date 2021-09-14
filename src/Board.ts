@@ -12,8 +12,10 @@ import { WaterTile } from './boardTiles/WaterTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
 import C from './C';
 import ActorController from './controllers/ActorController';
+import AudioController from './controllers/AudioController';
 import EffectsController from './controllers/EffectsController';
 import LightController from './controllers/LightController';
+import GraphController from './controllers/GraphController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
 import { Layer } from './Enums';
@@ -27,6 +29,10 @@ export default class Board {
     icons = new UIController();
 
     lights = new LightController();
+
+    sounds = new AudioController();
+
+    paths = new GraphController();
 
     constructor() {
     }

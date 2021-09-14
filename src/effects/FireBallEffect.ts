@@ -32,7 +32,7 @@ export default class FireballEffect extends _Effect {
         
         const point = this.position;
         const tile = G.board.tiles.getElementViaPoint(point);
-        if (!tile.passable || tile.occupant) {
+        if (!tile.passable || tile.occupant()) {
             this.explode();
         }
         else {

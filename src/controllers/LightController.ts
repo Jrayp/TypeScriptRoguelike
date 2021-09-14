@@ -3,7 +3,7 @@ import { Color } from "rot-js/lib/color";
 import ISight from "../interfaces/ISight";
 import Point from "../util/Point";
 import { _BoardTile } from "./../boardTiles/_BoardTile";
-import { Layer } from "./../Enums";
+import { Layer } from "src/Enums";
 import G from "./../G";
 import Light from "./../lights/Light";
 import GMath from "./../util/GMath";

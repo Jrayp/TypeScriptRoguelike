@@ -13,9 +13,10 @@ import SwitchAction from './../actions/SwitchAction';
 import WaitAction from './../actions/WaitAction';
 import _Action from './../actions/_Action';
 import { GlowingCrystalTile } from './../boardTiles/GlowingCrystalTile';
-import { ActionState, Direction, Layer, SwitchSetting } from './../Enums';
+import { ActionState, Dir, Layer, SwitchSetting } from './../Enums';
 import Light from './../lights/Light';
 import _Actor from "./_Actor";
+import Sound from './../audio/Sound';
 
 
 export default class Player extends _Actor implements ISight {
@@ -130,14 +131,14 @@ export default class Player extends _Actor implements ISight {
 
     getAction(keyCode: string): _Action | undefined {
         switch (keyCode) {
-            case 'Numpad8': return this.tryMove(this.position!.neighbor(Direction.N)!);
-            case 'Numpad9': return this.tryMove(this.position!.neighbor(Direction.NE)!);
-            case 'Numpad6': return this.tryMove(this.position!.neighbor(Direction.E)!);
-            case 'Numpad3': return this.tryMove(this.position!.neighbor(Direction.SE)!);
-            case 'Numpad2': return this.tryMove(this.position!.neighbor(Direction.S)!);
-            case 'Numpad1': return this.tryMove(this.position!.neighbor(Direction.SW)!);
-            case 'Numpad4': return this.tryMove(this.position!.neighbor(Direction.W)!);
-            case 'Numpad7': return this.tryMove(this.position!.neighbor(Direction.NW)!);
+            case 'Numpad8': return this.tryMove(this.position!.neighbor(Dir.N)!);
+            case 'Numpad9': return this.tryMove(this.position!.neighbor(Dir.NE)!);
+            case 'Numpad6': return this.tryMove(this.position!.neighbor(Dir.E)!);
+            case 'Numpad3': return this.tryMove(this.position!.neighbor(Dir.SE)!);
+            case 'Numpad2': return this.tryMove(this.position!.neighbor(Dir.S)!);
+            case 'Numpad1': return this.tryMove(this.position!.neighbor(Dir.SW)!);
+            case 'Numpad4': return this.tryMove(this.position!.neighbor(Dir.W)!);
+            case 'Numpad7': return this.tryMove(this.position!.neighbor(Dir.NW)!);
             case 'Numpad5': return new WaitAction().logAfter("You wait..");
             case 'KeyL': return new SwitchAction(this._lightOrb, SwitchSetting.TOGGLE).logAfterConditional(() => {
                 return this._lightOrb.isActive ? 'You summon a glowing orb.' : 'You wave your hand over your orb..';
@@ -152,6 +153,13 @@ export default class Player extends _Actor implements ISight {
                     else return ActionState.UNSUCCESSFUL;
                 }).logAfterConditional(() => { return da.state === ActionState.SUCCESSFUL ? "You place a glowing crystal." : "There is already a crystal here." });
                 return da;
+            case 'KeyS':
+                return new DebugAction(() => {
+                    let s = new Sound(this.position!);
+                    G.board.sounds.sounds.add(s);
+                    G.board.sounds.update();
+                    return ActionState.SUCCESSFUL;
+                });
             default: return undefined;
         }
     }
@@ -159,7 +167,7 @@ export default class Player extends _Actor implements ISight {
     tryMove(destPoint: Point) {
         const destinationTile = G.board.tiles.getElementViaPoint(destPoint);
 
-        const occupant = destinationTile.occupant;
+        const occupant = destinationTile.occupant();
         if (occupant) { // For now always enemy
             return new AttackAction(occupant);
         }

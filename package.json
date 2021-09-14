@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/howler": "^2.2.4",
     "collections": "^5.1.12",
+    "howler": "^2.2.3",
+    "ngraph.graph": "^19.1.0",
+    "ngraph.path": "^1.3.1",
     "rot-js": "^2.2.0",
     "tsify": "^5.0.4",
     "typescript": "^4.3.5"

@@ -1,5 +1,6 @@
 
 import { Color } from "rot-js/lib/color";
+import _Actor from "src/actors/_Actor";
 import { _BoardTile } from "./_BoardTile";
 
 export class BorderTile extends _BoardTile {
@@ -12,4 +13,9 @@ export class BorderTile extends _BoardTile {
     bottomPassable = false;
     transparent = false;
     destroyable = false;
+
+    getTraverseCost(actor: _Actor): number {
+        return -1;
+    }
+
 }

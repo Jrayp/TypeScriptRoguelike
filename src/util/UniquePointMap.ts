@@ -1,4 +1,3 @@
-import { NamedTupleMember } from "typescript";
 import { assertTrue } from "./Assertions";
 import GMath from "./GMath";
 import Point from "./Point";
@@ -87,8 +86,8 @@ export default class UniquePointMap<T>{
     }
 
     moveElementToPoint(element: T, destPoint: Point) {
-        // assertTrue(this._elementToPoint.has(element),);
-        // assertTrue(this._pointToElement.has(destPoint.key) === false, `Can't move element to ${destPoint.toString()} as there is already an element at the destination.`);
+        assertTrue(this._elementToPoint.has(element),);
+        assertTrue(this._pointToElement.has(destPoint) === false);
         this.removeViaElement(element);
         this.set(destPoint, element);
     }

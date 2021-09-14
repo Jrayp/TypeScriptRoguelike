@@ -1,6 +1,5 @@
 import C from "../C";
-import { Direction, Layer } from "../Enums";
-import { assertTrue } from "./Assertions";
+import { Dir, Layer } from "../Enums";
 
 const _PLANE_OFFSETS = [
     [0, -1],
@@ -20,6 +19,7 @@ export default class Point {
     readonly x: number;
     readonly y: number;
     readonly layer: Layer;
+    readonly key: number;
 
     ///////////////////////////////////////////////////////
     // Constructor & Factory
@@ -29,6 +29,7 @@ export default class Point {
         this.x = x;
         this.y = y;
         this.layer = layer;
+        this.key = (C.BOARD_WIDTH* C.BOARD_HEIGHT * layer) + (C.BOARD_WIDTH * y) + x;
     }
 
     static get(x: number, y: number, layer: Layer): Point | null {
@@ -54,7 +55,7 @@ export default class Point {
     // Adjacency
     ///////////////////////////////////////////////////////
 
-    neighbor(dir: Direction) {
+    neighbor(dir: Dir) {
         let offset = _PLANE_OFFSETS[dir];
         return Point.addPointToXY(this, offset[0], offset[1], this.layer);
     }
@@ -64,7 +65,7 @@ export default class Point {
     }
 
     oppositeLayer() {
-        return this.layer === Layer.ABOVE ? Layer.BELOW : Layer.ABOVE;
+        return this.layer == Layer.ABOVE ? Layer.BELOW : Layer.ABOVE;
     }
 
     ///////////////////////////////////////////////////////
@@ -76,6 +77,16 @@ export default class Point {
             let neighbor = Point.addPointToXY(this, offset[0], offset[1], this.layer);
             if (neighbor) {
                 yield neighbor;
+            }
+        }
+    }
+
+    *iterateNeighborsWithDirection(): Generator<[Point, Dir]> {
+        for (let dir: Dir = 0; dir < 8; dir++) {
+            let offset = _PLANE_OFFSETS[dir];
+            let neighbor = Point.addPointToXY(this, offset[0], offset[1], this.layer);
+            if (neighbor) {
+                yield [neighbor, dir];
             }
         }
     }

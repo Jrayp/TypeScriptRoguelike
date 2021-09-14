@@ -21,7 +21,7 @@ export class WaterTile extends _BoardTile {
     }
 
     get glyph() {
-        if (this.position.layer === Layer.ABOVE || this.upMovementValid)
+        if (this.position.layer === Layer.ABOVE || this.upMovementValidFromHere())
             return this._glyph;
         else
             return '.';

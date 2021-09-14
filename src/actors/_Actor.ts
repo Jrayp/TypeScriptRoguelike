@@ -3,9 +3,8 @@ import G from '../G';
 import IDrawable from '../interfaces/IDrawable';
 import INamed from '../interfaces/INamed';
 import IPositional from '../interfaces/IPositional';
-import { _BoardTile } from './../boardTiles/_BoardTile';
-import BoardDisplay from './../displays/BoardDisplay';
 import Point from '../util/Point';
+import { _BoardTile } from './../boardTiles/_BoardTile';
 
 export default abstract class _Actor implements INamed, IDrawable, IPositional {
 

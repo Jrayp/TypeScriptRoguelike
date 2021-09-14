@@ -6,6 +6,7 @@ import BoardDisplay from '../displays/BoardDisplay';
 import G from '../G';
 import IDrawable from '../interfaces/IDrawable';
 import Point from '../util/Point';
+import { Layer } from './../Enums';
 
 // Maybe concept of limbo by reversing coorinate signs??
 export abstract class _BoardTile implements INamed, IDrawable, IPositional {
@@ -34,6 +35,10 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
     abstract bottomPassable: boolean;
     abstract destroyable: boolean;
 
+    getTraverseCost(actor: _Actor) : number {
+        return 0;
+    }
+
     multiplyBelow: boolean = true;
 
     constructor() {
@@ -43,31 +48,48 @@ export abstract class _BoardTile implements INamed, IDrawable, IPositional {
         return G.board.tiles.getPointViaElement(this)!;
     }
 
-    getDrawData(boardDisplay: BoardDisplay): void {
-        let Point = this.position;
-        // boardDisplay.draw(point.x, point.y, this.glyph, this.fgColor, this.bgColor);
+    get layer() {
+        return this.position?.layer;
     }
 
     onEnter(actor: _Actor): string | undefined {
         return undefined;
     }
 
-    get occupant() {
+    occupant() {
         const point = this.position;
         return G.board.actors.hasPoint(point) ? G.board.actors.getElementViaPoint(point) : undefined;
     }
 
-    get opposite(): _BoardTile {
+    opposite(): _BoardTile {
         let p = this.position.oppositePoint();
         return G.board.tiles.getElementViaPoint(p);
     }
 
-    get upMovementValid() {
-        return this.topPassable && this.opposite.bottomPassable;
+    oppositeMovementValidFromHere() {
+        switch (this.layer) {
+            case Layer.ABOVE:
+                return this.downMovementValidFromHere();
+            case Layer.BELOW:
+                return this.upMovementValidFromHere();
+        }
     }
 
-    get downMovementValid() {
-        return this.bottomPassable && this.opposite.topPassable;
+    upMovementValidFromHere() {
+        return this.topPassable && this.opposite().bottomPassable;
+    }
+
+    downMovementValidFromHere() {
+        return this.bottomPassable && this.opposite().topPassable;
+    }
+
+
+    upMovementValidToHere() {
+        return this.bottomPassable && this.opposite().topPassable;
+    }
+
+    downMovementValidToHere() {
+        return this.topPassable && this.opposite().bottomPassable;
     }
 
 
