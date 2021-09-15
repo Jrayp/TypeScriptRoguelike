@@ -5,9 +5,11 @@ import ITargetableAction from "../interfaces/ITargetableAction";
 import Cell from "../util/Cell";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { ActionState, InputState, Layer } from "./../Enums";
+import { ActionState, InputState, Layer, PathDir } from "./../Enums";
 import DebugAction from "./../actions/DebugAction";
 import { Icon } from "./../controllers/UIController";
+import { Node, Link } from 'ngraph.graph';
+import Bfs from "./../util/Bfs";
 
 export default class Input {
 
@@ -122,25 +124,41 @@ export default class Input {
             case "KeyF":
                 Input.startTargeting();
                 break;
-            // case "KeyP":
-                // return new DebugAction(() => {
-                //     G.board.icons.clear();
-                //     let start = Cell.get(1, 1, 0)!;
-                //     let end = G.player.position!;
-                //     // console.log("-----------------------------");
+            case "KeyP":
+                return new DebugAction(() => {
+                    G.board.icons.clear();
+                    let start = Cell.get(25, 15, 0)!;
+                    let end = G.player.position!;
+                    let bfs = new Bfs(G.board.graph.fetch, (fromCell, toCell, linkData) => {
+                        let name = G.board.tiles.getElementViaCell(toCell).name;
+                        if (name == "Wall")
+                            return Number.POSITIVE_INFINITY;
+                        else if (name == "Cavern Grass")
+                            return 2;
+                        else if (name == "Water")
+                            return 3;
+                        else return 1;
+                    });
+                    let maxd = 10;
+                    let result = bfs.computeForDistance(start, maxd)
 
-                //     // console.log(start.toString());
-                //     // console.log(end.toString());
+                    console.log(result.size);
 
-                //     let path = G.board.graph.getPath(start, end);
-                //     if (path)
-                //         for (let p of path) {
-                //             // console.log("PATH: " + p.data.toString());
-                //             G.board.icons.addIcon(p.data, new Icon("*", [255, 255, 255], p.data.layer == 1 ? [0, 50, 255] : null))
-                //         }
-                //     return ActionState.SUCCESSFUL;
+                    if (result)
+                        for (let p of result) {
+                            if (p[0] == start)
+                                G.board.icons.addIcon(p[0], new Icon("x", null, [255, 0, 0]))
+                            else if (p[0].layer != 1) {
+                                let glyph = G.board.tiles.getElementViaCell(p[0]).glyph;
+                                let fg = G.board.tiles.getElementViaCell(p[0]).fgColor;
+                                G.board.icons.addIcon(p[0], new Icon(glyph, fg, [255 - p[1] * maxd, p[1] * maxd / 2, p[1] * maxd]));
+                            }
+                        }
 
-                // }).logAfter('Path created.');
+
+                    return ActionState.SUCCESSFUL;
+
+                }).logAfter('Path created.');
             case "Period":
                 if (shift) {
                     let playerTile = G.player.tile!;

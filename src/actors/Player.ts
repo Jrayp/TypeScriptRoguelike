@@ -153,13 +153,13 @@ export default class Player extends _Actor implements ISight {
                     else return ActionState.UNSUCCESSFUL;
                 }).logAfterConditional(() => { return da.state === ActionState.SUCCESSFUL ? "You place a glowing crystal." : "There is already a crystal here." });
                 return da;
-            case 'KeyS':
-                return new DebugAction(() => {
-                    let s = new Sound(this.position!);
-                    G.board.sounds.sounds.add(s);
-                    G.board.sounds.update();
-                    return ActionState.SUCCESSFUL;
-                });
+            // case 'KeyS':
+            //     return new DebugAction(() => {
+            //         let s = new Sound(this.position!);
+            //         G.board.sounds.add(s);
+            //         G.board.sounds.update();
+            //         return ActionState.SUCCESSFUL;
+            //     });
             default: return undefined;
         }
     }

@@ -17,7 +17,7 @@ export default abstract class _Actor implements INamed, IDrawable, IPositional {
     abstract _bgColor: Color | null;
 
     // TODO: This will probably be handled on per actor basis
-    aStar = aStar(G.board.graph.graph, {
+    aStar = aStar(G.board.graph.fetch, {
         distance(fromNode, toNode, link) {
             let fromTile = G.board.tiles.getElementViaCell(fromNode.data);
             let toTile = G.board.tiles.getElementViaCell(toNode.data);

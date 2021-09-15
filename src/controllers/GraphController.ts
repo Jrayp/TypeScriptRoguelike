@@ -7,9 +7,8 @@ import Cell from "../util/Cell";
 export default class GraphController {
 
     _boardGraph: Graph<Cell, PathDir>;
-    _astar: PathFinder<Cell>;
 
-    get graph() {
+    get fetch() {
         return this._boardGraph;
     }
 
