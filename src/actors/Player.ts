@@ -17,9 +17,14 @@ import { ActionState, Dir, Layer, SwitchSetting } from './../Enums';
 import Light from './../lights/Light';
 import _Actor from "./_Actor";
 import Sound from './../audio/Sound';
+import ExplosionGenerator from './../effects/ExplosionEffectGenerator';
 
 
 export default class Player extends _Actor implements ISight {
+    // TEST
+    soundPos: Cell;
+
+
     name = 'Player';
 
     ///////////////////////////////////////////////////////
@@ -153,33 +158,44 @@ export default class Player extends _Actor implements ISight {
                     else return ActionState.UNSUCCESSFUL;
                 }).logAfterConditional(() => { return da.state === ActionState.SUCCESSFUL ? "You place a glowing crystal." : "There is already a crystal here." });
                 return da;
-            // case 'KeyS':
-            //     return new DebugAction(() => {
-            //         let s = new Sound(this.position!);
-            //         G.board.sounds.add(s);
-            //         G.board.sounds.update();
-            //         return ActionState.SUCCESSFUL;
-            //     });
+            case 'KeyS':
+                return new DebugAction(() => {
+                    let s = new Sound('./../assets/audio/bbc_d-i-y--and_07045165.mp3', true, 18, G.board.tiles.getElementViaCell(G.player.position!));
+                    this.soundPos = this.position!;
+                    G.board.sounds.add(s);
+                    G.board.sounds.update();
+                    return ActionState.SUCCESSFUL;
+                });
+
+            case 'KeyE':
+                return new DebugAction(() => {
+                    let explosionGenerator = new ExplosionGenerator(Cell.get(4,4,0)!, 2);
+                    G.board.effects.addGenerator(explosionGenerator, true);
+                    G.board.effects.handleEffects(); // TODO: Goombas moving twice after this
+                    return ActionState.SUCCESSFUL;
+                });
             default: return undefined;
         }
     }
 
-    tryMove(destCell: Cell) {
-        const destinationTile = G.board.tiles.getElementViaCell(destCell);
 
-        const occupant = destinationTile.occupant();
-        if (occupant) { // For now always enemy
-            return new AttackAction(occupant);
-        }
-        else if (!destinationTile.passable) {
-            if (destinationTile instanceof _DiggableTile) {
-                return new DigAction(destinationTile);
-            }
-            return undefined;
-        }
 
-        return new MoveAction(this, destCell);
+tryMove(destCell: Cell) {
+    const destinationTile = G.board.tiles.getElementViaCell(destCell);
+
+    const occupant = destinationTile.occupant();
+    if (occupant) { // For now always enemy
+        return new AttackAction(occupant);
     }
+    else if (!destinationTile.passable) {
+        if (destinationTile instanceof _DiggableTile) {
+            return new DigAction(destinationTile);
+        }
+        return undefined;
+    }
+
+    return new MoveAction(this, destCell);
+}
 
 
 

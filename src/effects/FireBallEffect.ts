@@ -1,4 +1,5 @@
 import { Color } from "rot-js/lib/color";
+import Sound from "./../audio/Sound";
 import G from "../G";
 import Light from "../lights/Light";
 import Cell from "../util/Cell";
@@ -13,23 +14,29 @@ export default class FireballEffect extends _Effect {
     light: Light;
 
     lastCell: Cell;
-    path : Cell[];
+    path: Cell[];
     step = 1;
+
+    sound: Sound;
 
     constructor(path: Cell[]) {
         super();
         this.path = path;
         this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
+
+        this.sound = new Sound('./../assets/audio/105016__julien-matthey__jm-fx-fireball-01.wav', false, 18,  this);
+        G.board.sounds.add(this.sound);
+        // G.board.sounds.update();
+
     }
 
     doStep() {
-        if(this.step == this.path.length)
-        {
+        if (this.step == this.path.length) {
             this.explode();
             return;
         }
-        
+
         const cell = this.position;
         const tile = G.board.tiles.getElementViaCell(cell);
         if (!tile.passable || tile.occupant()) {
@@ -48,6 +55,9 @@ export default class FireballEffect extends _Effect {
     }
 
     explode() {
+
+        this.sound.destroy();
+
         const cell = this.position;
         G.board.effects.removeViaElement(this);
         G.board.lights.removeLight(this.light);

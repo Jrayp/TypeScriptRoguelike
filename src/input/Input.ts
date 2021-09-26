@@ -10,6 +10,8 @@ import DebugAction from "./../actions/DebugAction";
 import { Icon } from "./../controllers/UIController";
 import { Node, Link } from 'ngraph.graph';
 import Bfs from "./../util/Bfs";
+import * as Pizzicato from 'pizzicato';
+
 
 export default class Input {
 
@@ -56,6 +58,8 @@ export default class Input {
     ///////////////////////////////////////////////////////
 
     static handleMouseMoveOverBoard(event: MouseEvent) {
+        // Pizzicato.context.resume();
+
         let x = event.clientX - Input._boardDisplay.rect.left;
         let y = event.clientY - Input._boardDisplay.rect.top;
 
@@ -127,19 +131,20 @@ export default class Input {
             case "KeyP":
                 return new DebugAction(() => {
                     G.board.icons.clear();
-                    let start = Cell.get(25, 15, 0)!;
+                    let start = G.player.soundPos;
                     let end = G.player.position!;
                     let bfs = new Bfs(G.board.graph.fetch, (fromCell, toCell, linkData) => {
+                        let layer = G.board.tiles.getElementViaCell(toCell).layer;
                         let name = G.board.tiles.getElementViaCell(toCell).name;
-                        if (name == "Wall")
+            
+                        if (layer == 1)
                             return Number.POSITIVE_INFINITY;
-                        else if (name == "Cavern Grass")
-                            return 2;
-                        else if (name == "Water")
-                            return 3;
+            
+                        if (name == "Wall")
+                            return 15;
                         else return 1;
                     });
-                    let maxd = 10;
+                    let maxd = 18;
                     let result = bfs.computeForDistance(start, maxd)
 
                     console.log(result.size);
@@ -151,7 +156,7 @@ export default class Input {
                             else if (p[0].layer != 1) {
                                 let glyph = G.board.tiles.getElementViaCell(p[0]).glyph;
                                 let fg = G.board.tiles.getElementViaCell(p[0]).fgColor;
-                                G.board.icons.addIcon(p[0], new Icon(glyph, fg, [255 - p[1] * maxd, p[1] * maxd / 2, p[1] * maxd]));
+                                G.board.icons.addIcon(p[0], new Icon(glyph, fg, [255 - p[1] * 12, p[1] * 6, p[1] * 12]));
                             }
                         }
 

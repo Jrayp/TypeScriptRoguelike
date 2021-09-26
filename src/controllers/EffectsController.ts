@@ -49,6 +49,7 @@ export default class EffectsController extends CellElementBiMap<_Effect>{
         }
         G.board.lights.update();
         G.player.computeFov();
+        G.board.sounds.update();
         G.drawBoard();
     }
 }

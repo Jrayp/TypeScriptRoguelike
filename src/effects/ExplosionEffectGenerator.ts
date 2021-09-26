@@ -2,7 +2,8 @@ import Cell from "../util/Cell";
 import G from "./../G";
 import _EffectGenerator from "./_EffectGenerator";
 import ExplosionEffect from "./ExplosionEffect";
-import Light from "src/lights/Light";
+import Light from "./../lights/Light";
+import Sound from "./../audio/Sound";
 
 
 export default class ExplosionGenerator extends _EffectGenerator {
@@ -13,11 +14,18 @@ export default class ExplosionGenerator extends _EffectGenerator {
 
     light: Light;
 
+    sound:Sound;
+
     constructor(center: Cell, radius: number) {
         super();
         this.center = center;
         this.radius = radius;
         
+
+        
+        this.sound = new Sound('./../assets/audio/Fireball+2.mp3', false, 50);
+        this.sound._position = center;
+        G.board.sounds.add(this.sound);
     }
 
     generate() {

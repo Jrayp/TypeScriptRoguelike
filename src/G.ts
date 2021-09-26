@@ -14,7 +14,8 @@ import Input from "./input/Input";
 import Log from "./logging/Log";
 import GMath from "./util/GMath";
 import Cell from "./util/Cell";
-
+import Sound from "./audio/Sound";
+import * as Pizzicato from 'pizzicato';
 
 export default class G {
 
@@ -59,6 +60,9 @@ export default class G {
             }
         }
 
+
+
+
         G.board.lights.update();
         G.player.computeFov();
         G.drawBoard();
@@ -68,13 +72,39 @@ export default class G {
         window.onscroll = G.recalculateCanvasRects;
         window.onresize = G.recalculateCanvasRects;
 
+        window.onclick = G.resumeSoundContext;
+
+        window.onblur = G.stopSoundContext;
+
         G.log.write("Welcome to TypeScript Roguelike!");
 
+        G.board.sounds.init();
+
+        // while (true) {
+        //     let x = RNG.getUniformInt(0, C.BOARD_WIDTH - 1);
+        //     let y = RNG.getUniformInt(0, C.BOARD_HEIGHT - 1);
+        //     let tile = G.board.tiles.getElementViaXYZ(x, y, 0);
+        //     if (tile.name == "Floor") {
+        //         G.board.sounds.add(new Sound(Cell.get(x, y, 0)!));
+        //         G.board.sounds.update();
+        //         G.player.soundPos = Cell.get(x, y, 0)!;
+        //         break;
+        //     }
+        // }
     }
 
     private static recalculateCanvasRects() {
         G._boardDisplay.rect = G._boardDisplay.getContainer()!.getBoundingClientRect();
         G._logDisplay.rect = G._logDisplay.getContainer()!.getBoundingClientRect();
+    }
+
+    private static resumeSoundContext() {
+        Pizzicato.context.resume();
+    }
+
+
+    private static stopSoundContext() {
+        Pizzicato.context.suspend();
     }
 
     static handleAction(action: _Action) {
@@ -98,12 +128,13 @@ export default class G {
         G.board.lights.update();
         G.player.computeFov();
         G.drawBoard();
+        G.board.sounds.update();
 
-        // G.board.sounds.update();
     }
 
     static drawBoard() {
         G._boardDisplay.drawBoard(G.board, G.player.seenCells, G.player.percievedOpaqueColors);
+   
     }
 
 }
