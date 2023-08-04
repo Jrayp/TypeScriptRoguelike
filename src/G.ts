@@ -1,21 +1,15 @@
-import { Howl, Howler } from "howler";
+import * as Pizzicato from 'pizzicato';
 import { RNG } from "rot-js";
+import Board from "./Board";
+import { ActionState } from "./Enums";
 import _Action from "./actions/_Action";
 import AnglerFish from "./actors/AnglerFish";
 import Goomba from "./actors/Goomba";
 import Player from "./actors/Player";
-import Board from "./Board";
-import C from "./C";
-import { Icon } from "./controllers/UIController";
 import BoardDisplay from "./displays/BoardDisplay";
 import LogDisplay from "./displays/LogDisplay";
-import { ActionState, Layer } from "./Enums";
 import Input from "./input/Input";
 import Log from "./logging/Log";
-import GMath from "./util/GMath";
-import Cell from "./util/Cell";
-import Sound from "./audio/Sound";
-import * as Pizzicato from 'pizzicato';
 
 export default class G {
 
@@ -44,7 +38,6 @@ export default class G {
                 break;
             }
         }
-        Howler.pos(G.player.position!.x, G.player.position!.y, 0);
 
         for (let tileAndCell of G.board.tiles.iterateElements()) {
             if (tileAndCell[0].passable && tileAndCell[0].layer == 0 && !tileAndCell[0].occupant() && RNG.getUniform() < .025) {
@@ -134,7 +127,7 @@ export default class G {
 
     static drawBoard() {
         G._boardDisplay.drawBoard(G.board, G.player.seenCells, G.player.percievedOpaqueColors);
-   
+
     }
 
 }

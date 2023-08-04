@@ -1,6 +1,8 @@
 import { Map, RNG } from 'rot-js';
 import Digger from 'rot-js/lib/map/digger';
 import Uniform from 'rot-js/lib/map/uniform';
+import C from './C';
+import { Layer } from './Enums';
 import { BorderTile } from './boardTiles/BorderTile';
 import { CavernGrassTile } from './boardTiles/CavernGrassTile';
 import CoralTile from './boardTiles/CoralTile';
@@ -9,7 +11,6 @@ import { GlowingCrystalTile } from './boardTiles/GlowingCrystalTile';
 import { WallTile } from './boardTiles/WallTile';
 import { WaterTile } from './boardTiles/WaterTile';
 import { _BoardTile } from './boardTiles/_BoardTile';
-import C from './C';
 import ActorController from './controllers/ActorController';
 import AudioController from './controllers/AudioController';
 import EffectsController from './controllers/EffectsController';
@@ -17,7 +18,6 @@ import GraphController from './controllers/GraphController';
 import LightController from './controllers/LightController';
 import TileController from './controllers/TileController';
 import UIController from './controllers/UIController';
-import { Layer } from './Enums';
 import Cell from './util/Cell';
 
 export default class Board {
@@ -30,13 +30,13 @@ export default class Board {
     lights = new LightController();
     sounds = new AudioController();
 
-    constructor() {
-    }
+    constructor() { }
 
     generate() {
         let cavernUserCallback = (x: number, y: number, value: number) => {
             let newTile: _BoardTile;
             let newWaterTile: _BoardTile;
+
             if (Cell.xyOnEdge(x, y)) {
                 newTile = new BorderTile();
                 newWaterTile = new BorderTile();
@@ -57,14 +57,13 @@ export default class Board {
                     else newWaterTile = new WaterTile();
                 }
 
-
             this.tiles.set(Cell.get(x, y, Layer.ABOVE)!, newTile!);
             this.tiles.set(Cell.get(x, y, Layer.BELOW)!, newWaterTile!);
         }
 
-
         let cavernUserCallback2 = (x: number, y: number, value: number) => {
             let newWaterTile: _BoardTile;
+
             if (Cell.xyOnEdge(x, y)) {
                 return;
             }
@@ -85,7 +84,9 @@ export default class Board {
         }
 
         let cavernMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
+
         cavernMap.randomize(.4);
+
         for (var i = 0; i < 5; i++) {
             cavernMap.create();
         }
@@ -93,13 +94,14 @@ export default class Board {
         cavernMap.create(cavernUserCallback);
 
         cavernMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
+
         cavernMap.randomize(.5);
+
         for (var i = 0; i < 3; i++) {
             cavernMap.create();
         }
 
         cavernMap.create(cavernUserCallback2);
-
 
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
@@ -137,9 +139,10 @@ export default class Board {
 
         }
 
-
         let vegetationMap = new Map.Cellular(C.BOARD_WIDTH, C.BOARD_HEIGHT);
+
         vegetationMap.randomize(.5);
+
         for (var i = 0; i < 3; i++) {
             vegetationMap.create();
         }
