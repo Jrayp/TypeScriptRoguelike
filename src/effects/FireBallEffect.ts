@@ -1,9 +1,9 @@
 import { Color } from "rot-js/lib/color";
-import Sound from "./../audio/Sound";
 import G from "../G";
 import Light from "../lights/Light";
 import Cell from "../util/Cell";
-import ExplosionGenerator from "./ExplosionEffectGenerator";
+import Sound from "./../audio/Sound";
+import ExplosionEffectGenerator from "./ExplosionEffectGenerator";
 import _Effect from "./_Effect";
 
 export default class FireballEffect extends _Effect {
@@ -25,7 +25,7 @@ export default class FireballEffect extends _Effect {
         this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
 
-        this.sound = new Sound('./../assets/audio/105016__julien-matthey__jm-fx-fireball-01.wav', false, 18,  this);
+        this.sound = new Sound('./../assets/audio/whoosh.wav', false, 18, this);
         G.board.sounds.add(this.sound);
         // G.board.sounds.update();
 
@@ -63,7 +63,7 @@ export default class FireballEffect extends _Effect {
         G.board.lights.removeLight(this.light);
         G.log.write("*Boom!* The fireball explodes!");
 
-        let explosionGenerator = new ExplosionGenerator(cell, 2);
+        let explosionGenerator = new ExplosionEffectGenerator(cell, 2);
         G.board.effects.addGenerator(explosionGenerator, true);
 
     }

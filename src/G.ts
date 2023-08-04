@@ -21,7 +21,7 @@ export default class G {
     static player: Player;
 
     static init() {
-        // RNG.setSeed(-123);
+        RNG.setSeed(-123);
 
         document.body.append(G._logDisplay.getContainer()!);
         document.body.append(G._boardDisplay.getContainer()!);

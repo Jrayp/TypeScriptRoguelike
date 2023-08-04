@@ -24,7 +24,6 @@ export default class AudioController {
     }
 
     update() {
-        // Howler.pos(G.player.position!.x, G.player.position!.y, 0);
         for (let s of this._sounds) {
             this.configSound(s);
         }
@@ -40,11 +39,6 @@ export default class AudioController {
     }
 
     configSound(sound: Sound) {
-        let maxDb = 100;
-
-        let i1 = 18;
-
-
         let soundMap = this._bfs.computeForDistance(sound.position!, sound.intensity);
 
         if (!soundMap.has(G.player.position!)) {
@@ -66,7 +60,6 @@ export default class AudioController {
         let muffle = 22050 * ratio;
 
 
-        console.log("------------------");
         console.log(bfsDistanceToPlayer);
         console.log(diagonalDistanceToPlayer);
         console.log(ratio);

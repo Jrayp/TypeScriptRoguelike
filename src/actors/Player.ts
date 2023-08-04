@@ -1,23 +1,23 @@
 import { FOV } from 'rot-js';
 import { Color } from 'rot-js/lib/color';
 import PreciseShadowcasting from 'rot-js/lib/fov/precise-shadowcasting';
-import _DiggableTile from './../boardTiles/_DiggableTile';
-import DebugAction from '../actions/DebugAction';
 import G from "../G";
+import DebugAction from '../actions/DebugAction';
 import ISight from '../interfaces/ISight';
 import Cell from "../util/Cell";
+import { ActionState, Dir, Layer, SwitchSetting } from './../Enums';
 import AttackAction from './../actions/AttackAction';
 import DigAction from './../actions/DigAction';
 import MoveAction from './../actions/MoveAction';
 import SwitchAction from './../actions/SwitchAction';
 import WaitAction from './../actions/WaitAction';
 import _Action from './../actions/_Action';
+import Sound from './../audio/Sound';
 import { GlowingCrystalTile } from './../boardTiles/GlowingCrystalTile';
-import { ActionState, Dir, Layer, SwitchSetting } from './../Enums';
+import _DiggableTile from './../boardTiles/_DiggableTile';
+import ExplosionEffectGenerator from './../effects/ExplosionEffectGenerator';
 import Light from './../lights/Light';
 import _Actor from "./_Actor";
-import Sound from './../audio/Sound';
-import ExplosionGenerator from './../effects/ExplosionEffectGenerator';
 
 
 export default class Player extends _Actor implements ISight {
@@ -113,7 +113,7 @@ export default class Player extends _Actor implements ISight {
         // Get all the cells in the players FOV and add opaque cells to a map
         this._fovAlgorithm.compute(pos.x, pos.y, this.sightRange, this.fovCallback);
 
-        // Set percieved color of opaque tiles to that of the brightest neighboring 
+        // Set percieved color of opaque tiles to that of the brightest neighboring
         // floor tile that the player can see.
         for (let opaqueCellAndColor of this.percievedOpaqueColors) {
             let cell = opaqueCellAndColor[0];
@@ -169,10 +169,9 @@ export default class Player extends _Actor implements ISight {
 
             case 'KeyE':
                 return new DebugAction(() => {
-                    let explosionGenerator = new ExplosionGenerator(Cell.get(4,4,0)!, 2);
+                    let explosionGenerator = new ExplosionEffectGenerator(this.position!, 2);
                     G.board.effects.addGenerator(explosionGenerator, true);
-                    G.board.effects.handleEffects(); // TODO: Goombas moving twice after this
-                    return ActionState.SUCCESSFUL;
+                    return ActionState.START_EFFECT;
                 });
             default: return undefined;
         }
@@ -180,22 +179,22 @@ export default class Player extends _Actor implements ISight {
 
 
 
-tryMove(destCell: Cell) {
-    const destinationTile = G.board.tiles.getElementViaCell(destCell);
+    tryMove(destCell: Cell) {
+        const destinationTile = G.board.tiles.getElementViaCell(destCell);
 
-    const occupant = destinationTile.occupant();
-    if (occupant) { // For now always enemy
-        return new AttackAction(occupant);
-    }
-    else if (!destinationTile.passable) {
-        if (destinationTile instanceof _DiggableTile) {
-            return new DigAction(destinationTile);
+        const occupant = destinationTile.occupant();
+        if (occupant) { // For now always enemy
+            return new AttackAction(occupant);
         }
-        return undefined;
-    }
+        else if (!destinationTile.passable) {
+            if (destinationTile instanceof _DiggableTile) {
+                return new DigAction(destinationTile);
+            }
+            return undefined;
+        }
 
-    return new MoveAction(this, destCell);
-}
+        return new MoveAction(this, destCell);
+    }
 
 
 
