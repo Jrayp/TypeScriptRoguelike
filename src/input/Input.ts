@@ -1,16 +1,14 @@
-import BoardDisplay from "./../displays/BoardDisplay";
-import LogDisplay from "./../displays/LogDisplay";
 import G from "../G";
 import ITargetableAction from "../interfaces/ITargetableAction";
 import Cell from "../util/Cell";
+import { ActionState, InputState, Layer } from "./../Enums";
+import DebugAction from "./../actions/DebugAction";
 import FireballAction from "./../actions/FireballAction";
 import _Action from "./../actions/_Action";
-import { ActionState, InputState, Layer, PathDir } from "./../Enums";
-import DebugAction from "./../actions/DebugAction";
 import { Icon } from "./../controllers/UIController";
-import { Node, Link } from 'ngraph.graph';
+import BoardDisplay from "./../displays/BoardDisplay";
+import LogDisplay from "./../displays/LogDisplay";
 import Bfs from "./../util/Bfs";
-import * as Pizzicato from 'pizzicato';
 
 
 export default class Input {
@@ -136,10 +134,10 @@ export default class Input {
                     let bfs = new Bfs(G.board.graph.fetch, (fromCell, toCell, linkData) => {
                         let layer = G.board.tiles.getElementViaCell(toCell).layer;
                         let name = G.board.tiles.getElementViaCell(toCell).name;
-            
+
                         if (layer == 1)
                             return Number.POSITIVE_INFINITY;
-            
+
                         if (name == "Wall")
                             return 15;
                         else return 1;

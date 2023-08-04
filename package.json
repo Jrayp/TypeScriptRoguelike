@@ -2,7 +2,7 @@
   "name": "rotlike",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
   "dependencies": {
     "@types/howler": "^2.2.4",
     "collections": "^5.1.12",
@@ -19,7 +19,8 @@
     "@types/node": "^16.9.6"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-ts": "tsc"
   },
   "author": "",
   "license": "ISC"

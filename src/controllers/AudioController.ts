@@ -1,8 +1,7 @@
-import GMath from "./../util/GMath";
-import Sound from "./../audio/Sound";
 import G from "./../G";
+import Sound from "./../audio/Sound";
 import Bfs from "./../util/Bfs";
-import { Howler } from "howler";
+import GMath from "./../util/GMath";
 
 export default class AudioController {
 
@@ -49,7 +48,7 @@ export default class AudioController {
         let soundMap = this._bfs.computeForDistance(sound.position!, sound.intensity);
 
         if (!soundMap.has(G.player.position!)) {
-            sound.soundEffect.volume = 0;
+            sound.pizzicatoSound.volume = 0;
             return;
         }
 
@@ -75,7 +74,7 @@ export default class AudioController {
 
 
 
-        sound.soundEffect.volume = .75 - distanceNormal;
+        sound.pizzicatoSound.volume = .75 - distanceNormal;
         sound.lowPassFilter.frequency = muffle;
         sound.stereoPanner.pan = xDistanceNormal;
 
