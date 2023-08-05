@@ -1,7 +1,7 @@
 {
   "name": "rotlike",
   "version": "1.0.0",
-  "description": "",
+  "description": "hello",
   "main": "main.js",
   "dependencies": {
     "@types/howler": "^2.2.4",
@@ -33,6 +33,6 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "author": "",
+  "author": "hello",
   "license": "ISC"
 }

@@ -1,6 +1,9 @@
 module.exports = {
   packagerConfig: {
     asar: true,
+    extraResource: [
+      "./assets"
+    ]
   },
   rebuildConfig: {},
   makers: [
@@ -10,7 +13,7 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      platforms: [ 'darwin' ],
     },
     {
       name: '@electron-forge/maker-deb',
