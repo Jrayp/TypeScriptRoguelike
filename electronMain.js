@@ -7,18 +7,21 @@ const path = require( 'path' );
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow( {
-        width: 1920,
-        height: 1080,
+        frame: true,
+        width: 1000,
+        height: 1000,
         webPreferences: {
-            preload: path.join( __dirname, 'preload.js' )
+            preload: path.join( __dirname, 'electronPreload.js' )
         }
     } );
 
+    //mainWindow.setMenuBarVisibility( false );
+
     // and load the index.html of the app.
-    mainWindow.loadFile( 'index.html' );
+    mainWindow.loadFile( path.join( __dirname, 'index.html' ) );
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished

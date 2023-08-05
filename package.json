@@ -2,7 +2,7 @@
   "name": "rotlike",
   "version": "1.0.0",
   "description": "hello",
-  "main": "main.js",
+  "main": "electronMain.js",
   "dependencies": {
     "@types/howler": "^2.2.4",
     "collections": "^5.1.12",

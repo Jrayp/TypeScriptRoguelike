@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as Pizzicato from 'pizzicato';
 import IAttachable from "src/interfaces/IAttachable";
 import Cell from "src/util/Cell";
@@ -6,7 +7,7 @@ import IPositional from "./../interfaces/IPositional";
 
 export default class Sound implements IAttachable, IPositional {
 
-    readonly resourceFolderPath = './../assets/audio/';
+    readonly resourceFolderPath = path.join(__dirname, '..', '..', 'assets', 'audio');
 
     _position: Cell;
 
@@ -35,7 +36,7 @@ export default class Sound implements IAttachable, IPositional {
         this.pizzicatoSound = new Pizzicato.Sound({
             source: 'file',
             options: {
-                path: this.resourceFolderPath + resourceName,
+                path: path.join(this.resourceFolderPath, resourceName),
                 loop: loop
             }
         }, this.onLoad.bind(this));
