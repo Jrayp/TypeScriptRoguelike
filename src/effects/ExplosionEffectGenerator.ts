@@ -21,7 +21,7 @@ export default class ExplosionEffectGenerator extends _EffectGenerator {
         this.center = center;
         this.radius = radius;
 
-        this.sound = new Sound('./../assets/audio/explosion.mp3', false, 50);
+        this.sound = new Sound('explosion.mp3', false, 50);
         this.sound._position = center;
         G.board.sounds.add(this.sound);
     }

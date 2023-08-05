@@ -160,7 +160,7 @@ export default class Player extends _Actor implements ISight {
                 return da;
             case 'KeyS':
                 return new DebugAction(() => {
-                    let s = new Sound('./../assets/audio/bbc_d-i-y--and_07045165.mp3', true, 18, G.board.tiles.getElementViaCell(G.player.position!));
+                    let s = new Sound('anvil.mp3', true, 18, G.board.tiles.getElementViaCell(G.player.position!));
                     this.soundPos = this.position!;
                     G.board.sounds.add(s);
                     G.board.sounds.update();

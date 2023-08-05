@@ -6,6 +6,8 @@ import IPositional from "./../interfaces/IPositional";
 
 export default class Sound implements IAttachable, IPositional {
 
+    readonly resourceFolderPath = './../assets/audio/';
+
     _position: Cell;
 
     stereoPanner: any;
@@ -17,7 +19,7 @@ export default class Sound implements IAttachable, IPositional {
 
     _attachedTo: IPositional | undefined;
 
-    constructor(path: string, loop: boolean, intensity: number, attachedTo: IPositional | undefined = undefined) {
+    constructor(resourceName: string, loop: boolean, intensity: number, attachedTo: IPositional | undefined = undefined) {
         this._attachedTo = attachedTo;
         this.intensity = intensity;
 
@@ -33,7 +35,7 @@ export default class Sound implements IAttachable, IPositional {
         this.pizzicatoSound = new Pizzicato.Sound({
             source: 'file',
             options: {
-                path: path,
+                path: this.resourceFolderPath + resourceName,
                 loop: loop
             }
         }, this.onLoad.bind(this));

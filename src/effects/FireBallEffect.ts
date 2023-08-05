@@ -25,7 +25,7 @@ export default class FireballEffect extends _Effect {
         this.light = new Light(this, 8, this._fgColor);
         G.board.lights.addLight(this.light);
 
-        this.sound = new Sound('./../assets/audio/whoosh.wav', false, 18, this);
+        this.sound = new Sound('whoosh.wav', false, 18, this);
         G.board.sounds.add(this.sound);
         // G.board.sounds.update();
 
